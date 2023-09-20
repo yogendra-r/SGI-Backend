@@ -1,0 +1,9 @@
+{
+    "JWT" : {
+        "secret" : "SGISECRETTOKEN"
+    },
+    "SMTP" : {
+        "user": "sgipanama1@gmail.com",
+        "password": "zgmpuzsjzwvuuqlh"
+    }
+}

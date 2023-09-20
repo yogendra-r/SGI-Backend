@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "rootuser",
+    "database": "SGI",
+    "host": "localhost",
+    "dialect": "mysql"
+},
+  "test": {
+      "username": "hell12_Muskan",
+      "password": "Muskan@11",
+      "database": "hell12_Test_Muskan_DB",
+      "host": "host1.dvgroup.co.in",
+      "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

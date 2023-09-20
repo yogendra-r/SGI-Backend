@@ -1,0 +1,1870 @@
+{
+    "id": 5,
+    "nombre": "Área 09",
+    "leaders": {
+        "Resp DF": {
+            "values": "Fiona Amelia Francois Urriola",
+            "division_id": 1
+        },
+        "Vice Resp DF": {
+            "values": "",
+            "division_id": ""
+        },
+        "Resp DC": {
+            "values": "Aristides Shee ",
+            "division_id": 2
+        },
+        "Vice Resp DC": {
+            "values": "",
+            "division_id": ""
+        },
+        "Resp DJF": {
+            "values": "Fiona Francoise ",
+            "division_id": 4
+        },
+        "Vice Resp DJF": {
+            "values": "",
+            "division_id": ""
+        },
+        "Resp DJM": {
+            "values": "Abdiel Enrique Vargas Boniche",
+            "division_id": 3
+        },
+        "Vice Resp DJM": {
+            "values": "",
+            "division_id": ""
+        },
+        "Resp DEP DJM": {
+            "values": "",
+            "division_id": ""
+        },
+        "Resp DEP DJF": {
+            "values": "",
+            "division_id": ""
+        }
+    },
+    "type": "Cabildo",
+    "arr": [
+        {
+            "id": 3,
+            "nombre": "Cabildo 1",
+            "leaders": {
+                "Resp DF": {
+                    "values": "Livia A. López Ramirez ",
+                    "division_id": 1
+                },
+                "Vice Resp DF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DC": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Vice Resp DC": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DJF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Vice Resp DJF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DJM": {
+                    "values": "Jordi Miquel López ",
+                    "division_id": 3
+                },
+                "Vice Resp DJM": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DEP DJM": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DEP DJF": {
+                    "values": "",
+                    "division_id": ""
+                }
+            },
+            "type": "Distrito",
+            "arr": [
+                {
+                    "id": 1,
+                    "nombre": "Distrito 1",
+                    "leaders": {
+                        "Resp DF": {
+                            "values": "Tamara Tejada ",
+                            "division_id": 1
+                        },
+                        "Vice Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJF": {
+                            "values": "",
+                            "division_id": ""
+                        }
+                    },
+                    "type": "Grupo",
+                    "arr": [
+                        {
+                            "id": 1,
+                            "nombre": "-",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "nombre": "Damas Jóvenes",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 5,
+                            "nombre": "División Educadores",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "nombre": "División Estudiantes Universitaria",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "nombre": "Grupo Alborada",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "nombre": "N/A",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "nombre": "Distrito 2",
+                    "leaders": {
+                        "Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DC": {
+                            "values": "Jesús Antonio López ",
+                            "division_id": 2
+                        },
+                        "Vice Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJF": {
+                            "values": "",
+                            "division_id": ""
+                        }
+                    },
+                    "type": "Grupo",
+                    "arr": [
+                        {
+                            "id": 1,
+                            "nombre": "-",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "nombre": "Damas Jóvenes",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "nombre": "Grupo Alborada",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "nombre": "N/A",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "Miguel Ángel Coparropa Samaniego",
+                                    "division_id": 2
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "nombre": "Cabildo 2",
+            "leaders": {
+                "Resp DF": {
+                    "values": "Marcela Elia De León Batista",
+                    "division_id": 1
+                },
+                "Vice Resp DF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DC": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Vice Resp DC": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DJF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Vice Resp DJF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DJM": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Vice Resp DJM": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DEP DJM": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DEP DJF": {
+                    "values": "",
+                    "division_id": ""
+                }
+            },
+            "type": "Distrito",
+            "arr": [
+                {
+                    "id": 1,
+                    "nombre": "Distrito 1",
+                    "leaders": {
+                        "Resp DF": {
+                            "values": "Itza Herrera ",
+                            "division_id": 1
+                        },
+                        "Vice Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJF": {
+                            "values": "",
+                            "division_id": ""
+                        }
+                    },
+                    "type": "Grupo",
+                    "arr": [
+                        {
+                            "id": 1,
+                            "nombre": "-",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "nombre": "Damas Jóvenes",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "nombre": "Grupo Alborada",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "nombre": "N/A",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "nombre": "Distrito 2",
+                    "leaders": {
+                        "Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJF": {
+                            "values": "Ritzel Dixón ",
+                            "division_id": 4
+                        },
+                        "Vice Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJF": {
+                            "values": "",
+                            "division_id": ""
+                        }
+                    },
+                    "type": "Grupo",
+                    "arr": [
+                        {
+                            "id": 1,
+                            "nombre": "-",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "nombre": "Damas Jóvenes",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "nombre": "División Estudiantes Universitaria",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "nombre": "Grupo Alborada",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "nombre": "N/A",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "nombre": "Cabildo 3",
+            "leaders": {
+                "Resp DF": {
+                    "values": "Lisbeth Gabriela Modest Ramos",
+                    "division_id": 4
+                },
+                "Vice Resp DF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DC": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Vice Resp DC": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DJF": {
+                    "values": "Lizbeth Gabriela Modest ",
+                    "division_id": 4
+                },
+                "Vice Resp DJF": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DJM": {
+                    "values": "Veer Mirpuri ",
+                    "division_id": 3
+                },
+                "Vice Resp DJM": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DEP DJM": {
+                    "values": "",
+                    "division_id": ""
+                },
+                "Resp DEP DJF": {
+                    "values": "",
+                    "division_id": ""
+                }
+            },
+            "type": "Distrito",
+            "arr": [
+                {
+                    "id": 1,
+                    "nombre": "Distrito 1",
+                    "leaders": {
+                        "Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DC": {
+                            "values": "César Augusto Martez Jaén ",
+                            "division_id": 2
+                        },
+                        "Vice Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJF": {
+                            "values": "",
+                            "division_id": ""
+                        }
+                    },
+                    "type": "Grupo",
+                    "arr": [
+                        {
+                            "id": 1,
+                            "nombre": "-",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "nombre": "Damas Jóvenes",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "nombre": "Grupo Alborada",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 7,
+                            "nombre": "Muchos Tesoros",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "nombre": "N/A",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "Elina Chiong ",
+                                    "division_id": 1
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "nombre": "Distrito 2",
+                    "leaders": {
+                        "Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DC": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJF": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Vice Resp DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJM": {
+                            "values": "",
+                            "division_id": ""
+                        },
+                        "Resp DEP DJF": {
+                            "values": "",
+                            "division_id": ""
+                        }
+                    },
+                    "type": "Grupo",
+                    "arr": [
+                        {
+                            "id": 1,
+                            "nombre": "-",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "nombre": "Damas Jóvenes",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 9,
+                            "nombre": "División Estudiantes Secundaria",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "Yash Mirpuri ",
+                                    "division_id": 3
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "nombre": "División Estudiantes Universitaria",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "nombre": "Grupo Alborada",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "nombre": "N/A",
+                            "leaders": {
+                                "Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DC": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Vice Resp DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJM": {
+                                    "values": "",
+                                    "division_id": ""
+                                },
+                                "Resp DEP DJF": {
+                                    "values": "",
+                                    "division_id": ""
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

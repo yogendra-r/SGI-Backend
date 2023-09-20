@@ -1,0 +1,9 @@
+.history/*
+node_modules/*
+node_modules/.bin/*
+.history/routes/*
+.history/common/*
+.history/controllers/*
+sequelizenotes.txt
+node_modules
+
