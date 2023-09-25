@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root",
-    "password": "rootuser",
-    "database": "SGI",
+    "password": "2211",
+    "database": "sgi-copy",
     "host": "localhost",
     "dialect": "mysql"
 },
