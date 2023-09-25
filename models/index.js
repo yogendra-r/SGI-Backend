@@ -40,7 +40,7 @@ const operatorsAliases = {
 };
 
 const sequelize = new Sequelize(
-  "sgidb",
+  "sgi-copy",
   "root",
   "2211",
   {
