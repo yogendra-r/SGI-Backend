@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "2211",
-    "database": "sgi-copy",
+    "database": "sgidb",
     "host": "localhost",
     "dialect": "mysql"
 },
