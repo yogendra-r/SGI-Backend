@@ -3,7 +3,7 @@
     "username": "root",
     "password": "2211",
     "database": "sgi-copy",
-    "host": "164.90.158.181",
+    "host": "localhost",
     "dialect": "mysql"
 },
   "test": {
