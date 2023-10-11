@@ -2,8 +2,8 @@
   "development": {
     "username": "root",
     "password": "2211",
-    "database": "sgidb",
-    "host": "localhost",
+    "database": "sgi-copy",
+    "host": "panel.sgipanama.com",
     "dialect": "mysql"
 },
   "test": {
