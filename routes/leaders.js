@@ -60,6 +60,12 @@ router.post('/contactus',leaders.contactus)
 
 router.get('/getUserList',leaders.getUserList)
 
+router.get('/numericgroupreport',leaders.numericGrpreport)
+
+router.post('/getDynamicCabildo',middleware.verifyToken,leaders.getDynamicCabildo)
+
+router.post('/getDynamicDistrito',middleware.verifyToken,leaders.getDynamicDistrito)
+
 // router.post('/getdropdowndata1',middleware.verifyToken,leaders.getdropdowndata1)
 
 module.exports = router;

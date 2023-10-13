@@ -133,6 +133,9 @@ router.post('/uploadreport',middleware.uploadDoc.single('doc'),admin.subscriptio
 
 router.post('/notAttendedList',admin.notAttendedList)
 
+router.get('/generalreport',admin.generalreport)
+
+
 module.exports = router;
 
 // router.get('/getusersbydivision',admin.getUsersByDivision)
