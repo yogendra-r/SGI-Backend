@@ -288,7 +288,7 @@ async function getdropdowndata(req, res) {
         var nation = await sequelize.query(`select * from usuarios_nacionalidad order by nombre `, { type: sequelize.QueryTypes.SELECT })
         const division = await sequelize.query(`select * from usuarios_division order by nombre`, { type: sequelize.QueryTypes.SELECT })
         const level = await sequelize.query(`select * from usuarios_nivelresponsable`, { type: sequelize.QueryTypes.SELECT })
-        const horizontal = await sequelize.query(`select * from usuarios_grupohorizontal`, { type: sequelize.QueryTypes.SELECT })
+        const horizontal = await sequelize.query(`select * from usuarios_grupohorizontal order by nombre`, { type: sequelize.QueryTypes.SELECT })
         const estado = await sequelize.query(`select * from usuarios_estado`, { type: sequelize.QueryTypes.SELECT })
         const activity = await sequelize.query(`select * from activity`, { type: sequelize.QueryTypes.SELECT })
         const cargo = await sequelize.query(`select * from usuarios_cargoresponsable`, { type: sequelize.QueryTypes.SELECT })
