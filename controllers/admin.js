@@ -571,7 +571,7 @@ async function getAttendanceList(req, res) {
 async function  addNewMember(req,res){
     console.log(req.body,"add")
     const {primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,division_id,area_id,cabildo_id,distrito_sgip_id,sexo_id,grupo_id,responsable,
-        fecha_nacimiento,fecha_ingreso , responsable_gohonzon,nivel_responsable_id,nacionalidad_id,nivel_budista_id,telefono,celular,direccion,email,cargo_responsable_id,Cedula_id,profesion_id,estado_id
+        fecha_nacimiento,fechadeingreso , responsable_gohonzon,nivel_responsable_id,nacionalidad_id,nivel_budista_id,telefono,celular,direccion,email,cargo_responsable_id,Cedula_id,profesion_id,estado_id
     } = req.body
     const findemail = await sequelize.query(`select * from usuarios_usuario where email = "${email}"`,{type:sequelize.QueryTypes.SELECT})
     if(findemail.length){
@@ -601,8 +601,8 @@ var date = new Date()
         sexo_id : sexo_id,
         responsable : responsable||0,
         nivel_responsable_id : nivel_responsable_id||null,
-        cargo_responsable_id : cargo_responsable_id||0,
-        fetcha_nacimiento : fetcha_nacimiento,
+        cargo_responsable_id : cargo_responsable_id||null,
+        fetcha_nacimiento : fecha_nacimiento,
         usuario_id : Cedula_id,
         direccion: direccion ,
         email: email ,
@@ -742,7 +742,7 @@ async function getAllUsers(req, res) {
         AND (:nivel_budista IS NULL OR nivel_budista_id = :nivel_budista)
         AND (:estado IS NULL OR estado_id = :estado)`
         let q =
-            `select a.id ,a.usuario_id as Cedula_id ,a.email,a.responsable, a.nombre_completo, area.nombre as area, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
+            `select a.id ,a.usuario_id as Cedula_id ,a.email,a.responsable, a.nombre_completo, area.nombre as area,cargo_responsable_id, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
         inner join usuarios_area as area on area.id= a.area_id inner join usuarios_cabildo as c on c.id= a.cabildo_id 
         inner join usuarios_distritosgip as d on d.id= a.distrito_sgip_id left join usuarios_grupo as g on g.id = a.grupo_id
         inner join usuarios_estado as s on s.id = a.estado_id ${whereClause} and ${str} order by id asc`;
@@ -757,7 +757,6 @@ async function getAllUsers(req, res) {
             nivel_budista : nivel_budista || null,
             estado : estado||null,
             grupo : grupo||null
-
         }})
 
         for(var i in result){
@@ -816,12 +815,11 @@ async function getInviteeList(req,res){
 
 
 async function getUserDetails(req, res) {
-    try {//
-        // 
+    try {
         console.log(req.body,"req get details")
         if(req.body.profile_type == "member"){
         let query = `select user.id, user.sgi_id ,user.nacionalidad_id ,primer_nombre , user.segundo_nombre, user.primer_apellido, user.segundo_apellido,  user.usuario_id as "Cedula_id",user.sexo_id,
-        user.fecha_nacimiento, user.direccion , user.email, user.celular , user.telefono, user.profesion_id,ue.nombre as estado,user.estado_id,user.responsable, user.nivel_responsable_id as "nivel_responsable" ,user.area_id  ,user.cabildo_id ,
+        user.fecha_nacimiento,user.cargo_responsable_id, user.direccion , user.email, user.celular , user.telefono, user.profesion_id,ue.nombre as estado,user.estado_id,user.responsable, user.nivel_responsable_id as "nivel_responsable" ,user.area_id  ,user.cabildo_id ,
         user.distrito_sgip_id , grp.nombre as grupo_id , user.division_id , user.responsable_gohonzon,user.nivel_budista_id
         from usuarios_usuario as user left join usuarios_grupo as grp on grp.id = user.grupo_id
         inner join usuarios_estado as ue on ue.id = user.estado_id  
@@ -893,11 +891,15 @@ async function leaderSignup(req, res) {
 
         }
         else if(req.body.profile_type=="member"){
+            var result = await sequelize.query(`select * from usuarios_usuario where id = ${req.body.user_id}`, { type: sequelize.QueryTypes.SELECT })
+            result = result[0]
+            var adm = await sequelize.query(`select responsable,nivel_responsable_id,nombre_completo from usuarios_usuario where id = ${req.token.id}`,{type: sequelize.QueryTypes.SELECT})
+            
+            console.log(req.token,"edit profile token")
             var test = await sequelize.query(`select responsable from usuarios_usuario where id = ${req.body.user_id}`,{type : sequelize.QueryTypes.SELECT})
        
             var flag = false;
-        if (req.body.responsable  && req.body.nivel_responsable) {
-            console.log("inside if")
+        if (req.body.responsable  && req.body.nivel_responsable && adm[0].responsable==1 && adm[0].nivel_responsable_id==1 || req.token.id != result.id) {
             const userexists = await sequelize.query(`select * from usuarios_usuario where id = "${req.body.user_id}"`, { type: sequelize.QueryTypes.SELECT })
             if (userexists.length) {
                 const { email, primer_nombre, primer_apellido, division_id } = userexists[0]
@@ -914,25 +916,23 @@ async function leaderSignup(req, res) {
                     password: encrPassword,
                    
                 }
+                // if (division_id == 1) {         //1 -> Damas
+                //     var cargo_responsable_id = 1
+                // }
+                // else if (division_id == 2) {    //2 -> caballereos
+                //     var cargo_responsable_id = 3
+                // }
+                // else if (division_id == 3) {    //3 -> DJM
+                //     var cargo_responsable_id = 7
+                // }
+                // else if (division_id == 4) {    //4 -> DJF
+                //     var cargo_responsable_id = 5
+                // }
+                // else if (division_id == 5) {    //4 -> DJF
+                //     var cargo_responsable_id = 9
+                // }
 
-            
-                if (division_id == 1) {         //1 -> Damas
-                    var cargo_responsable_id = 1
-                }
-                else if (division_id == 2) {    //2 -> caballereos
-                    var cargo_responsable_id = 3
-                }
-                else if (division_id == 3) {    //3 -> DJM
-                    var cargo_responsable_id = 7
-                }
-                else if (division_id == 4) {    //4 -> DJF
-                    var cargo_responsable_id = 5
-                }
-                else if (division_id == 5) {    //4 -> DJF
-                    var cargo_responsable_id = 9
-                }
-
-                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},cargo_responsable_id = ${cargo_responsable_id},nivel_responsable_id = ${req.body.nivel_responsable} where email = '${email}'`)
+                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where email = '${email}'`)
                 console.log(data, "data")
                 if(test[0].responsable==0){
                     const id = await leader.create(signupdata, (err, data) => {
@@ -951,11 +951,10 @@ async function leaderSignup(req, res) {
             }
         }
     
-        var result = await sequelize.query(`select * from usuarios_usuario where id = ${req.body.user_id}`, { type: sequelize.QueryTypes.SELECT })
-        result = result[0]
+       
         //console.log(result)
         const { primer_nombre, primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,
-             estado_id, area_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id,nivel_responsable} = req.body
+             estado_id, area_id, cargo_responsable_id,cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id,nivel_responsable} = req.body
             if(grupo_id){
                 const rows = await sequelize.query(`SELECT id FROM usuarios_grupo WHERE nombre = "${grupo_id}"`, {type : sequelize.QueryTypes.SELECT});
                 var grupo
@@ -966,28 +965,63 @@ async function leaderSignup(req, res) {
                        grupo = inserted.insertId;
                     }
             } 
-             
-             var data = {
-            primer_nombre: primer_nombre || result.primer_nombre,
-            primer_apellido: primer_apellido || result.primer_apellido,
-            segundo_nombre: segundo_nombre || result.segundo_nombre,
-            segundo_apellido: segundo_apellido || result.segundo_apellido,
-            nombre_completo : primer_nombre + " "+segundo_nombre+ " "+primer_apellido+ " "+segundo_apellido,
-            direccion: direccion || result.direccion,
-            email: email || result.email,
-            celular: celular || result.celular,
-            telefono: telefono || result.telefono,
-            profesion_id: profesion_id || result.profesion_id,
-            estado_id: estado_id || result.estado_id,
-            area_id: area_id || result.area_id,
-            cabildo_id: cabildo_id || result.cabildo_id,
-            distrito_sgip_id: distrito_sgip_id || result.distrito_sgip_id,
-            grupo_id: grupo || result.grupo_id,
-            division_id: division_id || result.division_id,
-            nivel_budista_id: nivel_budista_id || result.nivel_budista_id,
-            responsable_gohonzon: responsable_gohonzon || result.responsable_gohonzon,
-            nivel_responsable_id : nivel_responsable || result.nivel_responsable_id
+            var date = new Date()
+             if(adm[0].responsable==1 && adm[0].nivel_responsable_id==1 || req.token.id != result.id){
+                console.log("edit if")
+                var data = {
+                    
+                    primer_nombre: primer_nombre || result.primer_nombre,
+                    edicion : date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate()+" "+date.getHours() + ":"  + date.getMinutes() + ":" + date.getSeconds(),
+                    primer_apellido: primer_apellido || result.primer_apellido,
+                    segundo_nombre: segundo_nombre ,
+                    segundo_apellido: segundo_apellido ,
+                    nombre_completo : primer_nombre + " "+segundo_nombre+ " "+primer_apellido+ " "+segundo_apellido,
+                    direccion: direccion || result.direccion,
+                    email: email || result.email,
+                    celular: celular || result.celular,
+                    telefono: telefono ,
+                    profesion_id: profesion_id,
+                    estado_id: estado_id || result.estado_id,
+                    area_id: area_id || result.area_id,
+                    cabildo_id: cabildo_id || result.cabildo_id,
+                    distrito_sgip_id: distrito_sgip_id || result.distrito_sgip_id,
+                    grupo_id: grupo || result.grupo_id,
+                    division_id: division_id || result.division_id,
+                    nivel_budista_id: nivel_budista_id || result.nivel_budista_id,
+                    responsable_gohonzon: responsable_gohonzon || result.responsable_gohonzon,
+                    nivel_responsable_id : nivel_responsable || result.nivel_responsable_id,
+                    cargo_responsable_id : cargo_responsable_id || null,
+                    edited_by : adm[0].nombre_completo
+             }
         }
+        else{
+            console.log("edit else")
+            var data = {
+                
+                primer_nombre: primer_nombre || result.primer_nombre,
+                edicion : date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate()+" "+date.getHours() + ":"  + date.getMinutes() + ":" + date.getSeconds(),
+                primer_apellido: primer_apellido || result.primer_apellido,
+                segundo_nombre: segundo_nombre ,
+                segundo_apellido: segundo_apellido ,
+                nombre_completo : primer_nombre + " "+segundo_nombre+ " "+primer_apellido+ " "+segundo_apellido,
+                direccion: direccion || result.direccion,
+                email: email || result.email,
+                celular: celular || result.celular,
+                telefono: telefono ,
+                profesion_id: profesion_id,
+                estado_id: estado_id || result.estado_id,
+                area_id: result.area_id,
+                cabildo_id: result.cabildo_id,
+                distrito_sgip_id: result.distrito_sgip_id,
+                grupo_id:  result.grupo_id,
+                division_id: result.division_id,
+                nivel_budista_id:  result.nivel_budista_id,
+                responsable_gohonzon:  result.responsable_gohonzon,
+                nivel_responsable_id :  result.nivel_responsable_id,
+                cargo_responsable_id :  null,
+                edited_by : adm[0].nombre_completo
+            }
+         }
         await sequelize.query(`delete from group_members where user_id = ${req.body.user_id}`)
         for (var i in req.body.horizontal_groups){
             sequelize.query(`insert into group_members(group_id,user_id) values(${req.body.horizontal_groups[i]},${req.body.user_id})`)
@@ -995,7 +1029,7 @@ async function leaderSignup(req, res) {
         const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,
         segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
         estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,
-        division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon
+        division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by
         where id = ${req.body.user_id}`, {
             replacements: {
                 ...data
@@ -2407,78 +2441,6 @@ async function subscriptionGraph(req, res) {
 }
 
 
-const fs = require('fs');
-const readline = require('readline');
-const { google } = require('googleapis');
-
-// const credentials = require('./path-to-your-credentials-file.json');
-
-// Configure the OAuth2 client
-// const { client_secret, client_id, redirect_uris } = credentials.installed;
-redirect_uris =["http://localhost:3000"]
-const oAuth2Client = new google.auth.OAuth2("396487191603-icsqomb2og962jrnl7slr9148rpbciak.apps.googleusercontent.com", "AIzaSyDAJghjBXF-74X8Yhxvpuhw3F73hyQwyrA", redirect_uris[0]);
-
-// The scope required to access Google Drive API
-const SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
-
-// Authorize the client
-const authUrl = oAuth2Client.generateAuthUrl({
-  access_type: 'offline',
-  scope: SCOPES,
-});
-
-console.log('Authorize this app by visiting this URL:', authUrl);
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-rl.question('Enter the code from that page here: ', (code) => {
-  rl.close();
-  oAuth2Client.getToken(code, (err, token) => {
-    if (err) {
-      return console.error('Error retrieving access token', err);
-    }
-    if (req.url.startsWith('/oauth2callback')) {
-        // Handle the OAuth 2.0 server response
-        let q = url.parse(req.url, true).query;
-      
-        // Get access and refresh tokens (if access_type is offline)
-        let { tokens } = oauth2Client.getToken(q.code);
-        oauth2Client.setCredentials(tokens);
-      }
-    // oAuth2Client.setCredentials(token);
-    listFiles();
-  });
-});
-
-// Fetch the folder details
-function listFiles() {
-  const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-  
-  // Provide the folder ID you want to fetch
-  const folderId = '1sAQbhwewR2Q3QGeG9d4dFsBTpTvXqoz4';
-
-  drive.files.list({
-    q: `'${folderId}' in parents`,
-    fields: 'files(id, name)',
-  }, (err, res) => {
-    if (err) {
-      return console.error('The API returned an error: ' + err);
-    }
-    const files = res.data.files;
-    if (files.length) {
-      console.log('Files in the folder:');
-      files.forEach((file) => {
-        console.log(`${file.name} (${file.id})`);
-      });
-    } else {
-      console.log('No files found.');
-    }
-  });
-}
-
 async function generalreport(req,res){
     var resp = [["Área","Cabildos","Distritos","Grupos"]]
     var area = await sequelize.query(`select * from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
@@ -2571,64 +2533,5 @@ module.exports = {
 }
 
 
-// function generateUniqueID(userID) {
-//     const prefix = "SGIP";
-//    ;
-//     const paddedUserID = userID.toString().padStart(4, "0");
-//     const middleZeros = "0000"; // Change the number of zeros as needed
-//     return prefix +  middleZeros + paddedUserID 
-//   }
-  
-//   // Example usage:
-//   const userID = 123; // Replace with your unique user ID
-//   const uniqueID = generateUniqueID(userID);
-//   console.log(uniqueID);
-  
 
 
-
-
-
-// const mysql = require('mysql2/promise');
-
-// async function updateUsuarioGrupo(grupoName) {
-//   // Create a MySQL connection
-//   const connection = await mysql.createConnection({
-//     host: 'your_mysql_host',
-//     user: 'your_mysql_user',
-//     password: 'your_mysql_password',
-//     database: 'your_database_name',
-//   });
-
-//   try {
-//     // Check if the grupo name exists in usuarios_grupo table
-//     const [rows] = await connection.execute('SELECT id FROM usuarios_grupo WHERE nombre = ?', [grupoName]);
-
-//     if (rows.length > 0) {
-//       // If the grupo name exists, update usuarios_usuario table with the existing grupo id
-//       const grupoId = rows[0].id;
-//       await connection.execute('UPDATE usuarios_usuario SET grupo = ? WHERE id = ?', [grupoId, userId]);
-//     } else {
-//       // If the grupo name doesn't exist, insert it into usuarios_grupo table
-//       const [inserted] = await connection.execute('INSERT INTO usuarios_grupo (nombre) VALUES (?)', [grupoName]);
-
-//       // Get the ID of the newly inserted grupo
-//       const grupoId = inserted.insertId;
-
-//       // Update usuarios_usuario table with the newly inserted grupo id
-//       await connection.execute('UPDATE usuarios_usuario SET grupo = ? WHERE id = ?', [grupoId, userId]);
-//     }
-
-//     console.log('Grupo updated successfully.');
-//   } catch (error) {
-//     console.error('Error:', error);
-//   } finally {
-//     // Close the database connection
-//     await connection.end();
-//   }
-// }
-
-// // Usage example
-// const grupoName = 'New Group';
-// const userId = 1; // Replace with the actual user ID
-// updateUsuarioGrupo(grupoName);
