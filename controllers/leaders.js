@@ -18,6 +18,7 @@ const apiSecret = '471919888f30d0cb1e64992927074c24';
 const accessToken = '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';
 
 
+
 const shopify = new Shopify({
   shopName: shopifyDomain,
   apiKey: apiKey,
@@ -202,7 +203,7 @@ async function gohonzonreport(req, res) {
             responsable as Responsable, n.nombre as "Nivel Responsable",responsable_gohonzon as "Responsable de gohonzon",direccion as Direccion,telefono as Telefono,celular as Celular FROM usuarios_usuario  inner join usuarios_division  ON 
             usuarios_division.id = usuarios_usuario.division_id  INNER JOIN usuarios_area ON usuarios_area.id = usuarios_usuario.area_id inner join usuarios_nivelresponsable as n 
             inner join usuarios_cabildo as uc on uc.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip as ud on ud.id = usuarios_usuario.distrito_sgip_id
-            where responsable_gohonzon = 1 and estado_id = 1 and ${searchdata}`, { type: sequelize.QueryTypes.SELECT })
+            where responsable_gohonzon = 1 and estado_id = 1 and ${searchdata} order by nombre_completo`, { type: sequelize.QueryTypes.SELECT })
             if(!result.length){
                 return res.status(200).send({
                     message: "No records found",
@@ -356,16 +357,16 @@ async function getdropdowndata(req, res) {
 async function addinvitee(req, res) {
     try {
         console.log(req.body,"add invitee")
-        const {  first_name, first_surname,gender,division, mobile, email, address, invited_by, birth_date, birth_month, birth_year, telefono,area_id, cabildo_id , distrito_id } = req.body
+        const {  first_name, first_surname,gender,division, mobile, email, address, invited_by, birth_date, birth_month, birth_year, telephone } = req.body //area_id, cabildo_id , distrito_id
         var rs= await sequelize.query(`select id from usuarios_usuario where nombre_completo = "${invited_by}"` , {type : sequelize.QueryTypes.SELECT})
-        console.log(rs)
+        // console.log(rs)
         if(rs.length){
            var invitado_por=rs[0].id
         }
         else{
             var invitado_por = invited_by
         }
-        const data = {
+        const userdata = {
             nombre: first_name,
             appelido: first_surname,
             email: email,
@@ -373,22 +374,25 @@ async function addinvitee(req, res) {
             movil: mobile,
             direccion: address,
             division: division,
-            area_id : area_id,
-            cabildo_id : cabildo_id||null,
-            distrito_sgip_id : distrito_id||null,
+            // area_id : area_id,
+            // cabildo_id : cabildo_id||null,
+            // distrito_sgip_id : distrito_id||null,
             invitado_por: invitado_por,
             genero: gender,
-            telefono: telefono
+            telefono: telephone
         }
-        const result = await invitee.create(data, (err, data) => {
-            if (err) {
-                console.log(err);
-                return res.status(500).json({ message: err.message });
-            }
-
-        })
-       var por = await sequelize.query(`select invitados_por_primera_vez from usuarios_actividad where id = ${req.body.activity_id}`,{type : sequelize.QueryTypes.SELECT})
-      if(por.length) {console.log(por[0].invitados_por_primera_vez,"inv")
+      
+         const result = await invitee.create(userdata)
+            // , (err, data) => {
+            // if (err) {
+            //     console.log(err);
+            //     return res.status(500).json({ message: err.message });
+            // }
+            console.log("invitee registred")
+        // })
+      var por = await sequelize.query(`select invitados_por_primera_vez from usuarios_actividad where id = ${req.body.activity_id}`,{type : sequelize.QueryTypes.SELECT})
+      if(por.length) {
+        console.log(por[0].invitados_por_primera_vez,"inv")
     var d= Number(por[0].invitados_por_primera_vez)+1}
     else {
         var d = 1
@@ -398,8 +402,12 @@ async function addinvitee(req, res) {
     var dep = 0
     var djm = 0
     var djf = 0
+
+    sequelize.query(`update usuarios_actividad set invitados_por_primera_vez = ${d} where id = ${req.body.activity_id}`)
+        const result1 = await sequelize.query(`insert into attendance(user_id,role_id,activity_id) values(${result.id},2,${req.body.activity_id})`)
+// console.log(result1)
     const att = await sequelize.query(`select user_id, role_id from attendance where activity_id = ${req.body.activity_id}`,{type: sequelize.QueryTypes.SELECT})
-   console.log(att,"attendance")
+//    console.log(att,"attendance")
     for(var i in att){
         if(att[i].role_id==1){
             var user = await sequelize.query(`select division_id from usuarios_usuario where id = ${att[i].user_id}`,{type : sequelize.QueryTypes.SELECT})
@@ -425,11 +433,10 @@ async function addinvitee(req, res) {
         }
     }
     }
-       sequelize.query(`update usuarios_actividad set invitados_por_primera_vez = ${d} where id = ${req.body.activity_id}`)
-        const result1 = await sequelize.query(`insert into attendance(user_id,role_id,activity_id) values(${result.id},2,${req.body.activity_id})`)
+       
         request.post({
             headers: { authorization: req.headers.authorization },
-            url: 'http://146.190.171.78:3000/api/dev/admin/getAttendance',
+            url: 'https://http://146.190.171.78:3000/api/dev/admin/getAttendance',
             json: {
              "activity_id" : req.body.activity_id
             },
@@ -439,8 +446,9 @@ async function addinvitee(req, res) {
               console.log(error,"error message")
             }
             else {
-                if(response){
-              console.log(body.data,"dataaaa")
+                console.log(body.data,"dataaaaa")
+                if(body.data.length){
+            //   console.log(body.data,"dataaaa")
                resp = body.data[0]
             
             return res.status(200).send({
@@ -476,8 +484,6 @@ async function addinvitee(req, res) {
                    
                 });}  }
         });
-       
-
     }
     catch (e) {
         console.log(e);
@@ -602,7 +608,7 @@ async function divisionreport(req, res) {
          usuarios_division.id = usuarios_usuario.division_id  INNER JOIN usuarios_area ON usuarios_area.id = usuarios_usuario.area_id
          left join usuarios_nivelresponsable as n on n.id = usuarios_usuario.nivel_responsable_id 
          inner join usuarios_cabildo as uc on uc.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip as ud on ud.id = usuarios_usuario.distrito_sgip_id
-         ${whereClause}`;
+         ${whereClause} order by nombre_completo`;
  
          const result = await sequelize.query(query, {
              type: sequelize.QueryTypes.SELECT,
@@ -696,7 +702,7 @@ async function leadereport(req, res) {
             usuarios_division.id = usuarios_usuario.division_id  INNER JOIN usuarios_area ON usuarios_area.id = usuarios_usuario.area_id
             left join usuarios_nivelresponsable as n on n.id = usuarios_usuario.nivel_responsable_id 
             inner join usuarios_cabildo as uc on uc.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip as ud on ud.id = usuarios_usuario.distrito_sgip_id
-            ${whereClause}`;
+            ${whereClause} order by nombre_completo`;
     
             const result = await sequelize.query(query, {
                 type: sequelize.QueryTypes.SELECT,
@@ -793,7 +799,7 @@ async function examreport(req, res) {
             inner join usuarios_nivelbudista as nb on nb.id = usuarios_usuario.nivel_budista_id 
             left join usuarios_nivelresponsable as n on n.id = usuarios_usuario.nivel_responsable_id 
             inner join usuarios_cabildo as uc on uc.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip as ud on ud.id = usuarios_usuario.distrito_sgip_id
-            ${whereClause}`;
+            ${whereClause} order by nombre_completo`;
     
             const result = await sequelize.query(query, {
                 type: sequelize.QueryTypes.SELECT,
@@ -1081,7 +1087,7 @@ async function horizontalreport(req, res) {
         INNER JOIN usuarios_area ON usuarios_area.id = usuarios_usuario.area_id
         left join usuarios_nivelresponsable as n on n.id = usuarios_usuario.nivel_responsable_id 
         inner join usuarios_cabildo as uc on uc.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip as ud on ud.id = usuarios_usuario.distrito_sgip_id
-        ${whereClause} and group_members.group_id = ${req.body.group_id}`;
+        ${whereClause} and group_members.group_id = ${req.body.group_id} order by nombre_completo`;
 
         const result = await sequelize.query(query, {
             type: sequelize.QueryTypes.SELECT,
@@ -1385,7 +1391,7 @@ async function mytest(req, res) {
 }
 
 async function getUserList(req,res){
-    var result = await sequelize.query(`select id , nombre_completo from usuarios_usuario order by nombre_completo`,{type : sequelize.QueryTypes.SELECT})
+    var result = await sequelize.query(`select id, nombre_completo from usuarios_usuario order by nombre_completo`,{type : sequelize.QueryTypes.SELECT})
     var result1 = await sequelize.query(`select id ,CONCAT(nombre, ' ', appelido)as nombre_completo from invitados`,{type:sequelize.QueryTypes.SELECT})
     result=result.concat(result1)
     return res.status(200).send({
@@ -1422,7 +1428,7 @@ async function numericGrpreport(req,res){
         const whereClause = `WHERE 1
         AND (:area IS NULL OR area_id = :area)
         AND (:cabildo IS NULL OR cabildo_id = :cabildo) `;
-
+        if(area_id){
         const chapter = await sequelize.query(`select distinct cabildo_id as id , usuarios_cabildo.nombre from usuarios_usuario inner join usuarios_cabildo on usuarios_cabildo.id =  usuarios_usuario.cabildo_id
           ${whereClause} order by nombre`, { type: sequelize.QueryTypes.SELECT ,replacements : {
             area : area_id,
@@ -1436,9 +1442,17 @@ async function numericGrpreport(req,res){
             message: "Data fetched",
             data:{
                 cabildo : chapter
-            },
-            title : "Reporte Numérico Grupo Horizontal"
+            }
         });}
+        else{
+            return res.status(200).send({
+                message: "Data fetched",
+                data:{
+                    cabildo :[]
+                }
+            })
+        }
+    }
 
         async function getDynamicDistrito(req,res){
             var where = await helper.findRoleDetails(req, res)
@@ -1451,6 +1465,7 @@ async function numericGrpreport(req,res){
         AND (:cabildo IS NULL OR cabildo_id = :cabildo)
         AND (:distrito_sgip_id IS NULL OR distrito_sgip_id = :distrito_sgip_id) `;
             // const chapter = await sequelize.query(`select distinct cabildo_id as id , usuarios_cabildo.nombre from usuarios_usuario inner join usuarios_cabildo on usuarios_cabildo.id =  usuarios_usuario.cabildo_id where  area_id = ${req.body.area_id } order by nombre`, { type: sequelize.QueryTypes.SELECT })
+           if(area_id && cabildo_id){}
             const district = await sequelize.query(`
             select distinct distrito_sgip_id as id , usuarios_distritosgip.nombre from usuarios_usuario inner join usuarios_distritosgip
             on usuarios_distritosgip.id = usuarios_usuario.distrito_sgip_id ${whereClause} order by nombre`, { type: sequelize.QueryTypes.SELECT ,replacements : {
@@ -1467,6 +1482,7 @@ async function numericGrpreport(req,res){
                 title : "Reporte Numérico Grupo Horizontal"
             });}
     
+
 
 module.exports = {
     getAllActiveMembers,
