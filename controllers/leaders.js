@@ -370,7 +370,6 @@ async function addinvitee(req, res) {
             nombre: first_name,
             appelido: first_surname,
             email: email,
-            fetcha_nacimiento: birth_year + "-" + birth_month + "-" + birth_date,
             movil: mobile,
             direccion: address,
             division: division,
@@ -380,6 +379,9 @@ async function addinvitee(req, res) {
             invitado_por: invitado_por,
             genero: gender,
             telefono: telephone
+        }
+        if(birth_year){
+           userdata.fetcha_nacimiento = birth_year + "-" + birth_month + "-" + birth_date
         }
       
          const result = await invitee.create(userdata)
@@ -436,7 +438,7 @@ async function addinvitee(req, res) {
        
         request.post({
             headers: { authorization: req.headers.authorization },
-            url: 'https://http://146.190.171.78:3000/api/dev/admin/getAttendance',
+            url: 'http://146.190.171.78:3000/api/dev/admin/getAttendance',
             json: {
              "activity_id" : req.body.activity_id
             },
