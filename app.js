@@ -7,6 +7,8 @@ const logger = require('morgan');
 
 const adminRouter = require('./routes/admin');
 const leaderRouter = require('./routes/leaders');
+const donationRouter = require('./routes/donation')
+
 const app = express();
 const cors = require('cors')
 
@@ -33,6 +35,8 @@ app.use('/api/dev/leaders',leaderRouter)
 //admin
 app.use('/api/dev/admin', adminRouter);
 
+app.use('/api/dev/donation',donationRouter)
+
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //   next(createError(404));
@@ -50,7 +54,7 @@ app.use('/api/dev/admin', adminRouter);
 //   res.send("404");
 // });
 
-app.listen(3000 , ()=>console.log("server running at 3000"));
+app.listen(8080 , ()=>console.log(`server running at 8080`));
 module.exports = app;
 
 

@@ -1,5 +1,5 @@
-const { Sequelize } = require("sequelize");
-const db_config = require("../config/config.json");
+const { Sequelize } = require('sequelize')
+const db_config = require('../config/config.json')
 
 const Op = Sequelize.Op;
 const operatorsAliases = {
@@ -36,36 +36,32 @@ const operatorsAliases = {
   $any: Op.any,
   $all: Op.all,
   $values: Op.values,
-  $col: Op.col,
+  $col: Op.col
 };
 
-const sequelize = new Sequelize(
-  "sgi-copy",
-  "root",
-  "2211",
-  {
-    host: "panel.sgipanama.com",
-    dialect: "mysql",
-    port: 3306, // MySQL default port
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000,
-    },
 
-    // logging: false
-    // (str) => console.log("Query ===>>>", str)
-  },
-  { operatorsAliases }
-);
-sequelize
-  .sync()
-  .then(() => {
-    console.log("DB connection Established");
-  })
-  .catch((err) => {
-    console.log("Error occure while connecting DB, Error=>>>", err);
-  });
+const sequelize = new Sequelize(
+    db_config.development.database, db_config.development.username, db_config.development.password, {
+        'host': db_config.development.host,
+        'dialect': 'mysql',
+        'timezone': '+05:30',
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000,
+          },
+      
+        // logging: false
+        // (str) => console.log("Query ===>>>", str)
+
+    },{operatorsAliases }
+)
+sequelize.sync().then(() => {
+    console.log("DB connection Established")
+    
+}).catch(err => {
+    console.log("Error occure while connecting DB, Error=>>>", err)
+})
 
 module.exports = sequelize;

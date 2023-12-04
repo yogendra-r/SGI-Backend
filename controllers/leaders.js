@@ -39,11 +39,13 @@ async function fetchAndInsertReportData(req,res) {
     //   console.log(`${result.affectedRows} rows inserted.`);
     //   connection.end(); // Close the MySQL connection
     // });
+    
   } catch (err) {
     console.error('Error fetching or inserting report data:', err);
     connection.end(); // Close the MySQL connection on error
   }
 }
+
 
 // Call the function to fetch and insert report data
 // fetchAndInsertReportData();

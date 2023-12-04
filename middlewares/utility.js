@@ -46,7 +46,22 @@ var uploadDoc = multer({
   storage: storage
 });
   
+
+// multer function to upload patient documents
+var storage1 = multer.diskStorage({
+  destination: (req, file, callBack) => {
+    callBack(null, './receipt')
+  },
+  filename: (req, file, callBack) => {
+    req.doc = file.originalname
+    callBack(null, req.doc)}
+})
+var uploadrec = multer({
+  storage: storage1
+});
+  
 module.exports = {
     verifyToken,
-    uploadDoc
+    uploadDoc,
+    uploadrec
 }

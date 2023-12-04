@@ -26,7 +26,7 @@ router.post('/areareport',middleware.verifyToken,leaders.areareport)
 
 router.post('/examreport',middleware.verifyToken,leaders.examreport)
 
-router.post('/addInvitee',middleware.verifyToken,leaders.addinvitee)
+router.post('/addInvitee',leaders.addinvitee)
 
 router.get('/dropdowndata',middleware.verifyToken, leaders.getdropdowndata)
 

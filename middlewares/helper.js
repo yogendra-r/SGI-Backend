@@ -145,7 +145,8 @@ console.log(req.email,"sending email")
 // console.log(req.token.email) "sgipanama1@gmail.com"
   var mailOptions = {
     from: 'SGI-Panama  <sgipanama1@gmail.com>',
-    to:  `muskan.shu@cisinlabs.com ,  basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    // to:  `muskan.shu@cisinlabs.com ,  basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    to:  `muskan.shu@cisinlabs.com`,
     subject: 'Leader signup credentials',
     html: `<html>Your SGI leader login details are: <br> username : ${req.email} ,<br> password : ${req.password}</html>`
   };

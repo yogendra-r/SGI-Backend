@@ -88,12 +88,4 @@
         }
        }
     }
-}# SGI-Backend
-# SGI-Backend
-# SGI-Backend
-
-
-CREATE USER muskan@'localhost' IDENTIFIED BY '2211'
-
-GRANT SELECT,INSERT,UPDATE,DELETE ON sgi-copy.* TO 'muskan' IDENTIFIED BY '2211';
-GRANT ALL PRIVILEGES ON sgi-copy.* TO 'root'@'localhost';
+}

@@ -499,6 +499,104 @@ async function getAttendance(req, res) {
 
 }
 
+async function getAttendanceByDivision(req, res) {
+        try {
+            console.log(req.body)
+            const area = req.body.area_id
+            const cabildo = req.body.cabildo_id
+            const district = req.body.distrito_id
+           
+            const whereClause = `WHERE 1=1
+        AND (:area IS NULL OR area_id = :area)
+        AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+        AND (:district IS NULL OR distrito_id = :district)  `;
+
+    const query = `select division.nombre as div_name ,count(*) as counts from attendance inner join usuarios_usuario on usuarios_usuario.id = attendance.user_id
+    inner join usuarios_division as division on division.id = usuarios_usuario.division_id 
+    ${whereClause}
+    group by usuarios_usuario.division_id `;
+    //   ${whereClause} and ${whereCl} group by activity_id `;
+
+            const result = await sequelize.query(query, {
+                type: sequelize.QueryTypes.SELECT,
+                replacements :{
+                    area: area || null,
+                    cabildo: cabildo || null,
+                    district: district || null,
+                }
+            });
+        
+            console.log(result)
+            return res.status(200).send(
+                result
+            )
+        } catch (error) {
+            console.log(error)
+            console.error('Error:', error.message);
+        }
+    
+
+}
+
+async function getAttendanceByMonth(req, res) {
+    try {
+        console.log(req.body)
+        const area = req.body.area_id
+        const cabildo = req.body.cabildo_id
+        const district = req.body.distrito_id
+        const whereClause = `WHERE 1=1
+    AND (:area IS NULL OR area_id = :area)
+    AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+    AND (:district IS NULL OR distrito_id = :district)  `;
+
+const query = `select area.nombre as area ,count(*) as count from attendance 
+inner join usuarios_actividad on usuarios_actividad.id = attendance.activity_id
+inner join usuarios_area as area on area.id = usuarios_actividad.area_id 
+${whereClause}  
+group by usuarios_actividad.area_id order by area`;
+//   ${whereClause} and ${whereCl} group by activity_id `;
+
+        const result = await sequelize.query(query, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements :{
+                area: area || null,
+                cabildo: cabildo || null,
+                district: district || null,
+            }
+        });
+    
+        
+        var label = []
+        var values =[]
+        
+            const ar = await sequelize.query(`select nombre from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
+    for(var i in ar){
+        values.push(0)
+      label.push(ar[i].nombre)                
+      for(var j in result){
+        if(result[j].area==ar[i].nombre){
+            // console.log("ifff",result[j].are,user[j].count)
+            
+          values[i]=(result[j].count)
+        }}
+    } 
+  
+
+    
+        console.log(label,values)
+        return res.send({
+            message : "data fetched",
+            label,
+            values,
+            // total: values.reduce((a, b) => a + b, 0)
+        });
+    } catch (error) {
+        console.log(error)
+        console.error('Error:', error.message);
+    }
+
+
+}
 
 
 async function markAttendance(req, res) {
@@ -799,7 +897,8 @@ async function getAllUsers(req, res) {
             var q = `select a.id ,a.usuario_id as Cedula_id ,a.email,a.responsable, a.nombre_completo, area.nombre as area,cargo_responsable_id, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
             inner join usuarios_area as area on area.id= a.area_id inner join usuarios_cabildo as c on c.id= a.cabildo_id 
             inner join group_members on group_members.user_id = a.id
-            inner join usuarios_distritosgip as d on d.id= a.distrito_sgip_id left join usuarios_grupo as g on g.id = a.grupo_id
+            inner join usuarios_distritosgip 
+            as d on d.id= a.distrito_sgip_id left join usuarios_grupo as g on g.id = a.grupo_id
             inner join usuarios_estado as s on s.id = a.estado_id ${whereClause} and ${str} and group_members.group_id = ${horizontal_group} order by nombre_completo`;
         }
         else{
@@ -921,6 +1020,21 @@ async function getUserDetails(req, res) {
 }
 
 
+ // if (division_id == 1) {         //1 -> Damas
+                //     var cargo_responsable_id = 1
+                // }
+                // else if (division_id == 2) {    //2 -> caballereos
+                //     var cargo_responsable_id = 3
+                // }
+                // else if (division_id == 3) {    //3 -> DJM
+                //     var cargo_responsable_id = 7
+                // }
+                // else if (division_id == 4) {    //4 -> DJF
+                //     var cargo_responsable_id = 5
+                // }
+                // else if (division_id == 5) {    //4 -> DJF
+                //     var cargo_responsable_id = 9
+                // }
 
 //leader signup function to assign leadership to an exising member
 async function leaderSignup(req, res) {
@@ -977,23 +1091,8 @@ async function leaderSignup(req, res) {
                     password: encrPassword,
                    
                 }
-                // if (division_id == 1) {         //1 -> Damas
-                //     var cargo_responsable_id = 1
-                // }
-                // else if (division_id == 2) {    //2 -> caballereos
-                //     var cargo_responsable_id = 3
-                // }
-                // else if (division_id == 3) {    //3 -> DJM
-                //     var cargo_responsable_id = 7
-                // }
-                // else if (division_id == 4) {    //4 -> DJF
-                //     var cargo_responsable_id = 5
-                // }
-                // else if (division_id == 5) {    //4 -> DJF
-                //     var cargo_responsable_id = 9
-                // }
-
-                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where email = '${email}'`)
+               
+                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where usuario_id = '${req.body.Cedula_id}'`)
                 console.log(data, "data")
                 if(test[0].responsable==0){
                     const id = await leader.create(signupdata, (err, data) => {
@@ -2455,7 +2554,7 @@ in (SELECT CEDULA as usuario_id FROM SUBSCRIPTION WHERE DESCRIPTION LIKE "${desc
     const ar = await sequelize.query(`select nombre from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
     for(var i in ar){
         values.push(0)
-      label.push(ar[i].nombre)                
+      label.push(ar[i].nombre)                
       for(var j in user){
         if(user[j].AREA==ar[i].nombre){
             console.log("ifff",user[j].AREA,user[j].count)
@@ -2538,6 +2637,8 @@ async function generalreport(req,res){
 }
 
 module.exports = {
+    getAttendanceByDivision,
+    getAttendanceByMonth,
     hierarchydropdown,
     getAllUsers,
     getUsersByDivision,
@@ -2594,6 +2695,7 @@ module.exports = {
     notAttendedList,
     generalreport
 }
+
 
 
 
