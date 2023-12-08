@@ -572,7 +572,7 @@ group by usuarios_actividad.area_id order by area`;
             const ar = await sequelize.query(`select nombre from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
     for(var i in ar){
         values.push(0)
-      label.push(ar[i].nombre)                
+      label.push(ar[i].nombre)                
       for(var j in result){
         if(result[j].area==ar[i].nombre){
             // console.log("ifff",result[j].are,user[j].count)
@@ -597,6 +597,65 @@ group by usuarios_actividad.area_id order by area`;
 
 
 }
+
+// async function getAttendanceByMonth(req, res) {
+//     try {
+//         console.log(req.body)
+//         const area = req.body.area_id
+//         const cabildo = req.body.cabildo_id
+//         const district = req.body.distrito_id
+//         const whereClause = `WHERE 1=1
+//     AND (:area IS NULL OR area_id = :area)
+//     AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+//     AND (:district IS NULL OR distrito_id = :district)  `;
+
+// const query = `select usuarios_actividad.fetcha_de_actividad as date ,count(*) as count from attendance 
+// inner join usuarios_actividad on usuarios_actividad.id = attendance.activity_id
+// ${whereClause}  
+// group by usuarios_actividad.area_id order by area`;
+// //   ${whereClause} and ${whereCl} group by activity_id `;
+
+//         const result = await sequelize.query(query, {
+//             type: sequelize.QueryTypes.SELECT,
+//             replacements :{
+//                 area: area || null,
+//                 cabildo: cabildo || null,
+//                 district: district || null,
+//             }
+//         });
+    
+        
+//         var label = []
+//         var values =[]
+        
+//             const ar = await sequelize.query(`select nombre from months`,{type : sequelize.QueryTypes.SELECT})
+//     for(var i in ar){
+//         values.push(0)
+//       label.push(ar[i].nombre)                
+//       for(var j in result){
+//         if(result[j].area==ar[i].nombre){
+//             // console.log("ifff",result[j].are,user[j].count)
+            
+//           values[i]=(result[j].count)
+//         }}
+//     } 
+  
+
+    
+//         console.log(label,values)
+//         return res.send({
+//             message : "data fetched",
+//             label,
+//             values,
+//             // total: values.reduce((a, b) => a + b, 0)
+//         });
+//     } catch (error) {
+//         console.log(error)
+//         console.error('Error:', error.message);
+//     }
+
+
+// }
 
 
 async function markAttendance(req, res) {
@@ -2473,16 +2532,16 @@ async function subscriptiondata(req, res){
         const columns = Object.keys(sheetData[0]);
         const columnNames = "DATE,CEDULA,NAME,QTY,Variant_SKU,DESCRIPTION"
       for(var i in sheetData){
-        const newcedula = sheetData[i]["CEDULA"].replace(/-/g, '');
-        var userdata = await sequelize.query(`select * from usuarios_usuario where usuario_id = "${sheetData[i]["CEDULA"]}" or usuario_id = "${newcedula}"`)
+        const newcedula = sheetData[i]["CÉDULA"].replace(/-/g, '');
+        var userdata = await sequelize.query(`select * from usuarios_usuario where usuario_id = "${sheetData[i]["CÉDULA"]}" or usuario_id = "${newcedula}"`)
         if(userdata[0].length){
-            console.log(sheetData[i]["CEDULA"],userdata[0],"valid data",userdata[0].length)
+            console.log(sheetData[i]["CÉDULA"],userdata[0],"valid data",userdata[0].length)
             const query = `INSERT INTO ${tableName} (${columnNames}) VALUES (
-                "${sheetData[i]["DATE"]}","${sheetData[i]["CEDULA"]}", "${sheetData[i]["NAME"]}", "${sheetData[i]["QTY"]}","${sheetData[i]["Variant SKU"]}","${sheetData[i]["DESCRIPTION"]}")`;
+                "${sheetData[i]["DATE"]}","${sheetData[i]["CÉDULA"]}", "${sheetData[i]["NAME"]}", "${sheetData[i]["QTY"]}","${sheetData[i]["Variant SKU"]}","${sheetData[i]["DESCRIPTION"]}")`;
             sequelize.query(query);
         }
         else{
-            console.log(sheetData[i]["CEDULA"],"invalid data",userdata[0].length)
+            console.log(sheetData[i]["CÉDULA"],"invalid data",userdata[0].length)
         }
       
         }
@@ -2554,7 +2613,7 @@ in (SELECT CEDULA as usuario_id FROM SUBSCRIPTION WHERE DESCRIPTION LIKE "${desc
     const ar = await sequelize.query(`select nombre from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
     for(var i in ar){
         values.push(0)
-      label.push(ar[i].nombre)                
+      label.push(ar[i].nombre)                
       for(var j in user){
         if(user[j].AREA==ar[i].nombre){
             console.log("ifff",user[j].AREA,user[j].count)
@@ -2695,7 +2754,6 @@ module.exports = {
     notAttendedList,
     generalreport
 }
-
 
 
 
