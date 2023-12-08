@@ -55,7 +55,7 @@ app.use('/api/dev/donation',donationRouter)
 // });
 
 app.listen(8080 , ()=>console.log(`server running at 8080`));
-module.exports = app;
+module.exports = app
 
 
 //inside a angularr app 
