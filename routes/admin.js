@@ -83,9 +83,9 @@ router.post('/markAttendance', middleware.verifyToken,admin.markAttendance)
 
 router.post('/getAttendance',middleware.verifyToken,admin.getAttendance)
 
-router.get('/getAttendanceDivisionPie',admin.getAttendanceByDivision)
+router.post('/getAttendanceDivisionPie',admin.getAttendanceByDivision)
 
-router.get('/getAttendanceGraph',admin.getAttendanceByMonth)
+router.post('/getAttendanceGraph',admin.getAttendanceByMonth)
 
 router.post('/getAttendanceList',middleware.verifyToken,admin.getAttendanceList)
 
