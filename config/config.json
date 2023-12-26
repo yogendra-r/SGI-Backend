@@ -3,7 +3,7 @@
     "username": "root",
     "password": "2211",
     "database": "sgi-copy",
-    "host": "localhost",
+    "host": "panel.sgipanama.com",
     "dialect": "mysql"
 },
   "test": {
