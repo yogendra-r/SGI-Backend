@@ -298,6 +298,8 @@ async function getdropdowndata(req, res) {
         const gender = await sequelize.query(`select * from usuarios_sexo`, { type: sequelize.QueryTypes.SELECT })
         const profesion = await sequelize.query(`select * from usuarios_profesion`, { type: sequelize.QueryTypes.SELECT })
         const budista = await sequelize.query(`select * from usuarios_nivelbudista`, { type: sequelize.QueryTypes.SELECT })
+        const distrito_new = await sequelize.query(`select * from usuarios_distrito`, { type: sequelize.QueryTypes.SELECT })
+        const provincia = await sequelize.query(`select * from usuarios_provincia`, { type: sequelize.QueryTypes.SELECT })
         var options = [{ id: 1, nombre: "SI" }, { id: 0, nombre: "NO" }]
         var subscription = [{ id: 1, nombre: "Puente De Paz" }, { id: 2, nombre: "Esperanza" }, { id: 3, nombre: "Vision" }]
         var where = await helper.findRoleDetails(req, res)
@@ -345,7 +347,9 @@ async function getdropdowndata(req, res) {
             option: options,
             subscription: subscription,
             profesion: profesion,
-            budista: budista
+            budista: budista,
+            distrito_new : distrito_new,
+            provincia : provincia
         });
     }
     catch (e) {
@@ -362,12 +366,12 @@ async function addinvitee(req, res) {
         const {  first_name, first_surname,gender,division, mobile, email, address, invited_by, birth_date, birth_month, birth_year, telephone } = req.body //area_id, cabildo_id , distrito_id
         var rs= await sequelize.query(`select id from usuarios_usuario where nombre_completo = "${invited_by}"` , {type : sequelize.QueryTypes.SELECT})
         // console.log(rs)
-        if(rs.length){
-           var invitado_por=rs[0].id
-        }
-        else{
-            var invitado_por = invited_by
-        }
+        // if(rs.length){
+        //    var invitado_por=rs[0].id
+        // }
+        // else{
+        //     var invitado_por = invited_by
+        // }
         const userdata = {
             nombre: first_name,
             appelido: first_surname,
@@ -375,10 +379,7 @@ async function addinvitee(req, res) {
             movil: mobile,
             direccion: address,
             division: division,
-            // area_id : area_id,
-            // cabildo_id : cabildo_id||null,
-            // distrito_sgip_id : distrito_id||null,
-            invitado_por: invitado_por,
+            invitado_por: invited_by,
             genero: gender,
             telefono: telephone
         }
@@ -387,11 +388,7 @@ async function addinvitee(req, res) {
         }
       
          const result = await invitee.create(userdata)
-            // , (err, data) => {
-            // if (err) {
-            //     console.log(err);
-            //     return res.status(500).json({ message: err.message });
-            // }
+         
             console.log("invitee registred")
         // })
       var por = await sequelize.query(`select invitados_por_primera_vez from usuarios_actividad where id = ${req.body.activity_id}`,{type : sequelize.QueryTypes.SELECT})
@@ -408,15 +405,17 @@ async function addinvitee(req, res) {
     var djf = 0
 
     sequelize.query(`update usuarios_actividad set invitados_por_primera_vez = ${d} where id = ${req.body.activity_id}`)
-        const result1 = await sequelize.query(`insert into attendance(user_id,role_id,activity_id) values(${result.id},2,${req.body.activity_id})`)
+        const result1 = await sequelize.query(`insert into attendance(user_id,role_id,activity_id,is_invitado_por) values(${result.id},2,${req.body.activity_id},1)`)
 // console.log(result1)
     const att = await sequelize.query(`select user_id, role_id from attendance where activity_id = ${req.body.activity_id}`,{type: sequelize.QueryTypes.SELECT})
-//    console.log(att,"attendance")
+   console.log(att,"attendance")
     for(var i in att){
         if(att[i].role_id==1){
+            console.log("if member");
             var user = await sequelize.query(`select division_id from usuarios_usuario where id = ${att[i].user_id}`,{type : sequelize.QueryTypes.SELECT})
         }
         else if(att[i].role_id==2){
+            console.log("if invitee");
             var user = await sequelize.query(`select division as division_id from invitados where id = ${att[i].user_id}`,{type : sequelize.QueryTypes.SELECT})
         }
         if(user.length){
@@ -432,7 +431,7 @@ async function addinvitee(req, res) {
         else if (user[0].division_id == 4) {    //4 -> DJF
             djf++
         }
-        else if (user[0].division_id == 5) {    //4 -> DJF
+        else if (user[0].division_id == 5) {    //5-> DEP
            dep++
         }
     }
@@ -459,15 +458,14 @@ async function addinvitee(req, res) {
                 message: "Invitee added",
                 data: { id: result.id ,
                 summary : resp.data},
-                success_message : `Asistencia marcada para la ${resp.activity} ${resp.area}
-                Se agregaron ${resp.member} miembros, ${resp.invitee} invitados y ${resp.invitado_por} invitados por primera vez.`,
+                success_message : `Asistencia marcada`,
                 division : {
                     Damas : damas,
                     Cabelleros : cabelleros,
                     DJM : djm,
                     DJF : djf,
                     DEP : dep,
-                    Total : att.length
+                    Total : damas+cabelleros+djm+djf+dep
                 }
             });}
               else{
@@ -476,7 +474,7 @@ async function addinvitee(req, res) {
                     data: { id: result.id ,
                     summary : 0},
                     // success_message : {damas : damas, cabelleros : cabelleros , djf : djf, djm : djm , dep ""}
-                    success_message : `Asistencia marcada Se agregaron 0 miembros, 0 invitados y 1 invitados por primera vez.`,
+                    success_message : `Asistencia marcada`,
                     division : {
                         Damas : damas,
                         Cabelleros : cabelleros,

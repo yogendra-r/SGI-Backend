@@ -216,7 +216,6 @@ async function getDashboardLeaderNivelPie(req, res) {
 
 
 
-
 //************************* MARK ATTENDANCE APIS **************/
 
 async function addAcivity(req, res) {
@@ -364,9 +363,10 @@ else   if((act[0].nombre).includes("DEP")){
     var division_id = 5
 }
 
+// inner join usuarios_usuario as ip on invitados.invitado_por=ip.id 
 var whereClause = `where 1
 AND (:division_id IS NULL OR division = :division_id)`
-    const result = await sequelize.query(`select invitados.id, invitados.nombre, invitados.appelido,ip.nombre_completo as invited_by ,invitados.telefono,invitados.movil, division.nombre as division from invitados inner join usuarios_division as division on division.id = invitados.division inner join usuarios_usuario as ip on invitados.invitado_por=ip.id ${whereClause}`, 
+    const result = await sequelize.query(`select invitados.id, invitados.nombre, invitados.appelido,invitados.invitado_por as invited_by ,invitados.telefono,invitados.movil, division.nombre as division from invitados inner join usuarios_division as division on division.id = invitados.division ${whereClause}`, 
     { type: sequelize.QueryTypes.SELECT ,replacements : {division_id : division_id||null}})
     //  replacements : { area: area || null,
     //     cabildo: cabildo || null,
@@ -393,22 +393,7 @@ function convertUtcToIst(utcDate) {
     const istDate = istDatetime.toISOString();
     return istDate;
   }
-  
 
- //    var where = await helper.findlevelId(req, res)
-    //     var whereCl = ` `
-    //     if (where.area_id) {
-    //         var whereCl = ` area_id = ` + where.area_id
-    //     }
-    //     if (where.cabildo_id) {
-    //         var whereCl = whereCl + ` and cabildo_id= ` + where.cabildo_id
-    //     }
-    //     if (where.distrito_id) {
-    //         var whereCl = whereCl + ` and distrito_id= ` + where.distrito_id
-    //     }
-    //     if (where.group_id) {
-    //         var whereCl = whereCl + ` and grupo_id= ` + where.group_id
-    //     }
 async function getAttendance(req, res) {
     (async () => {
         try {
@@ -541,44 +526,65 @@ async function getAttendanceByDivision(req, res) {
 async function getAttendanceByMonth(req, res) {
     try {
         console.log(req.body)
-        const area = req.body.area_id
-        const cabildo = req.body.cabildo_id
-        const district = req.body.distrito_id
+        var where = await helper.findRoleDetails(req,res)
+        const area = req.body.area_id||where.area_id;
+        const cabildo = req.body.cabildo_id||where.cabildo_id;
+        const district = req.body.distrito_id||where.distrito_id;
+
         const whereClause = `WHERE 1=1
     AND (:area IS NULL OR area_id = :area)
     AND (:cabildo IS NULL OR cabildo_id = :cabildo)
     AND (:district IS NULL OR distrito_id = :district)  `;
 
-const query = `select area.nombre as area ,count(*) as count from attendance 
-inner join usuarios_actividad on usuarios_actividad.id = attendance.activity_id
-inner join usuarios_area as area on area.id = usuarios_actividad.area_id 
-${whereClause}  
-group by usuarios_actividad.area_id order by area`;
-//   ${whereClause} and ${whereCl} group by activity_id `;
+    const query1 = `select * from usuarios_actividad ${whereClause}`
 
-        const result = await sequelize.query(query, {
-            type: sequelize.QueryTypes.SELECT,
-            replacements :{
-                area: area || null,
-                cabildo: cabildo || null,
-                district: district || null,
-            }
-        });
+    const data = await sequelize.query(query1,{
+        type: sequelize.QueryTypes.SELECT,
+        replacements :{
+            area: area || null,
+            cabildo: cabildo || null,
+            district: district || null,
+        }
+    })
+const month = [[],[],[],[],[],[],[],[],[],[],[],[]]
+const months = [1,2,3,4,5,6,7,8,9,10,11,12]
+    for(var i in data ){
+
+    for(var j in months){
+        if(months[j]==data[i].fetcha_de_actividad.substring(5,7)){
+           month[j].push(data[i].id)
+        }
+    }
+    }
+
+    console.log(month,"months")
+
+var objbymontn = []
+for(var i in month){
+    var monthwisedata = {[`${i}`] : {member : 0,invitee:0,invitado_por : 0}}
+    if(month[i].length){
+    const member = await sequelize.query(`select count(*) as count from attendance where activity_id in (${month[i]}) and role_id = 1`,{type : sequelize.QueryTypes.SELECT})
+    monthwisedata[i].member=member[0].count
+    console.log('member: ', member,i);
+    const invitee = await sequelize.query(`select count(*) as count from attendance where activity_id in (${month[i]}) and role_id = 2 and is_invitado_por = 0`,{type : sequelize.QueryTypes.SELECT})
+    monthwisedata[i].invitee=invitee[0].count
+    console.log('invitee: ', invitee,i);
+    const invitado_por = await sequelize.query(`select count(*) as count from attendance where activity_id in (${month[i]}) and role_id = 2 and is_invitado_por = 1`,{type : sequelize.QueryTypes.SELECT})
+    monthwisedata[i].invitado_por=invitado_por[0].count
+    console.log('invitad_por: ', invitado_por,i);
+    }
+    objbymontn.push(monthwisedata)
     
+}
+    console.log(objbymontn);
         
-        var label = []
-        var values =[]
-        
-            const ar = await sequelize.query(`select nombre from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
-    for(var i in ar){
-        values.push(0)
-      label.push(ar[i].nombre)                
-      for(var j in result){
-        if(result[j].area==ar[i].nombre){
-            // console.log("ifff",result[j].are,user[j].count)
-            
-          values[i]=(result[j].count)
-        }}
+        var label = ["Enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", 'octubure', "noviembre", "diciembre"]
+        const values =[{"label" : "Miembros" , data : []},{"label" : "Invitados" , data : []},{"label" : "Invitado por primera vez" , data : []}]
+    for(var i in objbymontn){
+        values[0].data.push(objbymontn[i][i].member)
+        values[1].data.push(objbymontn[i][i].invitee)
+        values[2].data.push(objbymontn[i][i].invitado_por)
+    
     } 
   
 
@@ -586,6 +592,7 @@ group by usuarios_actividad.area_id order by area`;
         console.log(label,values)
         return res.send({
             message : "data fetched",
+            // data : objbymontn,
             label,
             values,
             // total: values.reduce((a, b) => a + b, 0)
@@ -597,65 +604,6 @@ group by usuarios_actividad.area_id order by area`;
 
 
 }
-
-// async function getAttendanceByMonth(req, res) {
-//     try {
-//         console.log(req.body)
-//         const area = req.body.area_id
-//         const cabildo = req.body.cabildo_id
-//         const district = req.body.distrito_id
-//         const whereClause = `WHERE 1=1
-//     AND (:area IS NULL OR area_id = :area)
-//     AND (:cabildo IS NULL OR cabildo_id = :cabildo)
-//     AND (:district IS NULL OR distrito_id = :district)  `;
-
-// const query = `select usuarios_actividad.fetcha_de_actividad as date ,count(*) as count from attendance 
-// inner join usuarios_actividad on usuarios_actividad.id = attendance.activity_id
-// ${whereClause}  
-// group by usuarios_actividad.area_id order by area`;
-// //   ${whereClause} and ${whereCl} group by activity_id `;
-
-//         const result = await sequelize.query(query, {
-//             type: sequelize.QueryTypes.SELECT,
-//             replacements :{
-//                 area: area || null,
-//                 cabildo: cabildo || null,
-//                 district: district || null,
-//             }
-//         });
-    
-        
-//         var label = []
-//         var values =[]
-        
-//             const ar = await sequelize.query(`select nombre from months`,{type : sequelize.QueryTypes.SELECT})
-//     for(var i in ar){
-//         values.push(0)
-//       label.push(ar[i].nombre)                
-//       for(var j in result){
-//         if(result[j].area==ar[i].nombre){
-//             // console.log("ifff",result[j].are,user[j].count)
-            
-//           values[i]=(result[j].count)
-//         }}
-//     } 
-  
-
-    
-//         console.log(label,values)
-//         return res.send({
-//             message : "data fetched",
-//             label,
-//             values,
-//             // total: values.reduce((a, b) => a + b, 0)
-//         });
-//     } catch (error) {
-//         console.log(error)
-//         console.error('Error:', error.message);
-//     }
-
-
-// }
 
 
 async function markAttendance(req, res) {
@@ -681,7 +629,6 @@ async function markAttendance(req, res) {
 }
 
 
-
 async function notAttendedList(req, res) {
    console.log(req.body)
     if (!req.body.activity_id) {
@@ -692,10 +639,22 @@ async function notAttendedList(req, res) {
         })
     }
     else {
+
+        const cabildo = req.body.cabildo_id
+        const district = req.body.distrito_id
+        const whereClause = `and 1
+    AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+    AND (:district IS NULL OR distrito_id = :district)  `;
+
+
         var act = await sequelize.query(`select * from usuarios_actividad where id = ${req.body.activity_id}`,{type : sequelize.QueryTypes.SELECT})
         const att = await sequelize.query(`select user_id from usuarios_actividad inner join attendance on usuarios_actividad.id = attendance.activity_id where attendance.activity_id= "${req.body.activity_id}" and role_id = 1`, { type: sequelize.QueryTypes.SELECT })
         const result1 = await sequelize.query(`select usuarios_usuario.id,usuario_id as Cedula_id, sgi_id , nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_division as division on division.id = usuarios_usuario.division_id where 
-    area_id = ${act[0].area_id} and cabildo_id = ${act[0].cabildo_id} and distrito_sgip_id = ${act[0].distrito_id} `, { type: sequelize.QueryTypes.SELECT })
+    area_id = ${act[0].area_id}  ${whereClause}`, { type: sequelize.QueryTypes.SELECT ,replacements :{
+        area: area || null,
+        cabildo: cabildo || null,
+        district: district || null,
+    }})
     
     for (var i in result1) {
         // result[i].present = false
@@ -705,24 +664,7 @@ async function notAttendedList(req, res) {
                 }
             }
         }
-        // console.log(req.body)
-    //     var result1 = await sequelize.query(`select  usuarios_usuario.id,usuario_id as Cedula_id, sgi_id,nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_division as division on division.id = usuarios_usuario.division_id inner join attendance as att on att.user_id = usuarios_usuario.id
-    // where att.activity_id != ${req.body.activity_id} and att.role_id = 1`, { type: sequelize.QueryTypes.SELECT })
-    // for(var i in result1){
-    //     result1[i].user_type = "Member"
         
-    // }
-    // const result= await sequelize.query(`select  invitados.id,invitados.nombre, invitados.appelido, invitados.telefono, division.nombre as division from invitados inner join usuarios_division as division on division.id = invitados.division inner join attendance as att on att.user_id = invitados.id
-    // where att.activity_id != ${req.body.activity_id} and att.role_id = 2`, { type: sequelize.QueryTypes.SELECT })
-    // console.log(result,"result")
-    // result1=result1.concat(result)
-    // for(var i in result){
-    //     result[i].user_type = "Invitado"
-    //     result[i].Cedula_id = "-"
-    //     result[i].sgi_id = "-"
-    //     result[i].nombre_completo = result[i].nombre+" "+result[i].appelido
-    // }
-// console.log(result)
 console.log(result1,"result1")
         return res.status(200).send({
             message: "data fetched successfully",
@@ -777,12 +719,12 @@ async function getAttendanceList(req, res) {
 async function  addNewMember(req,res){
     console.log(req.body,"add")
     const {primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,division_id,area_id,cabildo_id,distrito_sgip_id,sexo_id,grupo_id,responsable,
-        fecha_nacimiento,fechadeingreso , responsable_gohonzon,nivel_responsable_id,nacionalidad_id,nivel_budista_id,telefono,celular,direccion,email,cargo_responsable_id,Cedula_id,profesion_id,estado_id
+        fecha_nacimiento,fechadeingreso ,provincia,distrito_new_id,shakubuku, responsable_gohonzon,nivel_responsable_id,nacionalidad_id,nivel_budista_id,telefono,celular,direccion,email,cargo_responsable_id,Cedula_id,profesion_id,estado_id
     } = req.body
-    const findemail = await sequelize.query(`select * from usuarios_usuario where email = "${email}"`,{type:sequelize.QueryTypes.SELECT})
+    const findemail = await sequelize.query(`select * from usuarios_usuario where email = "${email}" or usuario_id = '${Cedula_id}'`,{type:sequelize.QueryTypes.SELECT})
     if(findemail.length){
         return res.status(400).send({
-            message : "Email already registered",
+            message : "User already registered",
             data : []
         })
     }
@@ -795,7 +737,6 @@ async function  addNewMember(req,res){
       const [inserted] = await sequelize.query(`INSERT INTO usuarios_grupo (nombre) VALUES ('${grupo_id}')`);
        grupo = inserted.insertId;
     }
-
 var date = new Date()
     var data = {
         primer_nombre: primer_nombre ,
@@ -825,8 +766,13 @@ var date = new Date()
         division_id: division_id,
         nivel_budista_id: nivel_budista_id,
         responsable_gohonzon: responsable_gohonzon,
-        nacionalidad_id : nacionalidad_id 
+        nacionalidad_id : nacionalidad_id ,
+        provincia : provincia,
+        distrito :distrito_new_id,
+        shakubuku : shakubuku
     }
+
+ 
 if(req.body.invitee_id){
     sequelize.query(`delete from invitados where id = ${req.body.invitee_id}`)
 }
@@ -834,11 +780,11 @@ if(req.body.invitee_id){
       INSERT INTO usuarios_usuario
         (primer_nombre,sexo_id,  responsable, nivel_responsable_id, cargo_responsable_id, usuario_id,nombre_completo,fecha_nacimiento,fecha_ingreso,
         primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,
-        estado_id, area_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, nivel_budista_id, responsable_gohonzon,nacionalidad_id )
+        estado_id, area_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, nivel_budista_id, responsable_gohonzon,nacionalidad_id,   provincia_id , distrito_id , shakubuku  )
         VALUES
         (:primer_nombre,:sexo_id,  :responsable, :nivel_responsable_id, :cargo_responsable_id, :usuario_id,:nombre_completo,:fecha_nacimiento,:fecha_ingreso,
         :primer_apellido, :segundo_nombre, :segundo_apellido, :direccion, :email, :celular, :telefono, :profesion_id,
-        :estado_id, :area_id, :cabildo_id, :distrito_sgip_id, :grupo_id, :division_id, :nivel_budista_id, :responsable_gohonzon, :nacionalidad_id )`;
+        :estado_id, :area_id, :cabildo_id, :distrito_sgip_id, :grupo_id, :division_id, :nivel_budista_id, :responsable_gohonzon, :nacionalidad_id , :provincia , :distrito , :shakubuku )`;
  var result = await sequelize.query(query,{
     replacements: {
         ...data }})
@@ -886,7 +832,6 @@ async function getAllUsers(req, res) {
         const user_type = req.body.user_type
         if (!user_type) {
             var str = `1`
-            // return res.status(400).json({message : 'User type is required'});
         }
         else if (user_type == 1) {
             var str = `1`
@@ -896,7 +841,7 @@ async function getAllUsers(req, res) {
         }
         else if (user_type == 2) {
             var str = `responsable = true`
-        }
+        }//inner join usuarios_usuario on i.invitado_por= usuarios_usuario.id
         else if(user_type==4){
             const area = req.body.area_id
             const cabildo = req.body.cabildo_id
@@ -907,7 +852,7 @@ async function getAllUsers(req, res) {
         AND (:cabildo IS NULL OR i.cabildo_id = :cabildo)
         AND (:district IS NULL OR i.distrito_sgip_id = :district) `
             var inv = await sequelize.query(`select i.id, i.nombre,i.appelido,i.movil,i.appelido,i.fetcha_nacimiento,s.nombre as genero,i.direccion,us.nombre as division from invitados as i 
-            inner join usuarios_division as us on us.id = i.division inner join usuarios_usuario on i.invitado_por= usuarios_usuario.id
+            inner join usuarios_division as us on us.id = i.division 
             inner join usuarios_sexo as s on s.id = i.genero ${whereClause} order by i.nombre`,{type:sequelize.QueryTypes.SELECT,replacements: {
                 area: area || null,
                 cabildo: cabildo || null,
@@ -936,7 +881,6 @@ async function getAllUsers(req, res) {
         const nivel_budista = req.body.nivel_budista
         const estado = req.body.estado_id
       
-
         const whereClause =
         `WHERE 1=1
         AND (:area IS NULL OR area_id = :area)
@@ -1039,7 +983,7 @@ async function getUserDetails(req, res) {
         if(req.body.profile_type == "member"){
         let query = `select user.id, user.sgi_id ,user.nacionalidad_id ,primer_nombre , user.segundo_nombre, user.primer_apellido, user.segundo_apellido,  user.usuario_id as "Cedula_id",user.sexo_id,
         user.fecha_nacimiento,user.cargo_responsable_id, user.direccion , user.email, user.celular , user.telefono, user.profesion_id,ue.nombre as estado,user.estado_id,user.responsable, user.nivel_responsable_id as "nivel_responsable" ,user.area_id  ,user.cabildo_id ,
-        user.distrito_sgip_id , grp.nombre as grupo_id , user.division_id , user.responsable_gohonzon,user.nivel_budista_id
+        user.distrito_sgip_id , grp.nombre as grupo_id , user.division_id , user.responsable_gohonzon,user.nivel_budista_id,user.shakubuku, user.provincia_id as provincia,user.distrito_id as distrito_new_id
         from usuarios_usuario as user left join usuarios_grupo as grp on grp.id = user.grupo_id
         inner join usuarios_estado as ue on ue.id = user.estado_id  
         inner join usuarios_nivelbudista as nb on nb.id = user.nivel_budista_id cross join usuarios_nivelresponsable as unr on unr.id = user.nivel_responsable_id or user.nivel_responsable_id is null
@@ -1079,23 +1023,6 @@ async function getUserDetails(req, res) {
 }
 
 
- // if (division_id == 1) {         //1 -> Damas
-                //     var cargo_responsable_id = 1
-                // }
-                // else if (division_id == 2) {    //2 -> caballereos
-                //     var cargo_responsable_id = 3
-                // }
-                // else if (division_id == 3) {    //3 -> DJM
-                //     var cargo_responsable_id = 7
-                // }
-                // else if (division_id == 4) {    //4 -> DJF
-                //     var cargo_responsable_id = 5
-                // }
-                // else if (division_id == 5) {    //4 -> DJF
-                //     var cargo_responsable_id = 9
-                // }
-
-//leader signup function to assign leadership to an exising member
 async function leaderSignup(req, res) {
     console.log(req.body,"signup")
     try {
@@ -1171,9 +1098,8 @@ async function leaderSignup(req, res) {
         }
     
        
-        //console.log(result)
         const { primer_nombre, primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,
-             estado_id, area_id, cargo_responsable_id,cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id,nivel_responsable} = req.body
+             estado_id, area_id, cargo_responsable_id,cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id,nivel_responsable,provincia,distrito_new_id,shakubuku} = req.body
             if(grupo_id){
                 const rows = await sequelize.query(`SELECT id FROM usuarios_grupo WHERE nombre = "${grupo_id}"`, {type : sequelize.QueryTypes.SELECT});
                 var grupo
@@ -1210,6 +1136,9 @@ async function leaderSignup(req, res) {
                     responsable_gohonzon: responsable_gohonzon || result.responsable_gohonzon,
                     nivel_responsable_id : nivel_responsable || result.nivel_responsable_id,
                     cargo_responsable_id : cargo_responsable_id || null,
+                    distirito_id : distrito_new_id || result.distrito_id,
+                    provincia_id : provincia || result.provincia_id,
+                    shakubuku : shakubuku || result.shakubuku,
                     edited_by : adm[0].nombre_completo
              }
         }
@@ -1268,8 +1197,6 @@ async function leaderSignup(req, res) {
         return res.status(500).json({ message: 'Server Error' });
     }
 }
-
-
 
 
 //API to block/unblock a leader
@@ -2478,9 +2405,6 @@ if(estado){
     }
 }
 
-
-
-
 async function forgotpassword(req,res){
     const username = req.body.username
     var result = await sequelize.query(`select id from auth_leader where email = "${username}"`,{type : sequelize.QueryTypes.SELECT})
@@ -2514,7 +2438,6 @@ async function forgotpassword(req,res){
         data: []
     })
 }  
-
 
 
 async function subscriptiondata(req, res){
@@ -2558,6 +2481,29 @@ async function subscriptiondata(req, res){
 
 }
       
+async function deleteUser(req,res){
+    try{
+        const {user_id, role} = req.body
+        console.log('req.body: ', req.body);
+        if(role == "member"){
+            const user = await sequelize.query(`delete from usuarios_usuarios where id = ${user_id}`)
+        }
+        else if(role == "invitee"){
+            const invitee = await sequelize.query(`delete from invitados where id = ${user_id}`)
+        }
+      
+      return res.status(200).send({
+          message: 'record deleted',
+         data : []
+      });}
+      catch(error){
+    
+          return res.status(500).send({
+              message: 'internal serever error',
+             data : []
+          });}
+      
+}
 
 
 // async function getSubscriptionData(description) {
@@ -2602,28 +2548,24 @@ async function getSubscriptionData(description) {
 
 var qry = `select sum(sub.QTY)as count,area.id,area.nombre as AREA from usuarios_usuario 
 inner join usuarios_area as area on area_id = area.id  inner join SUBSCRIPTION as sub on usuarios_usuario.usuario_id = sub.CEDULA  where usuario_id  
-in (SELECT CEDULA as usuario_id FROM SUBSCRIPTION WHERE DESCRIPTION LIKE "${description}") group by area_id `
+in (SELECT CEDULA as usuario_id FROM SUBSCRIPTION WHERE DESCRIPTION LIKE "${description}") and sub.DESCRIPTION like  "${description}" group by area_id `
     // const newcedula = result[i]["CEDULA"].replace(/-/g, '');
     const user = await sequelize.query(qry,{type: sequelize.QueryTypes.SELECT})
- 
 
-    console.log(user,"subs user")    
+    console.log(user,"subs user",description)    
      var label = []
      var values =[]
     const ar = await sequelize.query(`select nombre from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
     for(var i in ar){
         values.push(0)
-      label.push(ar[i].nombre)                
+      label.push(ar[i].nombre)                
       for(var j in user){
         if(user[j].AREA==ar[i].nombre){
             console.log("ifff",user[j].AREA,user[j].count)
             
           values[i]=(user[j].count)
         }
-        // else{
-        //     console.log("else",user[j].AREA)
-            
-        // }
+        
     }
     }
     console.log(values,"values")
@@ -2661,6 +2603,22 @@ async function subscriptionGraph(req, res) {
     });
 }
 
+async function clearSubscription(req,res){
+    try{
+      const subs = await sequelize.query('delete from SUBSCRIPTION')
+    
+    return res.status(200).send({
+        message: 'records deleted',
+       data : []
+    });}
+    catch(error){
+  
+        return res.status(500).send({
+            message: 'internal serever error',
+           data : []
+        });}
+    
+}
 
 async function generalreport(req,res){
     var resp = [["Área","Cabildos","Distritos","Grupos"]]
@@ -2694,6 +2652,7 @@ async function generalreport(req,res){
     data: resp
    }) 
 }
+
 
 module.exports = {
     getAttendanceByDivision,
@@ -2752,8 +2711,11 @@ module.exports = {
     subscriptiondata,
     subscriptionGraph,
     notAttendedList,
-    generalreport
+    generalreport,
+    clearSubscription,
+    deleteUser
 }
+
 
 
 

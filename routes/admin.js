@@ -85,7 +85,7 @@ router.post('/getAttendance',middleware.verifyToken,admin.getAttendance)
 
 router.post('/getAttendanceDivisionPie',admin.getAttendanceByDivision)
 
-router.post('/getAttendanceGraph',admin.getAttendanceByMonth)
+router.post('/getAttendanceGraph',middleware.verifyToken,admin.getAttendanceByMonth)
 
 router.post('/getAttendanceList',middleware.verifyToken,admin.getAttendanceList)
 
@@ -138,6 +138,10 @@ router.post('/uploadreport',middleware.uploadDoc.single('doc'),admin.subscriptio
 router.post('/notAttendedList',admin.notAttendedList)
 
 router.get('/generalreport',admin.generalreport)
+
+router.post('/clearsubscription',admin.clearSubscription)
+
+router.post('/deleteuser',admin.deleteUser)
 
 
 module.exports = router;

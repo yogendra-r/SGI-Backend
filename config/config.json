@@ -3,16 +3,16 @@
     "username": "root",
     "password": "2211",
     "database": "sgi-copy",
-    "host": "panel.sgipanama.com",
+    "host": "localhost",
     "dialect": "mysql"
 },
   "test": {
-      "username": "hell12_Muskan",
-      "password": "Muskan@11",
-      "database": "hell12_Test_Muskan_DB",
-      "host": "host1.dvgroup.co.in",
-      "dialect": "mysql"
-  },
+    "username": "root",
+    "password": "2211",
+    "database": "sgidb",
+    "host": "panel.sgipanama.com",
+    "waitForConnections": true},
+
   "production": {
     "username": "root",
     "password": null,
