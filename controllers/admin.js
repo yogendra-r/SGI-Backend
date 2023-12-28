@@ -986,7 +986,7 @@ async function getInviteeList(req,res){
         if(req.body.profile_type == "member"){
         let query = `select user.id, user.sgi_id ,user.nacionalidad_id ,primer_nombre , user.segundo_nombre, user.primer_apellido, user.segundo_apellido,  user.usuario_id as "Cedula_id",user.sexo_id,
         user.fecha_nacimiento,user.cargo_responsable_id, user.direccion , user.email, user.celular , user.telefono, user.profesion_id,ue.nombre as estado,user.estado_id,user.responsable, user.nivel_responsable_id as "nivel_responsable" ,user.area_id  ,user.cabildo_id ,
-        user.distrito_sgip_id , grp.nombre as grupo_id , user.division_id , user.responsable_gohonzon,user.nivel_budista_id,user.shakubuku, user.provincia_id as provincia,user.distrito_id as distrito_new_id
+        user.distrito_sgip_id , grp.nombre as grupo_id , user.division_id , user.responsable_gohonzon,user.nivel_budista_id,user.shakubuku, user.provincia_id as provincia,user.distrito_id as distrito_new_id ,user.fecha_ingreso as fechadeingreso
         from usuarios_usuario as user left join usuarios_grupo as grp on grp.id = user.grupo_id
         inner join usuarios_estado as ue on ue.id = user.estado_id  
         inner join usuarios_nivelbudista as nb on nb.id = user.nivel_budista_id cross join usuarios_nivelresponsable as unr on unr.id = user.nivel_responsable_id or user.nivel_responsable_id is null
