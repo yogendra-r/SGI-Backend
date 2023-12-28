@@ -277,7 +277,7 @@ async function getAttendanceMemberList(req, res) {
         console.log(req.body,"member list")
         const cabildo = req.body.cabildo_id
         const district = req.body.distrito_id
-        const att = await sequelize.query(`select user_id, nombre as activity from usuarios_actividad inner join attendance on usuarios_actividad.id = attendance.activity_id  where fetcha_de_actividad= "${req.body.fetcha_de_actividad}" and role_id = 1`, { type: sequelize.QueryTypes.SELECT })
+        const att = await sequelize.query(`select user_id, nombre as activity from usuarios_actividad inner join attendance on usuarios_actividad.id = attendance.activity_id  where fetcha_de_actividad= "${req.body.fetcha_de_actividad}" and attendance.activity_id = ${req.body.activity_id} and role_id = 1`, { type: sequelize.QueryTypes.SELECT })
         const act = await sequelize.query(`select nombre  from  usuarios_actividad where id= "${req.body.id}" and  area_id = ${req.body.area_id} ${whereCl} `, { type: sequelize.QueryTypes.SELECT ,replacements :{ 
             cabildo: cabildo || null,
             district: district || null,} })
@@ -317,6 +317,7 @@ async function getAttendanceMemberList(req, res) {
                 }
             }
         }
+        
         return res.status(200).send({
             message: "data fetched successfully",
             data: result
@@ -719,8 +720,9 @@ async function getAttendanceList(req, res) {
 async function  addNewMember(req,res){
     console.log(req.body,"add")
     const {primer_nombre,segundo_nombre,primer_apellido,segundo_apellido,division_id,area_id,cabildo_id,distrito_sgip_id,sexo_id,grupo_id,responsable,
-        fecha_nacimiento,fechadeingreso ,provincia,distrito_new_id,shakubuku, responsable_gohonzon,nivel_responsable_id,nacionalidad_id,nivel_budista_id,telefono,celular,direccion,email,cargo_responsable_id,Cedula_id,profesion_id,estado_id
+        fecha_nacimiento,invitee_id,invitee_fecha_nacimento,fechadeingreso ,provincia,distrito_new_id,shakubuku, responsable_gohonzon,nivel_responsable_id,nacionalidad_id,nivel_budista_id,telefono,celular,direccion,email,cargo_responsable_id,Cedula_id,profesion_id,estado_id
     } = req.body
+    // fecha_nacimiento: '1970-01-01T00:00:00.000Z'
     const findemail = await sequelize.query(`select * from usuarios_usuario where email = "${email}" or usuario_id = '${Cedula_id}'`,{type:sequelize.QueryTypes.SELECT})
     if(findemail.length){
         return res.status(400).send({
@@ -749,15 +751,15 @@ var date = new Date()
         responsable : responsable||0,
         nivel_responsable_id : nivel_responsable_id||null,
         cargo_responsable_id : cargo_responsable_id||null,
-        fetcha_nacimiento : fecha_nacimiento,
+        fetcha_nacimiento : fecha_nacimiento.slice(0,10),
         usuario_id : Cedula_id,
         direccion: direccion ,
         email: email ,
         celular: celular ,
         telefono: telefono ,
         // fecha_ingreso : date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate(),
-        fecha_ingreso:fechadeingreso,
-        profesion_id: profesion_id,
+        fecha_ingreso:fechadeingreso?fechadeingreso:(date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate()),
+        profesion_id: profesion_id?profesion_id:0,
         estado_id: estado_id ,
         area_id: area_id,
         cabildo_id: cabildo_id,
@@ -822,6 +824,7 @@ if (req.body.responsable  && req.body.nivel_responsable) {
     success_message : `Miembro agregado exitosamente`
 })
 }
+
 
 
 
