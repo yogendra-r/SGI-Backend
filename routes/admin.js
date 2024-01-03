@@ -4,6 +4,7 @@ const admin = require('../controllers/admin');
 const middleware = require('../middlewares/utility')
 const leaders = require('../controllers/leaders')
 const validator = require('../middlewares/validator')
+const sequelize = require('../models')
 
 router.post('/addNewMember',admin.addNewMember)
 
@@ -83,7 +84,7 @@ router.post('/markAttendance', middleware.verifyToken,admin.markAttendance)
 
 router.post('/getAttendance',middleware.verifyToken,admin.getAttendance)
 
-router.post('/getAttendanceDivisionPie',admin.getAttendanceByDivision)
+router.post('/getAttendanceDivisionPie',middleware.verifyToken,admin.getAttendanceByDivision)
 
 router.post('/getAttendanceGraph',middleware.verifyToken,admin.getAttendanceByMonth)
 
@@ -119,7 +120,14 @@ router.post('/addGroupandSplit', admin.addGroupandSplit)
 
 router.post('/changepassword',middleware.verifyToken,admin.changepassword)
 
-router.get('/test',admin.test)
+router.get('/test',(req,res)=>{
+const array = [179,191,207,423,1117,1284,1352,1361,1449,1524,1526,1551,1654,1686,1795,1844,1977,1978,1988,2020,2098,2118,2159,2190,2221,2223,2247,2354,2368,2397,2437,2459,2464,3344,3345,3347,3349,3323,3316,3319,3320,3065,3092,3294]
+
+    for(var i in array){
+       const data = sequelize.query(`insert into group_members (group_id,user_id) values(19,${array[i]})`)
+    }
+    return res.send("done")
+})
 
 router.post('/hierarchydropdown',admin.hierarchydropdown)
 
@@ -127,7 +135,7 @@ router.post('/filterreport',admin.filterreport)
 
 router.post('/subscriptiondata',admin.subscriptiondata)
 
-router.post('/subscriptionGraph',admin.subscriptionGraph)
+router.post('/subscriptionGraph',middleware.verifyToken,admin.subscriptionGraph)
 
 router.post('/')
 
@@ -144,7 +152,8 @@ router.post('/clearsubscription',admin.clearSubscription)
 router.post('/deleteuser',admin.deleteUser)
 
 
+
+
 module.exports = router;
 
 // router.get('/getusersbydivision',admin.getUsersByDivision)
-
