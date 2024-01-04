@@ -1261,7 +1261,10 @@ async function leaderSignup(req, res) {
                 responsable_gohonzon:  result.responsable_gohonzon,
                 nivel_responsable_id :  result.nivel_responsable_id,
                 cargo_responsable_id :  null,
-                edited_by : adm[0].nombre_completo
+                edited_by : adm[0].nombre_completo,
+                distirito_id : distrito_new_id || result.distrito_id,
+                provincia_id : provincia || result.provincia_id,
+                shakubuku : shakubuku || result.shakubuku,
             }
          }
       await sequelize.query(`delete from group_members where user_id = ${req.body.user_id}`)
