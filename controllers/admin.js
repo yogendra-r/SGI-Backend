@@ -1082,7 +1082,8 @@ async function getUserDetails(req, res) {
         inner join usuarios_sexo as us on us.id = user.sexo_id inner join usuarios_profesion as up on up.id = user.profesion_id 
         where user.id = ${req.body.id}`
         var result = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT })
-        
+        result[0].fechadeingreso = result[0].fechadeingreso?.toISOString().slice(0, 10);
+        console.log('result.fechadeingreso: ', result[0].fechadeingreso);
         console.log(result)
         var hrgrp =[]
         var hor = await sequelize.query(`select distinct 
@@ -2359,12 +2360,11 @@ async function filterreport(req, res) {
     try {
         const headings = [];
         var resp = []
-        // var searchdata = await helper.findleveldetails(req, res)
-        // console.log(searchdata, "searchdata")
         const division = req.body.division_id;
-        const area = req.body.area_id;
-        const cabildo = req.body.cabildo_id;
-        const district = req.body.district_id;
+        var where = await helper.findRoleDetails(req,res)
+        const area = req.body.area_id||where.area_id;
+        const cabildo = req.body.cabildo_id||where.cabildo_id;
+        const district = req.body.district_id||where.distrito_id;
         // const group_id = req.body.selected_group_id
         const group_id = req.body.horizontal_group
         const grupo = req.body.grupo

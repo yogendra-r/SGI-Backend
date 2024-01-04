@@ -131,7 +131,7 @@ const array = [179,191,207,423,1117,1284,1352,1361,1449,1524,1526,1551,1654,1686
 
 router.post('/hierarchydropdown',admin.hierarchydropdown)
 
-router.post('/filterreport',admin.filterreport)
+router.post('/filterreport',middleware.verifyToken,admin.filterreport)
 
 router.post('/subscriptiondata',admin.subscriptiondata)
 
