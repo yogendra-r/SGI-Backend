@@ -2617,7 +2617,7 @@ async function deleteUser(req,res){
         const {user_id, role} = req.body
         console.log('req.body: ', req.body);
         if(role == "member"){
-            const user = await sequelize.query(`delete from usuarios_usuarios where id = ${user_id}`)
+            const user = await sequelize.query(`delete from usuarios_usuario where id = ${user_id}`)
         }
         else if(role == "invitee"){
             const invitee = await sequelize.query(`delete from invitados where id = ${user_id}`)
