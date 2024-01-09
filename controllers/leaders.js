@@ -1412,7 +1412,7 @@ async function numericGrpreport(req,res){
         var input =[]
         var member = await sequelize.query(`select count(*) as count from group_members where group_id = ${user[i].id}`,{type : sequelize.QueryTypes.SELECT})
         input.push(user[i].nombre)
-        input.push(member.count||0)
+        input.push(member[0].count||0)
         resp.push(input)
     }
     return res.status(200).send({
