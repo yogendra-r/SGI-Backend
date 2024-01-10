@@ -1096,8 +1096,8 @@ async function getUserDetails(req, res) {
         user.distrito_sgip_id , grp.nombre as grupo_id , user.division_id , user.responsable_gohonzon,user.nivel_budista_id,user.shakubuku, user.provincia_id as provincia,user.distrito_id as distrito_new_id,user.fecha_ingreso as fechadeingreso
         from usuarios_usuario as user left join usuarios_grupo as grp on grp.id = user.grupo_id
         inner join usuarios_estado as ue on ue.id = user.estado_id  
-        inner join usuarios_nivelbudista as nb on nb.id = user.nivel_budista_id cross join usuarios_nivelresponsable as unr on unr.id = user.nivel_responsable_id or user.nivel_responsable_id is null
-        inner join usuarios_sexo as us on us.id = user.sexo_id inner join usuarios_profesion as up on up.id = user.profesion_id 
+        inner join usuarios_nivelbudista as nb on nb.id = user.nivel_budista_id 
+        inner join usuarios_sexo as us on us.id = user.sexo_id 
         where user.id = ${req.body.id}`
         var result = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT })
         result[0].fechadeingreso = result[0].fechadeingreso.toISOString().slice(0, 10);
