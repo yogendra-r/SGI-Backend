@@ -88,12 +88,16 @@ async function getDashboardMembersByArea(req, res) {
         else if(where.level == "Área" ){
             console.log("two")
             var q = `select cabildo.nombre as 'area_name' , count( cabildo.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_cabildo as cabildo where (Main.cabildo_id = cabildo.id and  area_id = ${where.area_id}) group by area_name order by area_name`;
-            var headings = ["S.No","Cabildo","Total Miembros por cabildo"]
+            var headings = ["S.No","Cabildo","Total Miembros por Cabildo"]
         }
-        else if(where.level = "Cabildo" ){
+        else if(where.level == "Cabildo" ){
             console.log("three")
             var q = `select distrito.nombre as 'area_name' , count( distrito.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_distritosgip as distrito where (Main.distrito_sgip_id = distrito.id  and area_id = ${where.area_id} and cabildo_id = ${where.cabildo_id}) group by area_name order by area_name`;
             var headings = ["S.No","Distrito SGIP","Total Miembros por Distrito"]
+        }
+        else if(where.level == "Distrito" ){
+            var q = `select grupo.nombre as 'area_name' , count( grupo.nombre ) as gohonzon_counts  from usuarios_usuario as Main inner join usuarios_grupo as grupo where (Main.grupo_id = grupo.id  and area_id = ${where.area_id} and cabildo_id = ${where.cabildo_id} and distrito_id =  ${where.distrito_id}) group by area_name order by area_name`;
+            var headings = ["S.No","Grupo","Total Responsable por Grupo"]
         }
         // let q = `select Area.nombre as 'area_name' , count( Area.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id) group by area_name order by area_name`;
         const result = await sequelize.query(q, { type: sequelize.QueryTypes.SELECT })
@@ -119,12 +123,16 @@ async function getDashboardGohonZonOwnersByArea(req, res) {
         else if(where.level == "Área" ){
             console.log("two")
             var q = `select cabildo.nombre as 'area_name' , count( cabildo.nombre ) as gohonzon_counts  from usuarios_usuario as Main inner join usuarios_cabildo as cabildo where (Main.cabildo_id = cabildo.id and responsable_gohonzon = 1 and area_id = ${where.area_id}) group by area_name order by area_name`;
-            var headings = ["S.No","Cabildo","Total Gohonzon Propietarios por cabildo"]
+            var headings = ["S.No","Cabildo","Total Gohonzon Propietarios por Cabildo"]
         }
-        else if(where.level = "Cabildo" ){
+        else if(where.level == "Cabildo" ){
             console.log("three")
             var q = `select distrito.nombre as 'area_name' , count( distrito.nombre ) as gohonzon_counts  from usuarios_usuario as Main inner join usuarios_distritosgip as distrito where (Main.distrito_sgip_id = distrito.id and responsable_gohonzon = 1 and area_id = ${where.area_id} and cabildo_id = ${where.cabildo_id}) group by area_name order by area_name`;
             var headings = ["S.No","Distrito SGIP","Total Gohonzon Propietarios por Distrito"]
+        }
+        else if(where.level == "Distrito" ){
+            var q = `select grupo.nombre as 'area_name' , count( grupo.nombre ) as gohonzon_counts  from usuarios_usuario as Main inner join usuarios_grupo as grupo where (Main.grupo_id = grupo.id and responsable_gohonzon = 1 and area_id = ${where.area_id} and cabildo_id = ${where.cabildo_id} and distrito_id =  ${where.distrito_id}) group by area_name order by area_name`;
+            var headings = ["S.No","Grupo","Total Responsable por Grupo"]
         }
 
         // let q = `select Area.nombre as 'area_name' , count( Area.nombre ) as gohonzon_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id and responsable_gohonzon = 1) group by area_name order by area_name`;
@@ -1100,7 +1108,7 @@ async function getUserDetails(req, res) {
         inner join usuarios_sexo as us on us.id = user.sexo_id 
         where user.id = ${req.body.id}`
         var result = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT })
-        result[0].fechadeingreso = result[0].fechadeingreso.toISOString().slice(0, 10);
+        result[0].fechadeingreso = result[0].fechadeingreso.toISOString().slice(0,10)//(.toString()).slice(0, 10)
         console.log('result.fechadeingreso: ', result[0].fechadeingreso);
         console.log(result)
         var hrgrp =[]
@@ -1366,13 +1374,13 @@ async function changepassword(req, res) {
             { where: { id: req.body.user_id} }
         )
         return res.status(200).send({
-            message: "Password updated successfuly",
+            message: "Contraseña actualizada exitosamente",
             status: true
         })
     }
     else {
         return res.status(400).send({
-            message: "Old password is incorrect",
+            message: "Antigua contraseña es incorrecta",
             status: false
         })
     }
@@ -1512,14 +1520,15 @@ async function getDashboardLeaderAreaTable(req, res) {
             var q = `select cabildo.nombre as 'area_name' , count( cabildo.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_cabildo as cabildo where (Main.cabildo_id = cabildo.id and Main.responsable = 1 and area_id = ${where.area_id}) group by area_name order by area_name`;
             var headings = ["S.No","Cabildo","Total Responsable por cabildo"]
         }
-        else if(where.level = "Cabildo" ){
-            console.log("three")
+        else if(where.level == "Cabildo" ){
+            console.log("three level")
             var q = `select distrito.nombre as 'area_name' , count( distrito.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_distritosgip as distrito where (Main.distrito_sgip_id = distrito.id and Main.responsable = 1 and area_id = ${where.area_id} and cabildo_id = ${where.cabildo_id}) group by area_name order by area_name`;
             var headings = ["S.No","Distrito SGIP","Total Responsable por Distrito"]
         }
-        // else if(where.level = "Distrito" ){
-        //     var q = `select grupo.nombre as 'area_name' , count( distrito.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_distritosgip as distrito where (Main.distrito_sgip_id = distrito.id and Main.responsable = 1 and area_id = ${where.area_id} and cabildo_id = ${where.cabildo_id}) group by area_name order by area_name`;
-        // }
+        else if(where.level == "Distrito" ){
+            var q = `select grupo.nombre as 'area_name' , count( grupo.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_grupo as grupo where (Main.grupo_id = grupo.id and Main.responsable = 1 and area_id = ${where.area_id} and cabildo_id = ${where.cabildo_id} and distrito_id =  ${where.distrito_id}) group by area_name order by area_name`;
+            var headings = ["S.No","Grupo","Total Responsable por Grupo"]
+        }
         // else if(where.level = "Responsable de Grupo" ){
             
         // }
@@ -2628,6 +2637,7 @@ async function deleteUser(req,res){
          data : []
       });}
       catch(error){
+        console.log('error: ', error);
     
           return res.status(500).send({
               message: 'internal serever error',
