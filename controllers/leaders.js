@@ -59,7 +59,7 @@ async function leaderLogin(req, res) {
         const result = await leader.findOne({ where: { email: email ,is_blocked : false||0} })
         if (result) {
             if (result.password == md5(password)) {
-                var data = await sequelize.query(`select id,primer_nombre as firstName,primer_apellido as lastName,email from usuarios_usuario where email = "${email}"`,{type : sequelize.QueryTypes.SELECT})
+                var data = await sequelize.query(`select id,area_id,primer_nombre as firstName,primer_apellido as lastName,email from usuarios_usuario where email = "${email}"`,{type : sequelize.QueryTypes.SELECT})
                console.log(data)
                 const tokendata = {
                     email: data[0].email,
@@ -74,14 +74,28 @@ async function leaderLogin(req, res) {
                 req.id = data[0].id
                 // const data = await sequelize.query(`select id,primer_nombre as firstName,primer_apellido as lastName,email from usuarios_usuario where email = "${email}"`,{type : sequelize.QueryTypes.SELECT})
                 var ans = await helper.findRoleDetails(req, res)
+                var ar = await sequelize.query(`select nombre from usuarios_area where id = ${data[0].area_id}`,{type : sequelize.QueryTypes.SELECT})
                 console.log(ans)
+                var heading = " "
                 if(ans.level=="Nacional"){
                     var is_admin = 1
+                    heading = "ADMIN"
                 }else{
                     var is_admin = 0
                 }
                 console.log(is_admin,"admin")
                 // var is_admin = 1
+                
+                if(ans.level=="Área"){
+                    heading = ar[0].nombre
+                }
+                if(ans.level=="Cabildo"){
+                    heading = ar[0].nombre
+                }
+                if(ans.level=="Distrito"){
+                    heading = ar[0].nombre
+                }
+                ans.level_name = heading
 
                 // console.log(result,"printing")
                 return res.status(200).send({
@@ -108,7 +122,6 @@ async function leaderLogin(req, res) {
         return res.status(500).json({ message: 'Server Error' });
     }
 }
-
 
 
 //Change password for leaders

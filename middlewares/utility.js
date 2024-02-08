@@ -17,7 +17,7 @@ function verifyToken(req, res, next) {
         });
       }
       payload = jwt.verify(token, config.JWT.secret )
-      console.log(payload,"token")
+
     } catch (e) {
       if (e instanceof jwt.JsonWebTokenError) {
   
