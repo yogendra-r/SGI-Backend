@@ -876,7 +876,7 @@ console.log('fecha: ', fecha);
         celular: celular ,
         telefono: telefono ,
         // fecha_ingreso : date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate(),
-        fecha_ingreso:fechadeingreso?fechadeingreso:(date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate()),
+        fecha_ingreso:fechadeingreso?(fechadeingreso.toString()).slice(0,10):(date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate()),
         profesion_id: profesion_id?profesion_id:0,
         estado_id: estado_id ,
         area_id: area_id,
