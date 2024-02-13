@@ -2467,6 +2467,10 @@ if(grupo){
     var Grupo = await sequelize.query(`select nombre from usuarios_grupo where id = ${grupo}`,{type: sequelize.QueryTypes.SELECT})
      headings.push(Grupo[0].nombre)
 }
+if(group_id){
+    var hrgrupo = await sequelize.query(`select nombre from usuarios_grupohorizontal where id = ${group_id}`,{type: sequelize.QueryTypes.SELECT})
+     headings.push(hrgrupo[0].nombre)
+}
 if(estado){
     var user = await sequelize.query(`select nombre from usuarios_estado where id = ${estado}`,{type: sequelize.QueryTypes.SELECT})
     headings.push(user[0].nombre)

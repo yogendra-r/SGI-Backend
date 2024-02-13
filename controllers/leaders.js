@@ -90,10 +90,10 @@ async function leaderLogin(req, res) {
                     heading = ar[0].nombre
                 }
                 if(ans.level=="Cabildo"){
-                    heading = ar[0].nombre
+                    heading = ar[0].nombre +" " + cb[0].nombre
                 }
                 if(ans.level=="Distrito"){
-                    heading = ar[0].nombre
+                    heading = ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre
                 }
                 ans.level_name = heading
 
