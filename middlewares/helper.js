@@ -141,14 +141,32 @@ async function sendLoginInfo(req,res){
     },
     tls: { rejectUnauthorized: false }
   });
-console.log(req.email,"sending email")
-// console.log(req.token.email) "sgipanama1@gmail.com"
+  var title = " "
+  if(req.body.sexo_id==2){
+    title =  "Estimada"
+  }
+  else if(req.body.sexo_id==3){
+    title = "Estimado"
+  }
+console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"sending email")
   var mailOptions = {
-    from: 'SGI-Panama  <sgipanama1@gmail.com>',
-    to:  `muskan.shu@cisinlabs.com ,  basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    // to:  `muskan.shu@cisinlabs.com`,
+    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
+    to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    // to:  `mailto:muskan.shu@cisinlabs.com`,
     subject: 'Leader signup credentials',
-    html: `<html>Your SGI leader login details are: <br> username : ${req.email} ,<br> password : ${req.password}</html>`
+    html: `<html> ${title} ${req.body.primer_nombre} ${req.body.primer_apellido} <br>
+    <br>
+    Su usuario ha sido registrado en el sistema de base de datos de la SGIP.<br>
+    <br>
+    Para acceder:<br>
+    <br>
+    Enlace: http://146.190.171.78/ <br>
+    <br>
+    Nombre de usuario: ${req.email} <br>
+    <br>
+    Contraseña: ${req.password}
+    
+   </html>`
   };
   transporter.sendMail(mailOptions, (erro, info) => {
     if (erro) {

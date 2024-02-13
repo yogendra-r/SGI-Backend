@@ -59,8 +59,14 @@ async function leaderLogin(req, res) {
         const result = await leader.findOne({ where: { email: email ,is_blocked : false||0} })
         if (result) {
             if (result.password == md5(password)) {
-                var data = await sequelize.query(`select id,area_id,primer_nombre as firstName,primer_apellido as lastName,email from usuarios_usuario where email = "${email}"`,{type : sequelize.QueryTypes.SELECT})
+                var data = await sequelize.query(`select id,area_id,cabildo_id,distrito_sgip_id,primer_nombre as firstName,primer_apellido as lastName,email from usuarios_usuario where email = "${email}" and responsable = 1`,{type : sequelize.QueryTypes.SELECT})
                console.log(data)
+               if(!data.length){
+                return res.status(400).send({
+                    message: "Su usuario no está registrado en el sistema de base de datos de la SGIP."
+                })
+               }
+              
                 const tokendata = {
                     email: data[0].email,
                     id: data[0].id,
@@ -75,6 +81,8 @@ async function leaderLogin(req, res) {
                 // const data = await sequelize.query(`select id,primer_nombre as firstName,primer_apellido as lastName,email from usuarios_usuario where email = "${email}"`,{type : sequelize.QueryTypes.SELECT})
                 var ans = await helper.findRoleDetails(req, res)
                 var ar = await sequelize.query(`select nombre from usuarios_area where id = ${data[0].area_id}`,{type : sequelize.QueryTypes.SELECT})
+                var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${data[0].cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
+                var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${data[0].distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
                 console.log(ans)
                 var heading = " "
                 if(ans.level=="Nacional"){
@@ -84,7 +92,7 @@ async function leaderLogin(req, res) {
                     var is_admin = 0
                 }
                 console.log(is_admin,"admin")
-                // var is_admin = 1
+              
                 
                 if(ans.level=="Área"){
                     heading = ar[0].nombre
@@ -97,7 +105,7 @@ async function leaderLogin(req, res) {
                 }
                 ans.level_name = heading
 
-                // console.log(result,"printing")
+              
                 return res.status(200).send({
                     message: "login successful",
                     is_admin : is_admin,
@@ -114,7 +122,7 @@ async function leaderLogin(req, res) {
         }
         else {
             return res.status(400).send({
-                message: "Email does not exists"
+                message: "Su usuario no está registrado en el sistema de base de datos de la SGIP."
             })
         }
     } catch (e) {
@@ -122,7 +130,6 @@ async function leaderLogin(req, res) {
         return res.status(500).json({ message: 'Server Error' });
     }
 }
-
 
 //Change password for leaders
 async function changepassword(req, res) {
