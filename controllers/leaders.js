@@ -95,13 +95,13 @@ async function leaderLogin(req, res) {
               
                 
                 if(ans.level=="Área"){
-                    heading = `¡Bienvenido! ` +ar[0].nombre  +` Responsable`
+                    heading = `¡Bienvenido! información de ` +ar[0].nombre 
                 }
                 if(ans.level=="Cabildo"){
-                    heading = ` ¡Bienvenido! ` + ar[0].nombre +" " + cb[0].nombre +` Responsable`
+                    heading = `¡Bienvenido! información de ` + ar[0].nombre +" " + cb[0].nombre 
                 }
                 if(ans.level=="Distrito"){
-                    heading = `¡Bienvenido! ` + ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre +` Responsable`
+                    heading = `¡Bienvenido! información de  ` + ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre 
                 }
                 ans.level_name = heading
 

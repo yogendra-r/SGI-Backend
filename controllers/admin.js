@@ -1157,7 +1157,6 @@ async function getUserDetails(req, res) {
     }
 }
 
-
 async function leaderSignup(req, res) {
     console.log(req.body,"signup")
     try {
@@ -1191,16 +1190,32 @@ async function leaderSignup(req, res) {
             result = result[0]
             var adm = await sequelize.query(`select responsable,nivel_responsable_id,nombre_completo from usuarios_usuario where id = ${req.token.id}`,{type: sequelize.QueryTypes.SELECT})
             
-            console.log(req.token,"edit profile token")
+            // console.log(req.token,"edit profile token")
             var test = await sequelize.query(`select responsable from usuarios_usuario where id = ${req.body.user_id}`,{type : sequelize.QueryTypes.SELECT})
        
             var flag = false;
         if (req.body.responsable  && req.body.nivel_responsable && adm[0].responsable==1 && adm[0].nivel_responsable_id==1 || req.token.id != result.id) {
             const userexists = await sequelize.query(`select * from usuarios_usuario where id = "${req.body.user_id}"`, { type: sequelize.QueryTypes.SELECT })
             if (userexists.length) {
-                const { email, primer_nombre, primer_apellido, division_id } = userexists[0]
+                const { email, primer_nombre, primer_apellido, division_id ,area_id,cabildo_id,distrito_sgip_id} = userexists[0]
                 const password = random.getRandomPassword(10)
-                console.log(password)
+                // console.log(password)
+                var ar = await sequelize.query(`select nombre from usuarios_area where id = ${area_id}`,{type : sequelize.QueryTypes.SELECT})
+                var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
+                var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
+                var heading = ""
+                var ans = await helper.findRoleDetails(req, res)
+                if(ans.level=="Área"){
+
+                    heading = ar[0].nombre 
+                }
+                if(ans.level=="Cabildo"){
+                    heading =  ar[0].nombre +" " + cb[0].nombre 
+                }
+                if(ans.level=="Distrito"){
+                    heading = ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre 
+                }
+                req.heading = heading
                 req.email = email
                 req.password = password
                 const encrPassword = md5(password)
@@ -1214,7 +1229,7 @@ async function leaderSignup(req, res) {
                 }
                
                 const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where usuario_id = '${req.body.Cedula_id}'`)
-                console.log(data, "data")
+                // console.log(data, "data")
                 if(test[0].responsable==0){
                     const id = await leader.create(signupdata, (err, data) => {
                         if (err) {
@@ -1312,7 +1327,7 @@ async function leaderSignup(req, res) {
        
         for (var i in req.body.horizontal_groups){
             const result = await sequelize.query(`insert into group_members(group_id,user_id) values(${req.body.horizontal_groups[i]},${req.body.user_id})`)
-            console.log(result)
+            // console.log(result)
         }
         const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,
         segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
@@ -1335,7 +1350,6 @@ async function leaderSignup(req, res) {
         return res.status(500).json({ message: 'Server Error' });
     }
 }
-
 
 //API to block/unblock a leader
 async function blockleader(req, res) {

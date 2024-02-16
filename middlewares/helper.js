@@ -130,6 +130,7 @@ async function findlevelId(req, res) {
 
 
 
+
 async function sendLoginInfo(req,res){
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -152,9 +153,10 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
   var mailOptions = {
     from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
     to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    // to:  `mailto:muskan.shu@cisinlabs.com`,
-    subject: 'Leader signup credentials',
-    html: `<html> ${title} ${req.body.primer_nombre} ${req.body.primer_apellido} <br>
+    // to:  `mailto:muskan.shu@cisinlabs.com,yogendra.r`,
+    subject: `Leader signup credentials ${req.heading}`,
+    html: `<html> <h3>${req.heading}</h3> <br>
+    ${title} ${req.body.primer_nombre} ${req.body.primer_apellido} <br>
     <br>
     Su usuario ha sido registrado en el sistema de base de datos de la SGIP.<br>
     <br>
@@ -175,6 +177,7 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
     }
     return true
 })}
+
 
 
 
