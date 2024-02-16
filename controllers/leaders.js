@@ -87,7 +87,7 @@ async function leaderLogin(req, res) {
                 var heading = " "
                 if(ans.level=="Nacional"){
                     var is_admin = 1
-                    heading = "¡Bienvenido! ADMIN"
+                    heading = "¡Bienvenido! ADMIN "
                 }else{
                     var is_admin = 0
                 }
@@ -95,13 +95,13 @@ async function leaderLogin(req, res) {
               
                 
                 if(ans.level=="Área"){
-                    heading = `¡Bienvenido!` +ar[0].nombre  +`Responsable`
+                    heading = `¡Bienvenido! ` +ar[0].nombre  +` Responsable`
                 }
                 if(ans.level=="Cabildo"){
-                    heading = `¡Bienvenido!` + ar[0].nombre +" " + cb[0].nombre +`Responsable`
+                    heading = ` ¡Bienvenido! ` + ar[0].nombre +" " + cb[0].nombre +` Responsable`
                 }
                 if(ans.level=="Distrito"){
-                    heading = `¡Bienvenido!` + ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre +`Responsable`
+                    heading = `¡Bienvenido! ` + ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre +` Responsable`
                 }
                 ans.level_name = heading
 
