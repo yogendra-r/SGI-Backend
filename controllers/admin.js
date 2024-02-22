@@ -1228,7 +1228,7 @@ async function leaderSignup(req, res) {
                    
                 }
                
-                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where usuario_id = '${req.body.Cedula_id}'`)
+                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where id = '${req.body.user_id})}'`)
                 // console.log(data, "data")
                 if(test[0].responsable==0){
                     const id = await leader.create(signupdata, (err, data) => {
@@ -2073,7 +2073,7 @@ async function addAreaandSplit(req,res){
     var old_area = req.body.old_area_id
     var edit_area = req.body.edit_area_id
     if(edit_area){
-        await sequelize.query(`update usuarios_area set nombre = "${req.body.new_area_name}" where id = ${edit_area}`)
+        await sequelize.query(`rios_area set nombre = "${req.body.new_area_name}" where id = ${edit_area}`)
         for(var i in cabildo_id){
         var result = await sequelize.query(`select distinct cabildo_id from usuarios_usuario where area_id = ${edit_area}`,{type : sequelize.QueryTypes.SELECT})
         console.log(result.length)
