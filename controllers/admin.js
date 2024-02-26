@@ -1382,22 +1382,22 @@ async function changepassword(req, res) {
     const result = await leader.findOne({
         where: { id: req.body.user_id}
     })
-    if (result.password == md5(req.body.old_password)) {
+    // if (result.password == md5(req.body.old_password)) {
         leader.update(
             { password: md5(req.body.new_password) },
             { where: { id: req.body.user_id} }
         )
         return res.status(200).send({
-            message: "Contraseña actualizada exitosamente",
+            message: "Password updated successfuly",
             status: true
         })
-    }
-    else {
-        return res.status(400).send({
-            message: "Antigua contraseña es incorrecta",
-            status: false
-        })
-    }
+    // }
+    // else {
+    //     return res.status(400).send({
+    //         message: "Old password is incorrect",
+    //         status: false
+    //     })
+    // }
 }
 
 
