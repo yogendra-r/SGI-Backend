@@ -1252,7 +1252,7 @@ async function leaderSignup(req, res) {
                    
                 }
                
-                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where id = ${req.body.user_id})}`)
+                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where id = ${req.body.user_id}`)
                 // console.log(data, "data")
                 if(test[0].responsable==0){
                     const id = await leader.create(signupdata, (err, data) => {
