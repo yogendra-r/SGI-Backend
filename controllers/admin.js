@@ -727,56 +727,80 @@ async function markAttendance(req, res) {
 
 
 async function notAttendedList(req, res) {
-   console.log(req.body)
-    if (!req.body.activity_id) {
-        console.log("error date")
-        return res.status(400).send({
-            message: "activity id is required",
-            data: []
-        })
-    }
-    else {
-        var level = await sequelize.query(`select usuarios_area.nombre as area,fetcha_de_actividad, usuarios_cabildo.nombre as cabildo, usuarios_distritosgip.nombre as distrito  from usuarios_actividad 
-        
-        inner join usuarios_area on usuarios_area.id = usuarios_actividad.area_id left join usuarios_cabildo on usuarios_cabildo.id = usuarios_actividad.cabildo_id
-        left join usuarios_distritosgip on usuarios_distritosgip.id = usuarios_actividad.distrito_id
-        where usuarios_actividad.id = ${req.body.activity_id}`, { type: sequelize.QueryTypes.SELECT })
-        console.log('level: ', level);
-        // console.log(`${level[0].fetcha_de_actividad}, ${level[0].area} ${level[0].cabildo?cabildo:""} ${level[0].distrito?distrito:""}`)
-
-        var act = await sequelize.query(`select * from usuarios_actividad where id = ${req.body.activity_id}`,{type : sequelize.QueryTypes.SELECT})
-        const cabildo = req.body.cabildo_id || act[0].cabildo_id
-        const district = req.body.distrito_id || act[0].distrito_id
-        const whereClause = `and 1
-    AND (:cabildo IS NULL OR cabildo_id = :cabildo)
-    AND (:district IS NULL OR distrito_sgip_id = :district)  `; 
-
-
-        const att = await sequelize.query(`select user_id from usuarios_actividad inner join attendance on usuarios_actividad.id = attendance.activity_id where attendance.activity_id= "${req.body.activity_id}" and role_id = 1`, { type: sequelize.QueryTypes.SELECT })
-        const result1 = await sequelize.query(`select usuarios_usuario.id,usuario_id as Cedula_id, sgi_id , nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_division as division on division.id = usuarios_usuario.division_id where 
-    area_id = ${act[0].area_id}  ${whereClause} order by nombre_completo`, { type: sequelize.QueryTypes.SELECT ,replacements :{
-        cabildo: cabildo || null,
-        district: district || null,
-    }})
-    
-    for (var i in result1) {
-        // result[i].present = false
-            for (var j in att) {
-                if (result1[i].id == att[j].user_id) {
-                    result1.splice(i,1)
-                }
-            }
-        }
-        
-// console.log(result1,"result1")
-        return res.status(200).send({
-            message: "data fetched successfully",
-            data: result1,
-            heading : `${level[0].fetcha_de_actividad}, ${level[0].area} ${level[0].cabildo?level[0].cabildo:""} ${level[0].distrito?level[0].distrito:""}`,
-            total : result1.length
-        })
-    }
-}
+    console.log(req.body)
+     if (!req.body.activity_id) {
+         console.log("error date")
+         return res.status(400).send({
+             message: "activity id is required",
+             data: []
+         })
+     }
+     else {
+         const act = await sequelize.query(`select *  from  usuarios_actividad where id= "${req.body.activity_id}"`, { type: sequelize.QueryTypes.SELECT})
+         //  } ,replacements :{ 
+         //     cabildo: cabildo || null,
+         //     district: district || null,} })
+     //   console.log(act[0].nombre,"activity name")
+         
+         if((act[0].nombre).includes("DJM")){
+             var division_id = 3
+         }
+         else   if((act[0].nombre).includes("DJF")){
+             var division_id = 4
+         }
+         else   if((act[0].nombre).includes("DAMAS")){
+             var division_id = 1
+         }
+         else   if((act[0].nombre).includes("Caballeros")){
+             var division_id = 2
+         }
+         else   if((act[0].nombre).includes("DEP")){
+             var division_id = 5
+         }
+         var level = await sequelize.query(`select usuarios_area.nombre as area,fetcha_de_actividad, usuarios_cabildo.nombre as cabildo, usuarios_distritosgip.nombre as distrito  from usuarios_actividad 
+         
+         inner join usuarios_area on usuarios_area.id = usuarios_actividad.area_id left join usuarios_cabildo on usuarios_cabildo.id = usuarios_actividad.cabildo_id
+         left join usuarios_distritosgip on usuarios_distritosgip.id = usuarios_actividad.distrito_id
+         where usuarios_actividad.id = ${req.body.activity_id}`, { type: sequelize.QueryTypes.SELECT })
+         console.log('level: ', level);
+         // console.log(`${level[0].fetcha_de_actividad}, ${level[0].area} ${level[0].cabildo?cabildo:""} ${level[0].distrito?distrito:""}`)
+ 
+         // var act = await sequelize.query(`select * from usuarios_actividad where id = ${req.body.activity_id}`,{type : sequelize.QueryTypes.SELECT})
+         const cabildo = req.body.cabildo_id || act[0].cabildo_id
+         const district = req.body.distrito_id || act[0].distrito_id
+         const whereClause = `and 1
+     AND (:division_id IS NULL OR division_id = :division_id)
+     AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+     AND (:district IS NULL OR distrito_sgip_id = :district)  `; 
+ 
+ 
+         const att = await sequelize.query(`select user_id from usuarios_actividad inner join attendance on usuarios_actividad.id = attendance.activity_id where attendance.activity_id= "${req.body.activity_id}" and role_id = 1`, { type: sequelize.QueryTypes.SELECT })
+         const result1 = await sequelize.query(`select usuarios_usuario.id,usuario_id as Cedula_id, sgi_id , nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_division as division on division.id = usuarios_usuario.division_id where 
+     area_id = ${act[0].area_id}  ${whereClause} order by nombre_completo`, { type: sequelize.QueryTypes.SELECT ,replacements :{
+         cabildo: cabildo || null,
+         district: district || null,
+         division_id : division_id || null
+     }})
+     
+     for (var i in result1) {
+         // result[i].present = false
+             for (var j in att) {
+                 if (result1[i].id == att[j].user_id) {
+                     result1.splice(i,1)
+                 }
+             }
+         }
+         
+ // console.log(result1,"result1")
+         return res.status(200).send({
+             message: "data fetched successfully",
+             data: result1,
+             heading : `${level[0].fetcha_de_actividad}, ${level[0].area} ${level[0].cabildo?level[0].cabildo:""} ${level[0].distrito?level[0].distrito:""}`,
+             total : result1.length
+         })
+     }
+ }
+ 
 
 async function getAttendanceList(req, res) {
     console.log(req.body)

@@ -136,8 +136,8 @@ async function changepassword(req, res) {
     console.log(req.body,"change passwod")
     const token = req.token
     const leader = await sequelize.query(`select email from usuarios_usuario where id = ${req.body.user_id}`,{type : sequelize.QueryTypes.SELECT})
-    const result = await sequelize.query(`select * from auth_leader where email = "${leader[0].email}"`,{type : sequelize.QueryTypes.SELECT})
-    if (result[0].password == md5(req.body.old_password)) {
+    // const result = await sequelize.query(`select * from auth_leader where email = "${leader[0].email}"`,{type : sequelize.QueryTypes.SELECT})
+    // if (result[0].password == md5(req.body.old_password)) {
         // leader.update(
         //     { password: md5(req.body.new_password) },
         //     { where: { id: token.id } }
@@ -147,14 +147,14 @@ async function changepassword(req, res) {
             message: "Password updated successfuly",
             status: true
         })
-    }
-    else {
-        console.log("change passwod")
-        return res.status(400).send({
-            message: "Old password is incorrect",
-            status: false
-        })
-    }
+    // }
+    // else {
+    //     console.log("change passwod")
+    //     return res.status(400).send({
+    //         message: "Old password is incorrect",
+    //         status: false
+    //     })
+    // }
 }
 
 
