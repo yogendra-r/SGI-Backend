@@ -1219,7 +1219,7 @@ async function leaderSignup(req, res) {
        
             var flag = false;
         if (req.body.responsable  && req.body.nivel_responsable && adm[0].responsable==1 && adm[0].nivel_responsable_id==1 || req.token.id != result.id) {
-            const userexists = await sequelize.query(`select * from usuarios_usuario where id = "${req.body.user_id}"`, { type: sequelize.QueryTypes.SELECT })
+            const userexists = await sequelize.query(`select * from usuarios_usuario where id = ${req.body.user_id}`, { type: sequelize.QueryTypes.SELECT })
             if (userexists.length) {
                 const { email, primer_nombre, primer_apellido, division_id ,area_id,cabildo_id,distrito_sgip_id} = userexists[0]
                 const password = random.getRandomPassword(10)
@@ -1252,7 +1252,7 @@ async function leaderSignup(req, res) {
                    
                 }
                
-                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where id = '${req.body.user_id})}'`)
+                const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where id = ${req.body.user_id})}`)
                 // console.log(data, "data")
                 if(test[0].responsable==0){
                     const id = await leader.create(signupdata, (err, data) => {
