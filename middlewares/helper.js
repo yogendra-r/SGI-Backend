@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const sequelize = require('../models')
 const config = require('../config/otherConfig.json')
 const nodemailer = require('nodemailer')
-
+const fs = require("fs");
 //function to create JWT access token with given data
 function createToken(tokendata) {
   var token = jwt.sign(tokendata, config.JWT.secret, {
@@ -151,9 +151,9 @@ async function sendLoginInfo(req,res){
   }
 console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"sending email")
   var mailOptions = {
-    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
-    to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    // to:  `mailto:muskan.shu@cisinlabs.com,yogendra.r`,
+    from: 'SGI-Panama  <sgipanama1@gmail.com>',
+    to:  `muskan.shu@cisinlabs.com ,maires.carlos@gmail.com,motwani.j@gmail.com, basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    // to:  `muskan.shu@cisinlabs.com,yogendra.r`,
     subject: `Leader signup credentials ${req.heading}`,
     html: `<html> <h3>${req.heading}</h3> <br>
     ${title} ${req.body.primer_nombre} ${req.body.primer_apellido} <br>
@@ -170,6 +170,21 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
     
    </html>`
   };
+  //create file
+
+ 
+  if(!fs.existsSync("images/records.xls")){
+      var writeStream = fs.createWriteStream("images/records.xls");
+      var header="Sl No"+"\t"+" Email"+"\t"+"First Name"+"\t"+"Last Name"+"\t"+"Password"+"\t"+"Details"+"\n";
+      writeStream.write(header);
+  } else {
+      var row = "0"+"\t"+`${req.email}`+"\t"+` ${req.body.primer_nombre}`+`${req.body.primer_apellido}`+`${req.heading}`+"\n";
+      writeStream.write(row);
+  }
+  
+  writeStream.close();
+
+  
   transporter.sendMail(mailOptions, (erro, info) => {
     if (erro) {
       console.log(erro)
