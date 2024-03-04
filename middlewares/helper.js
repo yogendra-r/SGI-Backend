@@ -187,14 +187,10 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
     const header = "Sl No\tEmail\tFirst Name\tLast Name\tPassword\tDetails\n";
     fs.writeFileSync(filePath, header);
   } else {
-    const row = `0\t${req.email}\t${req.body.primer_nombre} ${req.body.primer_apellido}\t${req.heading}\n`;
+    const row = `0\t${req.email}\t${req.body.primer_nombre}\t ${req.body.primer_apellido}\t ${req.password}\t${req.heading}\n`;
     fs.appendFileSync(filePath, row);
   }
  
-  
-  
-
-
   }catch(error){
     console.log(`error`,error);
   }
