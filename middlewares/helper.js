@@ -132,6 +132,7 @@ async function findlevelId(req, res) {
 
 
 async function sendLoginInfo(req,res){
+ try{
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -170,6 +171,16 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
     
    </html>`
   };
+
+  transporter.sendMail(mailOptions, (erro, info) => {
+    if (erro) {
+      console.log(erro)
+      return false
+    }
+    return true
+  })
+
+  
   //create file
 
  
@@ -184,14 +195,13 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
   
   writeStream.close();
 
-  
-  transporter.sendMail(mailOptions, (erro, info) => {
-    if (erro) {
-      console.log(erro)
-      return false
-    }
-    return true
-})}
+  }catch(error){
+    console.log(`error`,error);
+  }
+
+ 
+
+}
 
 
 
