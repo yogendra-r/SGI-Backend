@@ -182,18 +182,18 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
 
   
   //create file
-
- 
-  if(!fs.existsSync("images/records.xls")){
-      var writeStream = fs.createWriteStream("images/records.xls");
-      var header="Sl No"+"\t"+" Email"+"\t"+"First Name"+"\t"+"Last Name"+"\t"+"Password"+"\t"+"Details"+"\n";
-      writeStream.write(header);
+  const filePath = "images/records.xls";
+  if (!fs.existsSync(filePath)) {
+    const header = "Sl No\tEmail\tFirst Name\tLast Name\tPassword\tDetails\n";
+    fs.writeFileSync(filePath, header);
   } else {
-      var row = "0"+"\t"+`${req.email}`+"\t"+` ${req.body.primer_nombre}`+`${req.body.primer_apellido}`+`${req.heading}`+"\n";
-      writeStream.write(row);
+    const row = `0\t${req.email}\t${req.body.primer_nombre} ${req.body.primer_apellido}\t${req.heading}\n`;
+    fs.appendFileSync(filePath, row);
   }
+ 
   
-  writeStream.close();
+  
+
 
   }catch(error){
     console.log(`error`,error);
