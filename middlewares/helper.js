@@ -163,7 +163,7 @@ console.log(req.body.primer_nombre, req.body.primer_apellido,req.body.sexo_id,"s
     <br>
     Para acceder:<br>
     <br>
-    Enlace: http://146.190.171.78/ <br>
+    Enlace: http://basededatos.sgipanama.com/ <br>
     <br>
     Nombre de usuario: ${req.email} <br>
     <br>
