@@ -1262,6 +1262,7 @@ async function leaderSignup(req, res) {
     
                     })
                 flag = await helper.sendLoginInfo(req, res)
+                console.log(`req`,req.password , req.heading)
                 console.log(flag)}
             }
             else {
@@ -1366,7 +1367,7 @@ async function leaderSignup(req, res) {
     }
     return res.status(200).send({
         message: "Detalles de usuario actualizados",
-        data: []
+        data: [],
     })
     } 
     catch (e) {
