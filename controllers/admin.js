@@ -2574,7 +2574,7 @@ if(estado){
       
         if(group_id){
             console.log("if")
-            var query = `SELECT distinct nombre_completo as "Nombre Completo" ,email as Email,usuarios_area.nombre as Area, uc.nombre as Cabildo,ud.nombre as Distrito,usuarios_division.nombre as Division,
+            var query = `SELECT distinct nombre_completo as "Nombre Completo" ,sgi_id as "SGI ID", email as Email,usuarios_area.nombre as Area, uc.nombre as Cabildo,ud.nombre as Distrito,usuarios_division.nombre as Division,
             responsable as "Responsable", n.nombre as "Nivel Responsable",responsable_gohonzon as "Responsable de Gohonzon",direccion as "Direccion",telefono as "Telefono",celular as "Celular" FROM usuarios_usuario  inner join usuarios_division  ON 
             usuarios_division.id = usuarios_usuario.division_id  INNER JOIN usuarios_area ON usuarios_area.id = usuarios_usuario.area_id
             left join usuarios_nivelresponsable as n on n.id = nivel_responsable_id 
@@ -2583,7 +2583,7 @@ if(estado){
             ${whereClause} and group_members.group_id = ${group_id} order by nombre_completo`
         }
         else{
-            var query = `SELECT distinct nombre_completo as "Nombre Completo" ,email as Email,usuarios_area.nombre as Area, uc.nombre as Cabildo,ud.nombre as Distrito,usuarios_division.nombre as Division,
+            var query = `SELECT distinct nombre_completo as "Nombre Completo" ,sgi_id as "SGI ID", email as Email,usuarios_area.nombre as Area, uc.nombre as Cabildo,ud.nombre as Distrito,usuarios_division.nombre as Division,
             responsable as "Responsable", n.nombre as "Nivel Responsable",responsable_gohonzon as "Responsable de Gohonzon",direccion as "Direccion",telefono as "Telefono",celular as "Celular" FROM usuarios_usuario  inner join usuarios_division  ON 
             usuarios_division.id = usuarios_usuario.division_id  INNER JOIN usuarios_area ON usuarios_area.id = usuarios_usuario.area_id
             left join usuarios_nivelresponsable as n on n.id = nivel_responsable_id
