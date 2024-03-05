@@ -152,7 +152,7 @@ router.post('/clearsubscription',admin.clearSubscription)
 router.post('/deleteuser',admin.deleteUser)
 
 
-
+router.post('/assigncreds',middleware.verifyToken,admin.assignCreds)
 
 module.exports = router;
 

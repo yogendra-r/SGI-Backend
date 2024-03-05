@@ -1449,6 +1449,59 @@ async function addHorizontalGroup(req,res){
     })
 }
 
+async function assignCreds(req,res){
+    try{
+       const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable, area_id , cabildo_id,distrito_sgip_id} = req.body
+       const password = random.getRandomPassword(10)
+       console.log(password)
+       req.email = email
+       req.password = password
+       const encrPassword = md5(password)
+       var ar = await sequelize.query(`select nombre from usuarios_area where id = ${area_id}`,{type : sequelize.QueryTypes.SELECT})
+       var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
+       var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
+       var heading = ""
+       var ans = await helper.findRoleDetails(req, res)
+       if(ans.level=="Área"){
+
+           heading = ar[0].nombre 
+       }
+       if(ans.level=="Cabildo"){
+           heading =  ar[0].nombre +" " + cb[0].nombre 
+       }
+       if(ans.level=="Distrito"){
+           heading = ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre 
+       }
+       req.heading = heading
+       const signupdata = {
+           firstName: primer_nombre,
+           lastName: primer_apellido,
+           email: email,
+           password: encrPassword,
+       }
+
+       const id = await leader.create(signupdata, (err, data) => {
+           if (err) {
+               return res.status(500).json({ message: 'Server Error' });
+           }
+
+       })
+       const data = await sequelize.query(`update usuarios_usuario set responsable = ${responsable},nivel_responsable_id = ${nivel_responsable} where usuario_id = '${user_id}'`)
+
+flag = await helper.sendLoginInfo(req, res)
+return res.status(200).send({
+    message: "Credentials sent to user",
+    data: []
+})
+    }
+    catch(error){
+        console.log(`error`,error);
+        return res.status(500).send({
+            message: 'internal serever error',
+           data : []
+        });}
+}
+
 
 async function addMembertoHrGroup(req,res){
     console.log(req.body,"hr grp")
@@ -2932,7 +2985,8 @@ module.exports = {
     notAttendedList,
     generalreport,
     clearSubscription,
-    deleteUser
+    deleteUser,
+    assignCreds
 }
 
 
