@@ -84,13 +84,19 @@ async function leaderLogin(req, res) {
                 var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${data[0].cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
                 var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${data[0].distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
                 console.log(ans)
-                var heading = " "
-                if(ans.level=="Nacional"){
+                 var heading = " "
+                 var is_admin = 0
+                if(ans.level=="ADMIN"){
                     var is_admin = 1
-                    heading = "¡Bienvenido! ADMIN "
-                }else{
-                    var is_admin = 0
+                    heading = "¡Bienvenido! ADMIN"
                 }
+                else if(ans.level=="Nacional"){
+                    
+                    heading = "¡Bienvenido! ADMIN"
+                }
+                // else{
+                //     var is_admin = 0
+                // }
                 console.log(is_admin,"admin")
               
                 

@@ -80,7 +80,12 @@ async function getDashBoardCardStats(req, res) {
 async function getDashboardMembersByArea(req, res) {
     try { var where = await helper.findRoleDetails(req,res)
         console.log(where,"where from leader table")
-        if(where.level=="Nacional"){
+        if(where.level=="ADMIN"){
+            console.log("one")
+            var q = `select Area.nombre as 'area_name' , count( Area.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id ) group by area_name order by area_name`;
+            var headings = ["S.No","Área","Total Miembros por área"]
+        }
+        else if(where.level=="Nacional"){
             console.log("one")
             var q = `select Area.nombre as 'area_name' , count( Area.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id ) group by area_name order by area_name`;
             var headings = ["S.No","Área","Total Miembros por área"]
@@ -115,7 +120,12 @@ async function getDashboardGohonZonOwnersByArea(req, res) {
     try {
         var where = await helper.findRoleDetails(req,res)
         console.log(where,"where from leader table")
-        if(where.level=="Nacional"){
+        if(where.level=="ADMIN"){
+            console.log("one")
+            var q = `select Area.nombre as 'area_name' , count( Area.nombre ) as gohonzon_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id and responsable_gohonzon = 1) group by area_name order by area_name`;
+            var headings = ["S.No","Área","Total Gohonzon Propietarios por área"]
+        }
+        else if(where.level=="Nacional"){
             console.log("one")
             var q = `select Area.nombre as 'area_name' , count( Area.nombre ) as gohonzon_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id and responsable_gohonzon = 1) group by area_name order by area_name`;
             var headings = ["S.No","Área","Total Gohonzon Propietarios por área"]
@@ -1602,7 +1612,12 @@ async function getDashboardLeaderAreaTable(req, res) {
     try {
         var where = await helper.findRoleDetails(req,res)
         console.log(where,"where from leader table")
-        if(where.level=="Nacional"){
+        if(where.level=="ADMIN"){
+            console.log("one")
+            var q = `select Area.nombre as 'area_name' , count( Area.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id and Main.responsable = 1) group by area_name order by area_name`;
+            var headings = ["S.No","Área","Total Responsable por área"]
+        }
+       else if(where.level=="Nacional"){
             console.log("one")
             var q = `select Area.nombre as 'area_name' , count( Area.nombre ) as members_counts  from usuarios_usuario as Main inner join usuarios_area as Area where (Main.area_id = Area.id and Main.responsable = 1) group by area_name order by area_name`;
             var headings = ["S.No","Área","Total Responsable por área"]
