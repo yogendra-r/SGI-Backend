@@ -1050,7 +1050,7 @@ async function getAllUsers(req, res) {
 
         if(horizontal_group){
             console.log("if") //  //
-            var q = `select a.id ,a.usuario_id as Cedula_id ,a.email,a.responsable, a.nombre_completo, area.nombre as area,cargo_responsable_id, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
+            var q = `select a.id ,a.usuario_id as Cedula_id ,a.sgi_id,a.email,a.responsable, a.nombre_completo, area.nombre as area,cargo_responsable_id, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
             inner join usuarios_area as area on area.id= a.area_id inner join usuarios_cabildo as c on c.id= a.cabildo_id 
             inner join group_members on group_members.user_id = a.id
             inner join usuarios_distritosgip 
@@ -1058,7 +1058,7 @@ async function getAllUsers(req, res) {
             inner join usuarios_estado as s on s.id = a.estado_id ${whereClause} and ${str} and group_members.group_id = ${horizontal_group} order by nombre_completo`;
         }
         else{
-            var q = `select a.id ,a.usuario_id as Cedula_id ,a.email,a.responsable, a.nombre_completo, area.nombre as area,cargo_responsable_id, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
+            var q = `select a.id ,a.usuario_id as Cedula_id ,a.sgi_id,a.email,a.responsable, a.nombre_completo, area.nombre as area,cargo_responsable_id, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
         inner join usuarios_area as area on area.id= a.area_id inner join usuarios_cabildo as c on c.id= a.cabildo_id 
         inner join usuarios_distritosgip as d on d.id= a.distrito_sgip_id left join usuarios_grupo as g on g.id = a.grupo_id
         inner join usuarios_estado as s on s.id = a.estado_id ${whereClause} and ${str} order by a.nombre_completo`;
