@@ -154,6 +154,8 @@ router.post('/deleteuser',admin.deleteUser)
 
 router.post('/assigncreds',middleware.verifyToken,admin.assignCreds)
 
+router.post('/assigncredsforarea',middleware.verifyToken,admin.assignCredsForArea)
+
 module.exports = router;
 
 // router.get('/getusersbydivision',admin.getUsersByDivision)

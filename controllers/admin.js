@@ -2940,6 +2940,111 @@ async function generalreport(req,res){
    }) 
 }
 
+async function assignCredsForArea(req,res){
+    try{
+        const {area_id,page}= req.body
+        var limit = req.body.limit || 10
+        var offset = (page - 1) * limit;
+        const areadata = await sequelize.query(`select * from usuarios_usuario where area_id = ${area_id} and responsable = 1 limit ${limit}  offset ${offset}`,{type : sequelize.QueryTypes.SELECT})
+        // console.log('areadata: ', areadata);
+        // if(!re)
+     
+        for(var i in areadata){
+            
+        // }
+        
+       const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable_id,cabildo_id,distrito_sgip_id,sexo_id} = areadata[i]
+       console.log('nivel_responsable: ', nivel_responsable_id);
+       if(nivel_responsable_id){
+       const password = random.getRandomPassword(10)
+       console.log(password)
+       req.email = email
+       req.password = password
+       req.body.primer_nombre = primer_nombre,
+       req.body.primer_apellido = primer_apellido,
+       req.body.sexo_id = sexo_id
+       const encrPassword = md5(password)
+       var ar = await sequelize.query(`select nombre from usuarios_area where id = ${area_id}`,{type : sequelize.QueryTypes.SELECT})
+       var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
+       var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
+       var heading = ""
+    //    var ans = await helper.findRoleDetails(req, res)
+    var leaderdata = await sequelize.query(`select usuarios_nivelresponsable.nombre,nacionalidad_id,nivel_responsable_id,area_id,cabildo_id,grupo_id,distrito_sgip_id from usuarios_usuario inner join usuarios_nivelresponsable on usuarios_nivelresponsable.id=usuarios_usuario.nivel_responsable_id where usuarios_usuario.id = ${areadata[i].id}`, { type: sequelize.QueryTypes.SELECT })
+    console.log('leaderdata: ', leaderdata);
+
+    // console.log(leaderdata)
+    var data = {
+      "level" : "",
+      "area_id" : "",
+      "cabildo_id" : "",
+      "distrito_id" : "",
+      "group_id" : ""
+    }
+    if(leaderdata.length){
+      var level = leaderdata[0].nombre
+      data.level = level
+    }
+    switch (level) {
+      case "Área":
+        data.area_id = leaderdata[0].area_id
+        break;
+      case "Cabildo":
+        data.area_id = leaderdata[0].area_id
+        data.cabildo_id = leaderdata[0].cabildo_id
+        break;
+      case "Distrito":
+        data.area_id = leaderdata[0].area_id
+        data.cabildo_id = leaderdata[0].cabildo_id
+        data.distrito_id = leaderdata[0].distrito_sgip_id
+        break;
+      case "Responsable de Grupo":
+        data.area_id = leaderdata[0].area_id
+        data.cabildo_id = leaderdata[0].cabildo_id
+        data.distrito_id = leaderdata[0].distrito_sgip_id
+        data.group_id = leaderdata[0].group_id
+        break;
+    }
+    var ans = data
+       if(ans.level=="Área"){
+
+           heading = ar[0].nombre 
+       }
+       if(ans.level=="Cabildo"){
+           heading =  ar[0].nombre +" " + cb[0].nombre 
+       }
+       if(ans.level=="Distrito"){
+           heading = ar[0].nombre +" " + cb[0].nombre + " " + ds[0].nombre 
+       }
+       req.heading = heading
+       const signupdata = {
+           firstName: primer_nombre,
+           lastName: primer_apellido,
+           email: email,
+           password: encrPassword,
+       }
+    
+       const id = await leader.create(signupdata, (err, data) => {
+           if (err) {
+               return res.status(500).json({ message: 'Server Error' });
+           }
+
+       })
+       const data1 = await sequelize.query(`update usuarios_usuario set responsable = ${responsable},nivel_responsable_id = ${nivel_responsable_id} where usuario_id = '${user_id}'`)
+
+flag = await helper.sendLoginInfo(req, res)}}
+return res.status(200).send({
+    message: "Credentials sent to user",
+    data: []
+})
+    }
+    catch(error){
+        console.log('error: ', error);
+  
+        return res.status(500).send({
+            message: 'internal serever error',
+           data : []
+        });}
+}
 
 module.exports = {
     getAttendanceByDivision,
@@ -3001,7 +3106,8 @@ module.exports = {
     generalreport,
     clearSubscription,
     deleteUser,
-    assignCreds
+    assignCreds,
+    assignCredsForArea
 }
 
 
