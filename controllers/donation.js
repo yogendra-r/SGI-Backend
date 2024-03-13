@@ -344,10 +344,12 @@ async function addnewuser(req, res) {
 
 async function getdashboardcards(req, res) {
   var date = new Date()
-  var year = date.getFullYear()
-  var month = date.getMonth() + 1
+  var year = date.getFullYear();
+  let monthInt =  date.getMonth() +1 ;
+  let monthStr = monthInt.toLocaleString();
+  var month = monthStr.length === 1 ? "0"+ monthStr  : monthStr;
   var fulldate = `${year}-${month}%`
-  console.log(fulldate)
+  console.log(fulldate,"full date dekhlo bhiyooo")
   var totalreg = await sequelize.query(`select count(*) as count from donation_info where donation_date like "${fulldate}"`, { type: sequelize.QueryTypes.SELECT })
   var totalmember = await sequelize.query(`select distinct user_id from donation_info where donation_date like "${fulldate}"`, { type: sequelize.QueryTypes.SELECT })
   var totalactive = await sequelize.query(`select count(*) as count  from usuarios_usuario where estado_id = 1`, { type: sequelize.QueryTypes.SELECT })
@@ -362,7 +364,7 @@ async function getdashboardcards(req, res) {
       total_month_member: totalmember.length,
       active_members: totalactive[0].count,
       active_percent: Math.round(activepercent),
-      donation_by_month: monthdonation[0].count,
+      donation_by_month: monthdonation[0]?.count ? monthdonation[0]?.count : 0,
       donation_by_year: yearlydonation[0].count
     }
   })
