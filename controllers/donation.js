@@ -223,12 +223,11 @@ function drawTable(doc, table) {
 
 
 
-
 async function generateAndSendPdf(pdfdata) {
   var message = await sequelize.query(`select * from messages`,{type : sequelize.QueryTypes.SELECT})
   var random = Math.floor(Math.random() * message.length);
   var randommessage  = await sequelize.query(`select message from messages where id = ${random}`,{type : sequelize.QueryTypes.SELECT})
-  var pdf = await sequelize.query(`select usuario_id,usuarios_area.nombre as area, usuarios_cabildo.nombre as cabildo,usuarios_distritosgip.nombre as distrito,
+  var pdf = await sequelize.query(`select usuario_id,usuarios_area.nombre as area,usuarios_usuario.email, usuarios_cabildo.nombre as cabildo,usuarios_distritosgip.nombre as distrito,
    nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month , usuarios_division.nombre as division from donation_info   inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = usuarios_usuario.area_id
   inner join usuarios_cabildo on usuarios_cabildo.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip on usuarios_distritosgip.id = usuarios_usuario.distrito_sgip_id
   inner join usuarios_division on usuarios_division.id = usuarios_usuario.division_id  inner join months on donation_info.donation_month = months.id
@@ -287,15 +286,15 @@ console.log(pdf[0])
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: "sgipanama1@gmail.com",
+          user: "mailto:sgipanama1@gmail.com",
           pass: "zgmpuzsjzwvuuqlh",
         },
       });
 
       // Define email options
       const mailOptions = {
-        from: 'sgipanama1@gmail.com',
-        to: 'muskan.shu@cisinlabs.com ,qa1@cisinlabs.com',
+        from: 'mailto:sgipanama1@gmail.com',
+        to: `mailto:muskan.shu@cisinlabs.com , mailto:sgip.enfoque@gmail.com ,${pdf[0].email}`,
         subject: 'SGIP-DONATION REGISTRATION ',
         html: `<html><p>Dear ${pdf[0].nombre_completo} <p> 
         <p>Se ha registrado satisfactoria mente su contribución con los 
