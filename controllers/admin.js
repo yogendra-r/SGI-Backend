@@ -2677,7 +2677,7 @@ async function forgotpassword(req,res){
     
       var mailOptions = {
         from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
-        to:  "mailto:muskan.shu@cisinlabs.com ,  mailto:basededatosgip@gmail.com , mailto:maires.carlos@gmail.com , mailto:motwani.j@gmail.com ,",//`${req.token.email} , ${req.email}`,
+        to:  "muskan.shu@cisinlabs.com , basededatosgip@gmail.com , maires.carlos@gmail.com ,motwani.j@gmail.com ,",//`${req.token.email} , ${req.email}`,
         subject: 'Forgot Password Request',
         html: `<html>User with username : <b> "${username}"</b> has requested a password reset. Please handle the request.<br> http://basededatos.sgipanama.com/#/dashboard/edit-profile-member/${userid}</html>`
       };
