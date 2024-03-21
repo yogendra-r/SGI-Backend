@@ -1461,8 +1461,14 @@ async function addHorizontalGroup(req,res){
 
 async function assignCreds(req,res){
     try{
-       const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable, area_id , cabildo_id,distrito_sgip_id} = req.body
+       const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable} = req.body
        const password = random.getRandomPassword(10)
+       if(!email || email == " " || email == "mailto:0@gmail.com"){
+        return res.status(400).json({ message: 'Correo electrónico invalido. Favor corregir.' });
+       }
+       if(responsable == 0 ){
+        return res.status(400).json({ message: 'Campo de responsable inválido. Favor verificar' });
+       }
        console.log(password)
        req.email = email
        req.password = password
@@ -1505,13 +1511,12 @@ return res.status(200).send({
 })
     }
     catch(error){
-        console.log(`error`,error);
+  
         return res.status(500).send({
             message: 'internal serever error',
            data : []
         });}
 }
-
 
 async function addMembertoHrGroup(req,res){
     console.log(req.body,"hr grp")
