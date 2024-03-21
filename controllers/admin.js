@@ -2655,10 +2655,9 @@ if(estado){
         console.log(e)
     }
 }
-
 async function forgotpassword(req,res){
     const username = req.body.username
-    var result = await sequelize.query(`select id from auth_leader where email = "${username}"`,{type : sequelize.QueryTypes.SELECT})
+    var result = await sequelize.query(`select id from usuarios_usuario where email = "${username}"`,{type : sequelize.QueryTypes.SELECT})
     var userid = result[0].id
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -2672,10 +2671,10 @@ async function forgotpassword(req,res){
       });
     
       var mailOptions = {
-        from: 'SGI-Panama  <sgipanama1@gmail.com>',
-        to:  "muskan.shu@cisinlabs.com ,  basededatosgip@gmail.com",//`${req.token.email} , ${req.email}`,
+        from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
+        to:  "mailto:muskan.shu@cisinlabs.com ,  mailto:basededatosgip@gmail.com , mailto:maires.carlos@gmail.com , mailto:motwani.j@gmail.com ,",//`${req.token.email} , ${req.email}`,
         subject: 'Forgot Password Request',
-        html: `<html>User with username : <b> "${username}"</b> has requested a password reset. Please handle the request.<br> https://sgi-jai2023.web.app/dashboard/edit-profile-member/${userid}</html>`
+        html: `<html>User with username : <b> "${username}"</b> has requested a password reset. Please handle the request.<br> http://basededatos.sgipanama.com/#/dashboard/edit-profile-member/${userid}</html>`
       };
       transporter.sendMail(mailOptions, (erro, info) => {
         if (erro) {
@@ -2685,7 +2684,7 @@ async function forgotpassword(req,res){
         return true
     })      
     return res.status(200).send({
-        message: 'Password reset request sent to admin.',
+        message: 'Solicitud de restablecimiento de contraseña enviada al administrador.',
         data: []
     })
 }  
