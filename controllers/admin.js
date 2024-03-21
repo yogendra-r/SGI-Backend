@@ -1498,6 +1498,7 @@ async function assignCreds(req,res){
 
        const id = await leader.create(signupdata, (err, data) => {
            if (err) {
+            console.log("error",err)
                return res.status(500).json({ message: 'Server Error' });
            }
 
