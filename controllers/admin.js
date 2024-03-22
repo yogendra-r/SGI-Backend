@@ -1461,7 +1461,8 @@ async function addHorizontalGroup(req,res){
 
 async function assignCreds(req,res){
     try{
-        const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable,area_id,cabildo_id,distrito_sgip_id} = req.bodyconst password = random.getRandomPassword(10)
+        const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable,area_id,cabildo_id,distrito_sgip_id} = req.body
+        const password = random.getRandomPassword(10)
        if(!email || email == " " || email == "mailto:0@gmail.com"){
         return res.status(400).json({ message: 'Correo electrónico invalido. Favor corregir.' });
        }
