@@ -1265,13 +1265,13 @@ async function leaderSignup(req, res) {
                 const data = await sequelize.query(`update usuarios_usuario set responsable = ${req.body.responsable},nivel_responsable_id = ${req.body.nivel_responsable} where id = ${req.body.user_id}`)
                 // console.log(data, "data")
                 if(test[0].responsable==0){
-                    const id = await leader.create(signupdata, (err, data) => {
-                        if (err) {
-                            return res.status(500).json({ message: 'Server Error' });
-                        }
+                    // const id = await leader.create(signupdata, (err, data) => {
+                    //     if (err) {
+                    //         return res.status(500).json({ message: 'Server Error' });
+                    //     }
     
-                    })
-                flag = await helper.sendLoginInfo(req, res)
+                    // })
+                // flag = await helper.sendLoginInfo(req, res)
                 console.log(`req`,req.password , req.heading)
                 console.log(flag)}
             }
@@ -1461,8 +1461,8 @@ async function addHorizontalGroup(req,res){
 
 async function assignCreds(req,res){
     try{
-        const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable,area_id,cabildo_id,distrito_sgip_id} = req.body
-        const password = random.getRandomPassword(10)
+       const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable,area_id,cabildo_id,distrito_sgip_id} = req.body
+       const password = random.getRandomPassword(10)
        if(!email || email == " " || email == "mailto:0@gmail.com"){
         return res.status(400).json({ message: 'Correo electrónico invalido. Favor corregir.' });
        }
@@ -1495,15 +1495,20 @@ async function assignCreds(req,res){
            email: email,
            password: encrPassword,
        }
+const leaderexists = await leader.findOne({where : {email}})
+if(leaderexists){
+    await leader.update({password: password},{where : {email}})
+}
+else{
+    const id = await leader.create(signupdata, (err, data) => {
+        if (err) {
+         console.log('err: ', err);
+            return res.status(500).json({ message: 'Server Error' });
+        }
 
-       const id = await leader.create(signupdata, (err, data) => {
-           if (err) {
-            console.log("error",err)
-               return res.status(500).json({ message: 'Server Error' });
-           }
-
-       })
-       const data = await sequelize.query(`update usuarios_usuario set responsable = ${responsable},nivel_responsable_id = ${nivel_responsable} where usuario_id = '${user_id}'`)
+    })
+}
+      const data = await sequelize.query(`update usuarios_usuario set responsable = ${responsable},nivel_responsable_id = ${nivel_responsable} where usuario_id = '${user_id}'`)
 
 flag = await helper.sendLoginInfo(req, res)
 return res.status(200).send({
@@ -1512,6 +1517,7 @@ return res.status(200).send({
 })
     }
     catch(error){
+        console.log('error: ', error);
   
         return res.status(500).send({
             message: 'internal serever error',
