@@ -599,7 +599,7 @@ for(var j in month[i]){
 }   console.log('objbymontn: ', objbymontn);
   
         
-        var label = ["Enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", 'octubure', "noviembre", "diciembre"]
+var label = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", 'Octubure', "Noviembre", "Diciembre"]
         const values =[{"label" : "Damas" , data : []},{"label" : "Cabelleros" , data : []},{"label" : "DJM" , data : []},{"label" : "DJF" , data : []},{"label" : "DEP" , data : []}]
     for(var i in objbymontn){
         values[0].data.push(objbymontn[i][i].Damas)
@@ -685,7 +685,7 @@ for(var i in month){
 }
   
         
-        var label = ["Enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", 'octubure', "noviembre", "diciembre"]
+        var label = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", 'Octubure', "Noviembre", "Diciembre"]
         const values =[{"label" : "Miembros" , data : []},{"label" : "Invitados" , data : []},{"label" : "Invitado por primera vez" , data : []}]
     for(var i in objbymontn){
         values[0].data.push(objbymontn[i][i].member)
@@ -1497,7 +1497,7 @@ async function assignCreds(req,res){
        }
 const leaderexists = await leader.findOne({where : {email}})
 if(leaderexists){
-    await leader.update({password: password},{where : {email}})
+    await leader.update({password: encrPassword},{where : {email}})
 }
 else{
     const id = await leader.create(signupdata, (err, data) => {
