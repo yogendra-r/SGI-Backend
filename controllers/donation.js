@@ -286,15 +286,15 @@ console.log(pdf[0])
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: "mailto:sgipanama1@gmail.com",
+          user: "sgipanama1@gmail.com",
           pass: "zgmpuzsjzwvuuqlh",
         },
       });
 
       // Define email options
       const mailOptions = {
-        from: 'mailto:sgipanama1@gmail.com',
-        to: `mailto:muskan.shu@cisinlabs.com , mailto:sgip.enfoque@gmail.com ,${pdf[0].email}`,
+        from: 'sgipanama1@gmail.com',
+        to: `muskan.shu@cisinlabs.com , sgip.enfoque@gmail.com ,${pdf[0].email}`,
         subject: 'SGIP-DONATION REGISTRATION ',
         html: `<html><p>Dear ${pdf[0].nombre_completo} <p> 
         <p>Se ha registrado satisfactoria mente su contribución con los 

@@ -1463,7 +1463,7 @@ async function assignCreds(req,res){
     try{
        const {user_id,email,primer_nombre,primer_apellido,responsable,nivel_responsable,area_id,cabildo_id,distrito_sgip_id} = req.body
        const password = random.getRandomPassword(10)
-       if(!email || email == " " || email == "mailto:0@gmail.com"){
+       if(!email || email == " " || email == "0@gmail.com"){
         return res.status(400).json({ message: 'Correo electrónico invalido. Favor corregir.' });
        }
        if(responsable == 0 ){
@@ -2683,7 +2683,7 @@ async function forgotpassword(req,res){
       });
     
       var mailOptions = {
-        from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
+        from: 'SGI-Panama  <sgipanama1@gmail.com>',
         to:  "muskan.shu@cisinlabs.com , basededatosgip@gmail.com , maires.carlos@gmail.com ,motwani.j@gmail.com ,",//`${req.token.email} , ${req.email}`,
         subject: 'Forgot Password Request',
         html: `<html>User with username : <b> "${username}"</b> has requested a password reset. Please handle the request.<br> http://basededatos.sgipanama.com/#/dashboard/edit-profile-member/${userid}</html>`
