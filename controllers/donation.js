@@ -140,7 +140,7 @@ async function adddonation(req, res) {
 
 
 async function getuserbycedula(req, res) {
-  var result = await sequelize.query(`select nombre_completo,usuario_id as cedula , usuarios_usuario.id,email, area.nombre as area, cabildo.nombre as cabildo, distrito.nombre as distrito, grupo.nombre as grupo from usuarios_usuario
+  var result = await sequelize.query(`select nombre_completo ,usuario_id as cedula , usuarios_usuario.id,email, area.nombre as area, cabildo.nombre as cabildo, distrito.nombre as distrito, grupo.nombre as grupo from usuarios_usuario
     inner join usuarios_area as area on area.id = usuarios_usuario.area_id inner join usuarios_cabildo as cabildo on cabildo.id = usuarios_usuario.cabildo_id 
     inner join usuarios_distritosgip as distrito on distrito.id = usuarios_usuario.distrito_sgip_id left join usuarios_grupo as grupo on grupo.id = usuarios_usuario.grupo_id
     where usuario_id = "${req.body.cedula}"`, { type: sequelize.QueryTypes.SELECT })
@@ -223,12 +223,13 @@ function drawTable(doc, table) {
 
 
 
+
 async function generateAndSendPdf(pdfdata) {
   var message = await sequelize.query(`select * from messages`,{type : sequelize.QueryTypes.SELECT})
   var random = Math.floor(Math.random() * message.length);
   var randommessage  = await sequelize.query(`select message from messages where id = ${random}`,{type : sequelize.QueryTypes.SELECT})
   var pdf = await sequelize.query(`select usuario_id,usuarios_area.nombre as area,usuarios_usuario.email, usuarios_cabildo.nombre as cabildo,usuarios_distritosgip.nombre as distrito,
-   nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month , usuarios_division.nombre as division from donation_info   inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = usuarios_usuario.area_id
+   nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month ,donation_info.amount, usuarios_division.nombre as division from donation_info   inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = usuarios_usuario.area_id
   inner join usuarios_cabildo on usuarios_cabildo.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip on usuarios_distritosgip.id = usuarios_usuario.distrito_sgip_id
   inner join usuarios_division on usuarios_division.id = usuarios_usuario.division_id  inner join months on donation_info.donation_month = months.id
   inner join donation_method on donation_method.id = donation_info.donation_method  inner join donation_type on donation_type.id = donation_info.donation_type 
@@ -264,7 +265,7 @@ console.log(pdf[0])
       ['Tipo', `${pdf[0].donation_type}`],
       ['Año',`${pdf[0].donation_date.split("-")[0]}`],
       ['Mes', `${pdf[0].donation_month}`],
-      ['Mento', `${pdf[0].donation_date.split("-")[2]}`]
+      ['Monto', $+`${pdf[0].amount}`]
     ],
 
     yStart: 100,
@@ -296,11 +297,11 @@ console.log(pdf[0])
         from: 'sgipanama1@gmail.com',
         to: `muskan.shu@cisinlabs.com , sgip.enfoque@gmail.com ,${pdf[0].email}`,
         subject: 'SGIP-DONATION REGISTRATION ',
-        html: `<html><p>Dear ${pdf[0].nombre_completo} <p> 
-        <p>Se ha registrado satisfactoria mente su contribución con los 
-        siguientes datos:<p>
-        <p>Muchas gracias por ser miembro activo del Depto. de Contribuciones de la SGIP </p> 
-        <p>${randommessage[0].message}<p>
+        html: `<html><p>Estimado (a) ${pdf[0].nombre_completo} <p> 
+        <p>Se ha registrado satisfactoriamente su contribución con los 
+        siguientes datos adjuntos:<p>
+        <p>Muchas gracias por ser miembro activo del Depto. de Contribuciones de la SGIP. </p> 
+        <p><i>${randommessage[0].message}<i><p>
         <p>   Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
         impulsado por la Soka Gakkai Internacional de Panamá. </p>
         </html>`,
@@ -343,10 +344,16 @@ async function addnewuser(req, res) {
 
 async function getdashboardcards(req, res) {
   var date = new Date()
-  var year = date.getFullYear();
+  var year = date.getFullYear()
+  // var month = "02"//date.getMonth() + 1
+  // var fulldate = `${year}-${month}%`
+  // console.log("fulldate",fulldate)
   let monthInt =  date.getMonth() +1 ;
   let monthStr = monthInt.toLocaleString();
   var month = monthStr.length === 1 ? "0"+ monthStr  : monthStr;
+  var fulldate = `${year}-${month}%`
+  console.log(fulldate,"full date dekhlo bhiyooo")
+  var month = monthStr.length === 1 ? "0"+monthStr  : monthStr;
   var fulldate = `${year}-${month}%`
   console.log(fulldate,"full date dekhlo bhiyooo")
   var totalreg = await sequelize.query(`select count(*) as count from donation_info where donation_date like "${fulldate}"`, { type: sequelize.QueryTypes.SELECT })
@@ -354,17 +361,18 @@ async function getdashboardcards(req, res) {
   var totalactive = await sequelize.query(`select count(*) as count  from usuarios_usuario where estado_id = 1`, { type: sequelize.QueryTypes.SELECT })
   var activepercent = (totalmember.length / totalactive[0].count) * 100
   var monthdonation = await sequelize.query(`select sum(amount) as count from donation_info where donation_date like "${fulldate}"`, { type: sequelize.QueryTypes.SELECT })
+  console.log('monthdonation: ', monthdonation);
   var yearlydonation = await sequelize.query(`select sum(amount) as count from donation_info where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
 
   return res.status(200).send({
     message: "cards",
     data: {
-      total_month_registration: totalreg[0].count,
-      total_month_member: totalmember.length,
-      active_members: totalactive[0].count,
-      active_percent: Math.round(activepercent),
-      donation_by_month: monthdonation[0]?.count ? monthdonation[0]?.count : 0,
-      donation_by_year: yearlydonation[0].count
+      "TOTAL REGISTRATIONS CURRENT MONTH": totalreg[0].count,
+      "TOTAL MEMBERS REPORTING DONATIONS- CURRENT MONT": totalmember.length,
+      "TOTAL ACTIVE MEMBERS PER SGI DATABASE": totalactive[0].count,
+      "% OF MEMBERS WHO ARE ACTIVE DONORS":activepercent.toFixed(2)+`%`,
+      "Total donation current month": `$`+monthdonation[0].count?monthdonation[0].count : 0,
+      "Total donation YTD": `$`+yearlydonation[0].count
     }
   })
 
@@ -840,7 +848,9 @@ async function reportpercentpermonthbyarea(req, res) {
     for (var j in month) {
       var user = await sequelize.query(`select count(id)  as count from usuarios_usuario where area_id = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-      resp.push((data[0]) ? ((data[0].count / user[0].count) * 100) : 0)
+      resp.push((data[0]) ? ((data[0].count / user[0].count) * 100).toFixed(2) : 0)
+      // resp.push((data[0]) ? (Math.round((data[0].count / user[0].count)) * 100) : 0)
+      //
     }
     users.push(resp)
   }
@@ -878,8 +888,6 @@ module.exports = {
   reportpermonthbyarea,
   reportmemberpermonthbyarea,
   reportpercentpermonthbyarea
-
 }
-
 
 
