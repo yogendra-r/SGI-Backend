@@ -126,7 +126,7 @@ async function adddonation(req, res) {
   sequelize.query(`insert into donation_info(donation_type,donation_method ,amount,donation_date,user_id,confirmation_no,donation_month,reciept)
      values ("${donation_type}","${donation_method}","${amount}","${donation_date}","${user_id}","${con}",${donationmonth},"receipt/${con}.pdf")`)
   return res.status(200).send({
-    message: "donation added successfuly",
+    message: "GRACIAS SU CONTRIBUCIÓN HA SIDO REGISTRADA SATISFACTORIAMENTE",
     data: con
   })}
   catch(error){
