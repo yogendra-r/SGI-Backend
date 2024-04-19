@@ -3139,6 +3139,116 @@ values[2].data.push(invitee[0].newinvitee)
 
 }
 
+async function getAttendanceByLevel(req, res) {
+    try {
+        var where = await helper.findRoleDetails(req,res)
+        const area = req.body.area_id||where.area_id;
+        const cabildo = req.body.cabildo_id||where.cabildo_id;
+        const district = req.body.distrito_id || null
+        const meeting_id = req.body.new_activity_id || null
+       
+        const whereClause = `WHERE 1=1
+    AND (:area IS NULL OR area_id = :area)
+    AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+    AND (:district IS NULL OR distrito_id = :district) 
+    AND (:meeting_id IS NULL OR activity_id = :meeting_id)`;
+
+const query1 = `select * from usuarios_actividad ${whereClause}`
+
+const data = await sequelize.query(query1,{
+    type: sequelize.QueryTypes.SELECT,
+    replacements :{
+        area: area || null,
+        cabildo: cabildo || null,
+        district: district || null,
+        meeting_id : meeting_id || null
+    }
+})
+
+console.log('data: ', data);
+var label = []
+// const values =[{"label" : "Damas" , data : []},{"label" : "Cabelleros" , data : []},{"label" : "DJM" , data : []},{"label" : "DJF" , data : []},{"label" : "DEP" , data : []}]
+const values = [{ "label": "Miembros", data: [] }, { "label": "Invitados", data: [] }, { "label": "Invitado por primera vez", data: [] }]
+const ar = await sequelize.query(`select id,nombre from usuarios_area order by nombre`,{type : sequelize.QueryTypes.SELECT})
+for(var arr in ar){
+label.push(ar[arr].nombre)
+
+
+    
+    var damas = 0
+    var cabelleros = 0
+    var dep = 0
+    var djm = 0
+    var djf = 0
+  
+    
+
+for(var i in data){
+
+const divisionresultuser = await sequelize.query(`select division_id as division from usuarios_usuario where area_id = ${ar[arr].id} and id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 1))`,{type : sequelize.QueryTypes.SELECT})
+// const divisionresultinvitee = await sequelize.query(`select division  from invitados where id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 2))`,{type : sequelize.QueryTypes.SELECT})
+const divisionresult = divisionresultuser//.concat(divisionresultinvitee)
+
+
+// var values =[]
+// const ar = await sequelize.query(`select id,nombre from usuarios_area`,{type : sequelize.QueryTypes.SELECT})
+// for(var j in ar){
+//    values.push(0)
+//  label.push(ar[i].nombre)                
+// //  for(var j in user){
+//    if(data[j].area_id==ar[j].id){
+//        console.log("ifff",user[j].AREA,user[j].count)
+       
+//      values[i]=(data[i].count)
+//    }
+
+// }
+for(var j in divisionresult){
+if (divisionresult[j].division == 1) {         //1 -> Damas
+    damas++
+ }
+ else if (divisionresult[j].division == 2) {    //2 -> caballereos
+    cabelleros++
+ }
+ else if (divisionresult[j].division == 3) {    //3 -> DJM
+    djm++
+ }
+ else if (divisionresult[j].division == 4) {    //4 -> DJF
+     djf++
+ }
+ else if (divisionresult[j].division == 5) {    //5-> DEP
+    dep++
+ }
+
+}
+}
+values[0].data.push(damas)
+values[1].data.push(cabelleros)
+values[2].data.push(djm)
+values[3].data.push(djf)
+values[4].data.push(dep)
+
+
+}   
+  
+
+
+
+        console.log(label, values, "att result")
+        return res.status(200).send({
+            message: "data fetched",
+            label,
+            values,
+        }
+        )
+    } catch (error) {
+        console.log(error)
+        console.error('Error:', error.message);
+    }
+
+
+}
+
 
 module.exports = {
     getAttendanceByDivision,
@@ -3202,7 +3312,8 @@ module.exports = {
     deleteUser,
     assignCreds,
     assignCredsForArea,
-    getMemberAttendanceByLevel
+    getMemberAttendanceByLevel,
+    getAttendanceByLevel
 }
 
 
