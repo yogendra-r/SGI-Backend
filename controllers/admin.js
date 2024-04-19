@@ -3057,6 +3057,89 @@ return res.status(200).send({
         });}
 }
 
+async function getMemberAttendanceByLevel(req, res) {
+    try {
+        var where = await helper.findRoleDetails(req,res)
+        const area = req.body.area_id||where.area_id;
+        const cabildo = req.body.cabildo_id||where.cabildo_id;
+        const district = req.body.distrito_id || null
+        const meeting_id = req.body.new_activity_id || null
+       
+        const whereClause = `WHERE 1=1
+    AND (:area IS NULL OR area_id = :area)
+    AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+    AND (:district IS NULL OR distrito_id = :district) 
+    AND (:meeting_id IS NULL OR activity_id = :meeting_id)`;
+
+
+const query1 = `select * from usuarios_actividad ${whereClause}`
+
+const data = await sequelize.query(query1,{
+    type: sequelize.QueryTypes.SELECT,
+    replacements :{
+        area: area || null,
+        cabildo: cabildo || null,
+        district: district || null,
+        meeting_id : meeting_id || null
+    }
+})
+const ar = await sequelize.query(`select id,nombre from usuarios_area order by nombre`,{type : sequelize.QueryTypes.SELECT})
+const areaa = [[], [], [], [], [], [], [], [], [], [], [], []]
+for (var i in data) {
+
+    for (var j in ar) {
+        if (ar[j].id == data[i].area_id) {
+            areaa[j].push(data[i].id)
+        }
+    }
+}
+var label = []
+const values =[{"label" : "Member" , data : []},{"label" : "Invitee" , data : []},{"label" : "Invitado por" , data : []}]
+
+
+for(var arr in ar){
+label.push(ar[arr].nombre)
+values[0].data.push(0)
+values[1].data.push(0)
+values[2].data.push(0)
+// for(var i in data){
+    console.log('data: ', data);
+    var monthwisedata = { [`${ar[arr].nombre}`]: { member: 0, invitee: 0, invitado_por: 0 } }
+    // console.log('areaa[i]: ', areaa[i]);
+
+    if(areaa[i]?.length){
+const member = await sequelize.query(`select count(*) as count from attendance where activity_id in (${areaa[i]}) and role_id = 1`,{type : sequelize.QueryTypes.SELECT})
+console.log('member: ', member);
+monthwisedata[ar[arr].nombre].member = member[0].count
+values[0].
+data.push(member[0].count)
+const invitee = await sequelize.query(`select count(*) as count  from attendance where activity_id in (${areaa[i]}) and  role_id = 2 and is_invitado_por = 0`,{type : sequelize.QueryTypes.SELECT})
+monthwisedata[ar[arr].nombre].invitee = invitee[0].count
+values[1].data.push(invitee[0].count)
+const newinvitee  = await sequelize.query(`select count(*) as count  from attendance where activity_id in (${areaa[i]}) and  role_id = 2 and is_invitado_por = 1`,{type : sequelize.QueryTypes.SELECT})
+monthwisedata[ar[arr].nombre].invitado_por = newinvitee[0].count
+values[2].data.push(invitee[0].newinvitee)
+    }
+// }
+
+}   
+
+        console.log(label, values, "att result")
+        return res.status(200).send({
+            message: "data fetched",
+            label,
+            values,
+        }
+        )
+    } catch (error) {
+        console.log(error)
+        console.error('Error:', error.message);
+    }
+
+
+}
+
+
 module.exports = {
     getAttendanceByDivision,
     getAttendanceByMonth,
@@ -3118,7 +3201,8 @@ module.exports = {
     clearSubscription,
     deleteUser,
     assignCreds,
-    assignCredsForArea
+    assignCredsForArea,
+    getMemberAttendanceByLevel
 }
 
 

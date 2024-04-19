@@ -27,7 +27,6 @@ router.post('/leaderreport',middleware.verifyToken,leaders.leadereport)
 router.post('/areareport',middleware.verifyToken,leaders.areareport)
 
 router.post('/horizontalgrpreport' , leaders.horizontalreport)
-// router.post('/horizontalgrpreport' , middleware.verifyToken,leaders.horizontalreport)
 
 router.post('/blockLeader', middleware.verifyToken, admin.blockleader)
   
@@ -151,6 +150,7 @@ router.post('/clearsubscription',admin.clearSubscription)
 
 router.post('/deleteuser',admin.deleteUser)
 
+router.post('/getMemberAttendanceByLevel',middleware.verifyToken,admin.getMemberAttendanceByLevel)
 
 router.post('/assigncreds',middleware.verifyToken,admin.assignCreds)
 
