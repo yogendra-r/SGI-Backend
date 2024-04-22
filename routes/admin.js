@@ -27,6 +27,7 @@ router.post('/leaderreport',middleware.verifyToken,leaders.leadereport)
 router.post('/areareport',middleware.verifyToken,leaders.areareport)
 
 router.post('/horizontalgrpreport' , leaders.horizontalreport)
+// router.post('/horizontalgrpreport' , middleware.verifyToken,leaders.horizontalreport)
 
 router.post('/blockLeader', middleware.verifyToken, admin.blockleader)
   
@@ -71,13 +72,14 @@ router.get('/getCabildoDivision' , middleware.verifyToken, admin.reportForCabild
 
 router.get('/cabildoDistrictSGIPbyId' , middleware.verifyToken, admin.reportForcabildoDistrictSGIPbyCabildoId)
 
-
 //mark attendance 
 router.post('/addActivity' , middleware.verifyToken, admin.addAcivity)
 
 router.post('/getAttendanceMemberList',middleware.verifyToken,admin.getAttendanceMemberList)
 
 router.post('/getAttendanceInviteeList',middleware.verifyToken,admin.getAttendanceInviteeList)
+
+router.post('/getAttendanceLeaderList',middleware.verifyToken,admin.getAttendanceLeaderList)
 
 router.post('/markAttendance', middleware.verifyToken,admin.markAttendance)
 
@@ -87,8 +89,11 @@ router.post('/getAttendanceDivisionPie',middleware.verifyToken,admin.getAttendan
 
 router.post('/getAttendanceGraph',middleware.verifyToken,admin.getAttendanceByMonth)
 
-router.post('/getAttendanceList',middleware.verifyToken,admin.getAttendanceList)
+router.post('/getMemberAttendanceByLevel',middleware.verifyToken,admin.getMemberAttendanceByLevel)
 
+router.post('/getAttendanceByLevel',middleware.verifyToken,admin.getAttendanceByLevel)
+
+router.post('/getAttendanceList',middleware.verifyToken,admin.getAttendanceList)
 
 //horizontal group
 router.get('/horizontalGroupList',admin.horizontalGroupList)
@@ -119,15 +124,6 @@ router.post('/addGroupandSplit', admin.addGroupandSplit)
 
 router.post('/changepassword',middleware.verifyToken,admin.changepassword)
 
-router.get('/test',(req,res)=>{
-const array = [179,191,207,423,1117,1284,1352,1361,1449,1524,1526,1551,1654,1686,1795,1844,1977,1978,1988,2020,2098,2118,2159,2190,2221,2223,2247,2354,2368,2397,2437,2459,2464,3344,3345,3347,3349,3323,3316,3319,3320,3065,3092,3294]
-
-    for(var i in array){
-       const data = sequelize.query(`insert into group_members (group_id,user_id) values(19,${array[i]})`)
-    }
-    return res.send("done")
-})
-
 router.post('/hierarchydropdown',admin.hierarchydropdown)
 
 router.post('/filterreport',middleware.verifyToken,admin.filterreport)
@@ -135,6 +131,8 @@ router.post('/filterreport',middleware.verifyToken,admin.filterreport)
 router.post('/subscriptiondata',admin.subscriptiondata)
 
 router.post('/subscriptionGraph',middleware.verifyToken,admin.subscriptionGraph)
+
+router.post('/getDynamicDistrictList',admin.getDynamicDistrictList)
 
 router.post('/')
 
@@ -149,8 +147,6 @@ router.get('/generalreport',admin.generalreport)
 router.post('/clearsubscription',admin.clearSubscription)
 
 router.post('/deleteuser',admin.deleteUser)
-
-router.post('/getMemberAttendanceByLevel',middleware.verifyToken,admin.getMemberAttendanceByLevel)
 
 router.post('/assigncreds',middleware.verifyToken,admin.assignCreds)
 
