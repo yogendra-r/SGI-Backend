@@ -1428,7 +1428,7 @@ async function leaderSignup(req, res) {
                     celular: celular || result.celular,
                     telefono: telefono,
                     profesion_id: profesion_id,
-                    fecha_nacimiento : fecha_nacimiento,
+                    fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: area_id || result.area_id,
                     cabildo_id: cabildo_id || result.cabildo_id,
@@ -3400,10 +3400,10 @@ values[2].data.push(invitee[0].newinvitee)
 
 
 async function getDynamicDistrictList(req,res){
-    // var where = await helper.findRoleDetails(req, res)
     const {provincia_id} = req.body
-    const distlist = await sequelize.query(`select * from usuarios_distrito where provincia_id = ${provincia_id} order by nombre`, { type: sequelize.QueryTypes.SELECT })
 if(provincia_id){
+    const distlist = await sequelize.query(`select * from usuarios_distrito where provincia_id = ${provincia_id} order by nombre`, { type: sequelize.QueryTypes.SELECT })
+
     return res.status(200).send({
         message: "Data fetched",
         data:{
