@@ -1400,7 +1400,7 @@ async function leaderSignup(req, res) {
             }
 
 
-            const { primer_nombre, primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,fecha_nacimiento,
+            const { primer_nombre, primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,fecha_nacimiento,fechadeingreso,
                 estado_id, area_id, cargo_responsable_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id, nivel_responsable, provincia, distrito_new_id, shakubuku } = req.body
             if (grupo_id) {
                 const rows = await sequelize.query(`SELECT id FROM usuarios_grupo WHERE nombre = "${grupo_id}"`, { type: sequelize.QueryTypes.SELECT });
@@ -1428,6 +1428,7 @@ async function leaderSignup(req, res) {
                     celular: celular || result.celular,
                     telefono: telefono,
                     profesion_id: profesion_id,
+                    fecha_ingreso: fechadeingreso ? (fechadeingreso.toString()).slice(0, 10) : (date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()),
                     fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: area_id || result.area_id,

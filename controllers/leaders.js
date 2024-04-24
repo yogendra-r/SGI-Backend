@@ -322,7 +322,7 @@ async function getdropdowndata(req, res) {
         const activity = await sequelize.query(`select * from activity`, { type: sequelize.QueryTypes.SELECT })
         const cargo = await sequelize.query(`select * from usuarios_cargoresponsable`, { type: sequelize.QueryTypes.SELECT })
         const gender = await sequelize.query(`select * from usuarios_sexo`, { type: sequelize.QueryTypes.SELECT })
-        const profesion = await sequelize.query(`select * from usuarios_profesion`, { type: sequelize.QueryTypes.SELECT })
+        const profesion = await sequelize.query(`select * from usuarios_profesion order by nombre`, { type: sequelize.QueryTypes.SELECT })
         const budista = await sequelize.query(`select * from usuarios_nivelbudista`, { type: sequelize.QueryTypes.SELECT })
         const distrito_new = await sequelize.query(`select * from usuarios_distrito`, { type: sequelize.QueryTypes.SELECT })
         const provincia = await sequelize.query(`select * from usuarios_provincia`, { type: sequelize.QueryTypes.SELECT })
