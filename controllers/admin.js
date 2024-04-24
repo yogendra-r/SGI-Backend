@@ -288,7 +288,7 @@ AND (:distrito_id IS NULL OR distrito_id = :distrito_id) `
         else {
             var data = await sequelize.query(`insert into usuarios_actividad (nombre,fetcha_de_actividad, area_id, cabildo_id ,distrito_id,activity_id ) values("${nombre}","${date}",${area_id},${cabildo_id || null},${distrito_id || null},${req.body.nombre})`)
 
-            console.log(data)
+            // console.log(data)
             return res.status(200).send({
                 message: "activity added successfully",
                 data: { id: data[0], area_id: area_id, cabildo_id: cabildo_id, distrito_id: distrito_id, fetcha_de_actividad: date, nombre: nombre }
@@ -639,7 +639,7 @@ async function getAttendanceByDivision(req, res) {
             }
         })
 
-        console.log('data: ', data);
+        // console.log('data: ', data);
         const month = [[], [], [], [], [], [], [], [], [], [], [], []]
         const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
         for (var i in data) {
@@ -2305,7 +2305,7 @@ async function addAreaandSplit(req, res) {
                 var result = await sequelize.query(`select distinct cabildo_id from usuarios_usuario where area_id = ${edit_area}`, { type: sequelize.QueryTypes.SELECT })
                 console.log(result.length)
                 var data = await sequelize.query(`select id, nombre from usuarios_cabildo where nombre = "Cabildo ${(result.length) + 1}"`, { type: sequelize.QueryTypes.SELECT })
-                console.log(data[0].id, data[0].nombre)
+                // console.log(data[0].id, data[0].nombre)
                 sequelize.query(`update usuarios_usuario set area_id = ${edit_area} , cabildo_id = ${data[0].id} where area_id = ${old_area} and cabildo_id = ${cabildo_id[i]} `)
 
             } return res.status(200).send({
@@ -2318,7 +2318,7 @@ async function addAreaandSplit(req, res) {
             var new_area = result[0]
             for (var i in cabildo_id) {
                 var data = await sequelize.query(`select id, nombre from usuarios_cabildo where nombre = "Cabildo ${Number(i) + 1}"`, { type: sequelize.QueryTypes.SELECT })
-                console.log(data[0].id, data[0].nombre, "cabildo_id")
+                // console.log(data[0].id, data[0].nombre, "cabildo_id")
                 console.log(cabildo_id[i], "cabildo")
                 console.log(new_area, "new area")
                 sequelize.query(`update usuarios_usuario set area_id = ${new_area} , cabildo_id = ${data[0].id} where area_id = ${old_area} and cabildo_id = ${cabildo_id[i]}`)
@@ -2355,7 +2355,7 @@ async function addCabildoandSplit(req, res) {
                 var result = await sequelize.query(`select distinct distrito_sgip_id from usuarios_usuario where area_id =${area_id} and cabildo_id = ${edit_cabildo}`, { type: sequelize.QueryTypes.SELECT })
                 console.log(result.length)
                 var data = await sequelize.query(`select id, nombre from usuarios_distritosgip where nombre = "Distrito ${(result.length) + 1}"`, { type: sequelize.QueryTypes.SELECT })
-                console.log(data[0].id, data[0].nombre)
+                // console.log(data[0].id, data[0].nombre)
                 sequelize.query(`update usuarios_usuario set distrito_sgip_id = ${data[0].id} where area_id = ${area_id} and cabildo_id = ${old_cabildo} and distrito_sgip_id = ${distrito_id[i]}`)
 
             }
@@ -2369,7 +2369,7 @@ async function addCabildoandSplit(req, res) {
             var new_cabildo = result[0]
             for (var i in distrito_id) {
                 var data = await sequelize.query(`select id, nombre from usuarios_distritosgip where nombre = "Distrito ${Number(i) + 1}"`, { type: sequelize.QueryTypes.SELECT })
-                console.log(data[0].id, data[0].nombre, "distrito_id")
+                // console.log(data[0].id, data[0].nombre, "distrito_id")
                 console.log(distrito_id[i], "district")
                 console.log(new_cabildo, "new area")
                 sequelize.query(`update usuarios_usuario set cabildo_id = ${new_cabildo} , distrito_sgip_id = ${data[0].id} where area_id = ${area_id} and cabildo_id = ${old_cabildo} and distrito_sgip_id = ${distrito_id[i]}`)
@@ -2409,7 +2409,7 @@ async function addDistrictandSplit(req, res) {
                 var result = await sequelize.query(`select distinct grupo_id from usuarios_usuario where area_id =${area_id} and cabildo_id = ${cabildo_id} and distrito_sgip_id = ${edit_district_id}`, { type: sequelize.QueryTypes.SELECT })
                 console.log(result.length)
                 var data = await sequelize.query(`select id, nombre from usuarios_grupo where nombre = "Distrito ${(result.length) + 1}"`, { type: sequelize.QueryTypes.SELECT })
-                console.log(data[0].id, data[0].nombre)
+                // console.log(data[0].id, data[0].nombre)
                 sequelize.query(`update usuarios_usuario set grupo_id = ${group_id[i]} where area_id = ${area_id} and cabildo_id = ${old_cabildo} and distrito_sgip_id = ${group_id[i]}`)
 
             }
@@ -3231,10 +3231,10 @@ const data = await sequelize.query(query1,{
     }
 })
 
-console.log('data: ', data);
+// console.log('data: ', data);
 var label = []
-// const values =[{"label" : "Damas" , data : []},{"label" : "Cabelleros" , data : []},{"label" : "DJM" , data : []},{"label" : "DJF" , data : []},{"label" : "DEP" , data : []}]
-const values = [{ "label": "Miembros", data: [] }, { "label": "Invitados", data: [] }, { "label": "Invitado por primera vez", data: [] }]
+const values =[{"label" : "Damas" , data : []},{"label" : "Cabelleros" , data : []},{"label" : "DJM" , data : []},{"label" : "DJF" , data : []},{"label" : "DEP" , data : []}]
+// const values = [{ "label": "Miembros", data: [] }, { "label": "Invitados", data: [] }, { "label": "Invitado por primera vez", data: [] }]
 const ar = await sequelize.query(`select id,nombre from usuarios_area order by nombre`,{type : sequelize.QueryTypes.SELECT})
 for(var arr in ar){
 label.push(ar[arr].nombre)
@@ -3361,7 +3361,7 @@ values[0].data.push(0)
 values[1].data.push(0)
 values[2].data.push(0)
 // for(var i in areaa){
-    console.log('data: ', data);
+    // console.log('data: ', data);
     var monthwisedata = { [`${ar[arr].nombre}`]: { member: 0, invitee: 0, invitado_por: 0 } }
     // console.log('areaa[i]: ', areaa[i]);
 

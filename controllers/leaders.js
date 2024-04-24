@@ -60,7 +60,7 @@ async function leaderLogin(req, res) {
         if (result) {
             if (result.password == md5(password)) {
                 var data = await sequelize.query(`select id,area_id,cabildo_id,distrito_sgip_id,primer_nombre as firstName,primer_apellido as lastName,email from usuarios_usuario where email = "${email}" and responsable = 1`,{type : sequelize.QueryTypes.SELECT})
-               console.log(data)
+            //    console.log(data)
                if(!data.length){
                 return res.status(400).send({
                     message: "Su usuario no está registrado en el sistema de base de datos de la SGIP."
@@ -83,7 +83,7 @@ async function leaderLogin(req, res) {
                 var ar = await sequelize.query(`select nombre from usuarios_area where id = ${data[0].area_id}`,{type : sequelize.QueryTypes.SELECT})
                 var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${data[0].cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
                 var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${data[0].distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
-                console.log(ans)
+                // console.log(ans)
                  var heading = " "
                  var is_admin = 0
                 if(ans.level=="ADMIN"){
@@ -303,7 +303,7 @@ function getAllActiveMembers(req, res) {
 async function test(req, res) {
     try {
         const result = await sequelize.query(`select * from wp_nuevas_suscripciones where ID in(select usuario_id from usuarios_usuario where  usuario_id !="NA" and Usuario_id !=" ") `)
-        console.log(result)
+        // console.log(result)
         res.send(result[0])
     } catch (e) {
         console.log(e);
@@ -918,10 +918,10 @@ async function reportForCabildoArea(req, res) {
             return res.status(401).json({ message: 'Not a leader' });
         }
         let q = `select userarea.nombre as area_nombre, cab.nombre as cabildo_nombre , count(cab.nombre) as cabildo_counts from usuarios_usuario as user join usuarios_cabildo as cab on user.cabildo_id = cab.id join usuarios_area as userarea on userarea.id = user.area_id  where ${searchQ} and user.cabildo_id = ${cabildo_id} `
-        console.log(q);
+        // console.log(q);
 
         const result = await sequelize.query(q, { type: sequelize.QueryTypes.SELECT })
-        console.log(result.length);
+        // console.log(result.length);
         return res.json(result);
 
     } catch (e) {
@@ -943,7 +943,7 @@ async function reportForCabildoDivision(req, res) {
         console.log(q);
 
         const result = await sequelize.query(q, { type: sequelize.QueryTypes.SELECT })
-        console.log(result.length);
+        // console.log(result.length);
         return res.json(result);
     } catch (e) {
         console.log(e);
@@ -1013,7 +1013,7 @@ async function reportForDivision(req, res) {
         console.log('search query', q);
         //id,divsion_id 
         const result = await sequelize.query(q, { type: sequelize.QueryTypes.SELECT })
-        console.log(result.length);
+        // console.log(result.length);
         let divOptions = ["Damas", "Caballeros", "DJM", "DJF", "DEP", "N/A"];
         let stateOptions = ["ACTIVO", "INACTIVO", "FALLECIDO", "TAITEN", "TRASLADO DE PAIS"];
         let reportResult = [];
@@ -1060,7 +1060,7 @@ async function reportForAreaNState(req, res) {
         if (!result || result.length <= 0) {
             return res.status(404).json({ message: 'Nothing Found' });
         }
-        console.log(result);
+        // console.log(result);
         //return res.json(result)
         let stateOptions = ["ACTIVO", "INACTIVO", "FALLECIDO", "TAITEN", "TRASLADO DE PAIS"]; //later we will get dynamically
         let reportResult = result;
@@ -1206,11 +1206,11 @@ async function reportForAreaNDivision(req, res) {
         let q = `select usuarios_area.nombre as area_name ,count(usuarios_area.nombre) as members, usuarios_division.nombre as div_name from usuarios_usuario as Main inner join usuarios_area on Main.area_id = usuarios_area.id inner join usuarios_division on Main.division_id = usuarios_division.id where ${searchQ} group by usuarios_division.nombre`;
         //id,divsion_id 
         const result = await sequelize.query(q, { type: sequelize.QueryTypes.SELECT })
-        console.log(result.length);
+        // console.log(result.length);
         if (!result || result.length <= 0) {
             return res.status(404).json({ message: 'Nothing Found' });
         }
-        console.log(result);
+        // console.log(result);
 
         return res.json(result);
     } catch (e) {
