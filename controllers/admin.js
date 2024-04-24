@@ -418,7 +418,7 @@ async function getAttendanceLeaderList(req, res) {
         AND (:division_id IS NULL OR division_id = :division_id)
         AND (:cabildo IS NULL OR cabildo_id = :cabildo)
         AND (:district IS NULL OR distrito_sgip_id = :district) `
-        const result = await sequelize.query(`select usuarios_usuario.id,usuario_id as Cedula_id, sgi_id , nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_division as division on division.id = usuarios_usuario.division_id where 
+        const result = await sequelize.query(`select usuarios_usuario.id,area_id,cabildo_id,distrito_sgip_id,usuario_id as Cedula_id,nivel.nombre as nivel_responsable, sgi_id , nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_nivelresponsable as nivel  on nivel.id = usuarios_usuario.nivel_responsable_id inner join usuarios_division as division on division.id = usuarios_usuario.division_id where 
     area_id = ${req.body.area_id} and responsable = 1 ${whereClause} order by nombre_completo`, {
             type: sequelize.QueryTypes.SELECT, replacements: {
                 cabildo: cabildo || null,
@@ -426,8 +426,32 @@ async function getAttendanceLeaderList(req, res) {
                 division_id: division_id || null
             }
         })
+      
 
         for (var i in result) {
+            var ar = await sequelize.query(`select nombre from usuarios_area where id = ${result[i].area_id}`, { type: sequelize.QueryTypes.SELECT })
+            var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${result[i].cabildo_id}`, { type: sequelize.QueryTypes.SELECT })
+            var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${result[i].distrito_sgip_id}`, { type: sequelize.QueryTypes.SELECT })
+            var heading = ""
+            var ans = await helper.findRoleDetails(req, res)
+            console.log('ans.level: ', ans.level);
+            if (ans.level == "Admin") {
+                heading = "Admin"
+            }
+            if (ans.level == "Nacional") {
+                heading = "Nacional"
+            }
+            if (ans.level == "Área") {
+    
+                heading = ar[0].nombre
+            }
+            if (ans.level == "Cabildo") {
+                heading = ar[0].nombre + " " + cb[0].nombre
+            }
+            if (ans.level == "Distrito") {
+                heading = ar[0].nombre + " " + cb[0].nombre + " " + ds[0].nombre
+            }
+            result[i].nivel_name = heading
             result[i].present = false
             for (var j in att) {
                 if (result[i].id == att[j].user_id) {
@@ -1486,7 +1510,7 @@ async function leaderSignup(req, res) {
             const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,
             segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
             estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,fecha_nacimiento = :fecha_nacimiento,
-            division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by,fecha_ingreso : fecha_ingreso,
+            division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by,fecha_ingreso : fecha_ingreso
             where id = ${req.body.user_id}`, {
                     replacements: {
                         ...data
