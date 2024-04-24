@@ -433,22 +433,22 @@ async function getAttendanceLeaderList(req, res) {
             var cb = await sequelize.query(`select nombre from usuarios_cabildo where id = ${result[i].cabildo_id}`, { type: sequelize.QueryTypes.SELECT })
             var ds = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${result[i].distrito_sgip_id}`, { type: sequelize.QueryTypes.SELECT })
             var heading = ""
-            var ans = await helper.findRoleDetails(req, res)
-            console.log('ans.level: ', ans.level);
-            if (ans.level == "Admin") {
+            var ans = result[i]
+            console.log('ans.nivel_responsable: ', ans.nivel_responsable);
+            if (ans.nivel_responsable == "Admin") {
                 heading = "Admin"
             }
-            if (ans.level == "Nacional") {
+            if (ans.nivel_responsable == "Nacional") {
                 heading = "Nacional"
             }
-            if (ans.level == "Área") {
+            if (ans.nivel_responsable == "Área") {
     
                 heading = ar[0].nombre
             }
-            if (ans.level == "Cabildo") {
+            if (ans.nivel_responsable == "Cabildo") {
                 heading = ar[0].nombre + " " + cb[0].nombre
             }
-            if (ans.level == "Distrito") {
+            if (ans.nivel_responsable == "Distrito") {
                 heading = ar[0].nombre + " " + cb[0].nombre + " " + ds[0].nombre
             }
             result[i].nivel_name = heading
@@ -1509,8 +1509,8 @@ async function leaderSignup(req, res) {
             }
             const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,
             segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
-            estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,fecha_nacimiento = :fecha_nacimiento,
-            division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by,fecha_ingreso :fecha_ingreso
+            estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,fecha_nacimiento = :fecha_nacimiento,fecha_ingreso :fecha_ingreso,
+            division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by
             where id = ${req.body.user_id}`, {
                     replacements: {
                         ...data
