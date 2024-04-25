@@ -264,7 +264,7 @@ console.log(pdf[0])
       ['Tipo', `${pdf[0].donation_type}`],
       ['Año',`${pdf[0].donation_date.split("-")[0]}`],
       ['Mes', `${pdf[0].donation_month}`],
-      ['Monto', `$+${pdf[0].amount.toFixed(2)}`]
+      ['Monto', `$${pdf[0].amount.toFixed(2)}`]
     ],
 
     yStart: 100,
@@ -300,8 +300,8 @@ console.log(pdf[0])
         <p>Se ha registrado satisfactoriamente su contribución con los 
         siguientes datos adjuntos:<p>
         <p>Muchas gracias por ser miembro activo del Depto. de Contribuciones de la SGIP. </p> 
-        <p><i>${randommessage[0].message}<i><p>
-        <p>   Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
+        <p><i>${randommessage[0].message}</i><p>
+        <p> Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
         impulsado por la Soka Gakkai Internacional de Panamá. </p>
         </html>`,
         attachments: [
