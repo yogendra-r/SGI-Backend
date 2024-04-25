@@ -126,7 +126,7 @@ async function adddonation(req, res) {
   sequelize.query(`insert into donation_info(donation_type,donation_method ,amount,donation_date,user_id,confirmation_no,donation_month,reciept)
      values ("${donation_type}","${donation_method}","${amount}","${donation_date}","${user_id}","${con}",${donationmonth},"receipt/${con}.pdf")`)
   return res.status(200).send({
-    message: "GRACIAS SU CONTRIBUCIÓN HA SIDO REGISTRADA SATISFACTORIAMENTE",
+    message: "donation added successfuly",
     data: con
   })}
   catch(error){
@@ -140,7 +140,7 @@ async function adddonation(req, res) {
 
 
 async function getuserbycedula(req, res) {
-  var result = await sequelize.query(`select nombre_completo ,usuario_id as cedula , usuarios_usuario.id,email, area.nombre as area, cabildo.nombre as cabildo, distrito.nombre as distrito, grupo.nombre as grupo from usuarios_usuario
+  var result = await sequelize.query(`select nombre_completo ,usuario_id as cedula , usuarios_usuario.id,email, area.nombre as area, cabildo.nombre as cabildo, distrito.nombre as distrito from usuarios_usuario
     inner join usuarios_area as area on area.id = usuarios_usuario.area_id inner join usuarios_cabildo as cabildo on cabildo.id = usuarios_usuario.cabildo_id 
     inner join usuarios_distritosgip as distrito on distrito.id = usuarios_usuario.distrito_sgip_id left join usuarios_grupo as grupo on grupo.id = usuarios_usuario.grupo_id
     where usuario_id = "${req.body.cedula}"`, { type: sequelize.QueryTypes.SELECT })
@@ -259,13 +259,12 @@ console.log(pdf[0])
       ['Área', `${pdf[0].area}`],
       ['Cabildo', `${pdf[0].cabildo}`],
       ['Distrito', `${pdf[0].distrito}`],
-      ['Grupo',`${pdf[0].grupo}`],
       ['Fecha de registro', `${pdf[0].donation_date}`],
       ['Método', `${pdf[0].donation_method}`],
       ['Tipo', `${pdf[0].donation_type}`],
       ['Año',`${pdf[0].donation_date.split("-")[0]}`],
       ['Mes', `${pdf[0].donation_month}`],
-      ['Monto', $+`${pdf[0].amount}`]
+      ['Monto', `$+${pdf[0].amount.toFixed(2)}`]
     ],
 
     yStart: 100,
@@ -848,7 +847,7 @@ async function reportpercentpermonthbyarea(req, res) {
     for (var j in month) {
       var user = await sequelize.query(`select count(id)  as count from usuarios_usuario where area_id = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-      resp.push((data[0]) ? ((data[0].count / user[0].count) * 100).toFixed(2) : 0)
+      resp.push((data[0]) ? ((data[0].count / user[0].count) * 100).toFixed(2) : "00")
       // resp.push((data[0]) ? (Math.round((data[0].count / user[0].count)) * 100) : 0)
       //
     }
