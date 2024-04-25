@@ -326,7 +326,7 @@ async function getdropdowndata(req, res) {
         const budista = await sequelize.query(`select * from usuarios_nivelbudista`, { type: sequelize.QueryTypes.SELECT })
         const distrito_new = await sequelize.query(`select * from usuarios_distrito`, { type: sequelize.QueryTypes.SELECT })
         const provincia = await sequelize.query(`select * from usuarios_provincia`, { type: sequelize.QueryTypes.SELECT })
-        const months = await sequelize.query(`select * from month `, { type: sequelize.QueryTypes.SELECT })
+        const months = await sequelize.query(`select * from months `, { type: sequelize.QueryTypes.SELECT })
         var options = [{ id: 1, nombre: "SI" }, { id: 0, nombre: "NO" }]
         var subscription = [{ id: 1, nombre: "Puente De Paz" }, { id: 2, nombre: "Esperanza" }, { id: 3, nombre: "Vision" }]
         var where = await helper.findRoleDetails(req, res)
