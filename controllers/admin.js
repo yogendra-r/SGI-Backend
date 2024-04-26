@@ -1469,7 +1469,7 @@ async function leaderSignup(req, res) {
                     shakubuku: shakubuku || result.shakubuku,
                     edited_by: adm[0].nombre_completo
                 }
-                console.log('fecha_ingreso: ', fecha_ingreso);
+                // console.log('fecha_ingreso: ', fecha_ingreso);
 
             }
             else {
