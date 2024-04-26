@@ -1437,7 +1437,7 @@ async function leaderSignup(req, res) {
                 }
             }
             var date = new Date()
-            if (adm[0].responsable == 1 && adm[0].nivel_responsable_id == 1 || req.token.id != result.id) {
+            if (adm[0].responsable == 1 && adm[0].nivel_responsable_id == 7 || req.token.id != result.id) {
                 console.log("edit if")
                 var data = {
 
@@ -1446,13 +1446,13 @@ async function leaderSignup(req, res) {
                     primer_apellido: primer_apellido || result.primer_apellido,
                     segundo_nombre: segundo_nombre,
                     segundo_apellido: segundo_apellido,
+                    fecha_ingreso: (fechadeingreso.toString()).slice(0, 10) || result.fecha_ingreso,
                     nombre_completo: primer_nombre + " " + segundo_nombre + " " + primer_apellido + " " + segundo_apellido,
                     direccion: direccion || result.direccion,
                     email: email || result.email,
                     celular: celular || result.celular,
                     telefono: telefono,
-                    profesion_id: profesion_id,
-                    fecha_ingreso: (fechadeingreso.toString()).slice(0, 10) || result.fecha_ingreso,
+                    profesion_id: 1,//profesion_id,
                     fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: area_id || result.area_id,
@@ -1469,6 +1469,8 @@ async function leaderSignup(req, res) {
                     shakubuku: shakubuku || result.shakubuku,
                     edited_by: adm[0].nombre_completo
                 }
+                console.log('fecha_ingreso: ', fecha_ingreso);
+
             }
             else {
                 console.log("edit else")
@@ -1484,8 +1486,9 @@ async function leaderSignup(req, res) {
                     email: email || result.email,
                     celular: celular || result.celular,
                     telefono: telefono,
-                    fecha_ingreso: (fechadeingreso.toString()).slice(0, 10) || result.fecha_ingreso,
                     profesion_id: profesion_id,
+                    fecha_ingreso: (fechadeingreso.toString()).slice(0, 10) || result.fecha_ingreso,
+                    fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: result.area_id,
                     cabildo_id: result.cabildo_id,
@@ -1509,14 +1512,14 @@ async function leaderSignup(req, res) {
                 // console.log(result)
             }
             const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,
-            segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
-            estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,fecha_nacimiento = :fecha_nacimiento,
-            fecha_ingreso = :fecha_ingreso, division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by
-            where id = ${req.body.user_id}`, {
-                    replacements: {
-                        ...data
-                    }
-                })
+        segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
+        estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,fecha_nacimiento = :fecha_nacimiento,fecha_ingreso = :fecha_ingreso,
+        division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by
+        where id = ${req.body.user_id}`, {
+                replacements: {
+                    ...data
+                }
+            })
 
         }
         return res.status(200).send({
