@@ -333,7 +333,41 @@ console.log(pdf[0])
 async function addnewuser(req, res) {
   console.log(req.body)
   const {cedula_id, nombre_completo,area, cabildo, distrito, grupo, email} = req.body
-  sequelize.query(`insert into donation_users (usuario_id,nombre_completo, area, cabildo, distrito, grupo, email) values("${cedula_id}","${nombre_completo}",${area},${cabildo},${distrito},${grupo},"${email}")`)
+  var ar = await sequelize.query(`select nombre from usuarios_area where id = ${area}`, { type: sequelize.QueryTypes.SELECT })
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: config.SMTP.user,
+      pass: config.SMTP.password
+    },
+    tls: { rejectUnauthorized: false }
+  });
+  var mailOptions = {
+    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
+    // to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    to:  `mailto:muskan.shu@cisinlabs.com , mailto:sgip.enfoque@gmail.com`,
+    subject: `User Donation Details`,
+    html: `
+    <br>New donation is regireted with the below details:.<br>
+    <br>
+     FULL NAME : ${nombre_completo} <br>
+     CEDULA : ${cedula_id} <br>
+     AREA : ${ar[0].nombre} <br>
+     EMAIL: ${email} <br>
+    <br>
+    
+   </html>`
+  };
+  transporter.sendMail(mailOptions, (erro, info) => {
+    if (erro) {
+      console.log(erro)
+      return false
+    }
+    return true
+})
+  sequelize.query(`insert into donation_users (usuario_id,nombre_completo, area, cabildo, distrito,  email) values("${cedula_id}","${nombre_completo}",${area},${cabildo},${distrito},"${email}")`)
   return res.status(200).send({
     message: "user added successfuly",
     data: { user_id: cedula_id }
