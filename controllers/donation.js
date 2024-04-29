@@ -14,9 +14,7 @@ const md5 = require('md5');
 
 
 
-
 async function adminLogin(req, res) {
-
   try {
     const { email, password } = req.body
     const result = await sequelize.query(`select * from auth_admin where email = "${email}"`, { type: sequelize.QueryTypes.SELECT })
@@ -61,6 +59,7 @@ async function adminLogin(req, res) {
     return res.status(500).json({ message: 'Server Error' });
   }
 }
+
 
 async function adminsignup(req, res) {
   try {
@@ -126,7 +125,7 @@ async function adddonation(req, res) {
   sequelize.query(`insert into donation_info(donation_type,donation_method ,amount,donation_date,user_id,confirmation_no,donation_month,reciept)
      values ("${donation_type}","${donation_method}","${amount}","${donation_date}","${user_id}","${con}",${donationmonth},"receipt/${con}.pdf")`)
   return res.status(200).send({
-    message: "donation added successfuly",
+    message: "GRACIAS SU CONTRIBUCIÓN HA SIDO REGISTRADA SATISFACTORIAMENTE",
     data: con
   })}
   catch(error){
@@ -222,12 +221,142 @@ function drawTable(doc, table) {
 }
 
 
+function drawHtmlTable(table) {
+  var { rows } = table;
+  const   rowHeight = 25,
+  padding = 15,
+  margin = 15,
+  maxWidth = 1000,
+  fontSize = 12 
+
+  const columnCount = 2; 
+  const columnWidths = Array(columnCount).fill(0); 
+
+  // Calculate the maximum width of each column
+  for (let i = 0; i < rows.length; i++) {
+    const currentRow = rows[i];
+    for (let j = 0; j < columnCount; j++) {
+      const cellWidth = currentRow[j].length * 10 + 2 * padding * 2; 
+      if (cellWidth > columnWidths[j]) {
+        columnWidths[j] = cellWidth;
+      }
+    }
+  }
+
+  const tableWidth = columnWidths.reduce((acc, width) => acc + width, 0);
+
+  if (tableWidth > maxWidth) {
+    throw new Error('Table width exceeds maximum width');
+  }
+
+  // Construct the HTML table with applied CSS styles
+  let htmlTable = `
+    <table style="border-collapse: collapse; width: ${tableWidth + 2 * margin}px; margin: ${margin}px;">
+      <thead>
+        <tr>
+        
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  for (let i = 0; i < rows.length; i++) {
+    const currentRow = rows[i];
+    htmlTable += `<tr style="height: ${rowHeight}px;">`;
+    for (let j = 0; j < columnCount; j++) {
+      htmlTable += `<td style="border: 1px solid #dddddd; text-align: left; padding: ${padding}px; background-color: ${j === 0 ? '#f9f9ff' : 'white'}; color: ${j === 0 ? '#989898' : 'grey'};">${currentRow[j]}</td>`;
+    }
+    htmlTable += `</tr>`;
+  }
+
+  htmlTable += `
+      </tbody>
+    </table>
+  `;
+
+  return htmlTable;
+}
+
+
+
+// function drawHtmlTable(table) {
+//   var { rows, yStart, xStart, rowHeight, padding, maxWidth, fontSize } = table;
+
+//   const columnCount = 2; 
+//   const columnWidths = Array(columnCount).fill(0); 
+
+//   // Calculate the maximum width of each column
+//   for (let i = 0; i < rows.length; i++) {
+//     const currentRow = rows[i];
+//     for (let j = 0; j < columnCount; j++) {
+//       const cellWidth = currentRow[j].length * 10 + 2 * padding * 2; 
+//       if (cellWidth > columnWidths[j]) {
+//         columnWidths[j] = cellWidth;
+//       }
+//     }
+//   }
+
+//   const tableWidth = columnWidths.reduce((acc, width) => acc + width, 0);
+
+//   if (tableWidth > maxWidth) {
+//     throw new Error('Table width exceeds maximum width');
+//   }
+
+//   // Construct the HTML table with applied CSS styles
+//   let htmlTable = `
+//     <table style="border-collapse: collapse; width: 100%;">
+//       <thead>
+//         <tr>
+//           <th style="border: 1px solid #dddddd; text-align: left; padding: ${padding}px; background-color: #f9f9ff; color: #989898;">Column 1</th>
+//           <th style="border: 1px solid #dddddd; text-align: left; padding: ${padding}px; background-color: #e8ebee; color: grey;">Column 2</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//   `;
+
+//   for (let i = 0; i < rows.length; i++) {
+//     const currentRow = rows[i];
+//     htmlTable += `<tr>`;
+//     for (let j = 0; j < columnCount; j++) {
+//       htmlTable += `<td style="border: 1px solid #dddddd; text-align: left; padding: ${padding}px; background-color: ${j === 0 ? '#f9f9ff' : 'white'}; color: ${j === 0 ? '#989898' : 'grey'};">${currentRow[j]}</td>`;
+//     }
+//     htmlTable += `</tr>`;
+//   }
+
+//   htmlTable += `
+//       </tbody>
+//     </table>
+//   `;
+
+//   return htmlTable;
+// }
+
+// Usage example:
+const table = {
+  rows: [
+    ['Data 1', 'Data 2'],
+    ['Data 3', 'Data 4']
+  ],
+  yStart: 100,
+  xStart: 100,
+  rowHeight: 35,
+  padding: 20,
+  maxWidth: 500,
+  fontSize: 12,
+};
+
+// const htmlTable = drawTable(table);
+// console.log(htmlTable);
+
+
+
 
 
 async function generateAndSendPdf(pdfdata) {
   var message = await sequelize.query(`select * from messages`,{type : sequelize.QueryTypes.SELECT})
   var random = Math.floor(Math.random() * message.length);
   var randommessage  = await sequelize.query(`select message from messages where id = ${random}`,{type : sequelize.QueryTypes.SELECT})
+  console.log('randommessage: ', randommessage);
   var pdf = await sequelize.query(`select usuario_id,usuarios_area.nombre as area,usuarios_usuario.email, usuarios_cabildo.nombre as cabildo,usuarios_distritosgip.nombre as distrito,
    nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month ,donation_info.amount, usuarios_division.nombre as division from donation_info   inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = usuarios_usuario.area_id
   inner join usuarios_cabildo on usuarios_cabildo.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip on usuarios_distritosgip.id = usuarios_usuario.distrito_sgip_id
@@ -247,6 +376,20 @@ async function generateAndSendPdf(pdfdata) {
   where confirmation_no = "${pdfdata.conf_no}"`,{type : sequelize.QueryTypes.SELECT})
   }
   const doc = new PDFDocument();
+  //****************** */
+  const pdfBuffer = await new Promise((resolve, reject) => {
+    const buffers = [];
+    doc.on('data', buffers.push.bind(buffers));
+    doc.on('end', () => {
+      const pdfData = Buffer.concat(buffers);
+      resolve(pdfData);
+    });
+    doc.end();
+  });
+
+  // Convert the PDF buffer to base64
+  const pdfBase64 = pdfBuffer.toString('base64');
+  //****************** */
   const pdfStream = fs.createWriteStream(`pdf/${pdfdata.conf_no}.pdf`);
   doc.pipe(pdfStream);
 console.log(pdf[0])
@@ -281,8 +424,6 @@ console.log(pdf[0])
     doc.end();
     pdfStream.on('finish', () => {
       console.log('Table PDF created successfully.');
-
-
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -290,7 +431,9 @@ console.log(pdf[0])
           pass: "zgmpuzsjzwvuuqlh",
         },
       });
-
+      console.log('pdfBase64: ', pdfBase64);
+      const htmltable = drawHtmlTable(table)
+      // console.log('htmltable: ', htmltable);
       // Define email options
       const mailOptions = {
         from: 'sgipanama1@gmail.com',
@@ -303,6 +446,7 @@ console.log(pdf[0])
         <p><i>${randommessage[0].message}</i><p>
         <p> Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
         impulsado por la Soka Gakkai Internacional de Panamá. </p>
+        ${htmltable}
         </html>`,
         attachments: [
           {
@@ -345,9 +489,9 @@ async function addnewuser(req, res) {
     tls: { rejectUnauthorized: false }
   });
   var mailOptions = {
-    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
-    // to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    to:  `mailto:muskan.shu@cisinlabs.com , mailto:sgip.enfoque@gmail.com`,
+    from: 'SGI-Panama  <sgipanama1@gmail.com>',
+    // to:  `muskan.shu@cisinlabs.com ,maires.carlos@gmail.com,motwani.j@gmail.com , basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    to:  `muskan.shu@cisinlabs.com , sgip.enfoque@gmail.com`,
     subject: `User Donation Details`,
     html: `
     <br>New donation is regireted with the below details:.<br>
