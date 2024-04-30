@@ -376,20 +376,6 @@ async function generateAndSendPdf(pdfdata) {
   where confirmation_no = "${pdfdata.conf_no}"`,{type : sequelize.QueryTypes.SELECT})
   }
   const doc = new PDFDocument();
-  //****************** */
-  const pdfBuffer = await new Promise((resolve, reject) => {
-    const buffers = [];
-    doc.on('data', buffers.push.bind(buffers));
-    doc.on('end', () => {
-      const pdfData = Buffer.concat(buffers);
-      resolve(pdfData);
-    });
-    doc.end();
-  });
-
-  // Convert the PDF buffer to base64
-  const pdfBase64 = pdfBuffer.toString('base64');
-  //****************** */
   const pdfStream = fs.createWriteStream(`pdf/${pdfdata.conf_no}.pdf`);
   doc.pipe(pdfStream);
 console.log(pdf[0])
@@ -427,17 +413,17 @@ console.log(pdf[0])
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: "sgipanama1@gmail.com",
+          user: "mailto:sgipanama1@gmail.com",
           pass: "zgmpuzsjzwvuuqlh",
         },
       });
-      console.log('pdfBase64: ', pdfBase64);
+      // console.log('pdfBase64: ', pdfBase64);
       const htmltable = drawHtmlTable(table)
       // console.log('htmltable: ', htmltable);
       // Define email options
       const mailOptions = {
-        from: 'sgipanama1@gmail.com',
-        to: `muskan.shu@cisinlabs.com , sgip.enfoque@gmail.com ,${pdf[0].email}`,
+        from: 'mailto:sgipanama1@gmail.com',
+        to: `mailto:muskan.shu@cisinlabs.com`, //, mailto:sgip.enfoque@gmail.com ,${pdf[0].email}`,
         subject: 'SGIP-DONATION REGISTRATION ',
         html: `<html><p>Estimado (a) ${pdf[0].nombre_completo} <p> 
         <p>Se ha registrado satisfactoriamente su contribución con los 
@@ -471,7 +457,6 @@ console.log(pdf[0])
     console.error('Error:', error.message);
   }
 }
-
 
 
 async function addnewuser(req, res) {
