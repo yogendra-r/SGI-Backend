@@ -59,6 +59,8 @@ const sslOptions = {
 const PORT = 8080;
 const server = https.createServer(sslOptions, app);
 
+
+
 // Start server
 server.listen(PORT, () => {
   console.log(`Server running on https://localhost:${PORT}/`);
