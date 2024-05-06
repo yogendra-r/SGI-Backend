@@ -50,14 +50,14 @@ app.use((err, req, res, next) => {
 });
 
 // SSL Configuration
-// const sslOptions = {
-//   key: fs.readFileSync('/etc/letsencrypt/live/basededatos.sgipanama.com/privkey.pem'),
-//   cert: fs.readFileSync('/etc/letsencrypt/live/basededatos.sgipanama.com/fullchain.pem')
-// };
+const sslOptions = {
+  key: fs.readFileSync('/etc/letsencrypt/live/basededatos.sgipanama.com/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/basededatos.sgipanama.com/fullchain.pem')
+};
 
 // Create HTTPS server
 const PORT = 8080;
-const server = https.createServer(app) //(sslOptions, app);
+const server = https.createServer(sslOptions, app);
 
 // Start server
 server.listen(PORT, () => {
