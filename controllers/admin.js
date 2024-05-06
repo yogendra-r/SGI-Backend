@@ -1441,11 +1441,14 @@ async function leaderSignup(req, res) {
             // fecha de ingreso and nacimento date fix..
 
             const dateFechaNaci = new Date(fecha_nacimiento);
-
             dateFechaNaci.setHours(dateFechaNaci.getHours() + 5);
             dateFechaNaci.setMinutes(dateFechaNaci.getMinutes() + 30);
             dateFechaNaci = dateFechaNaci.toISOString();
 
+            const dateFechaIngreso = new Date(fechadeingreso);
+            dateFechaIngreso.setHours(dateFechaIngreso.getHours() + 5);
+            dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes() + 30);
+            dateFechaIngreso = dateFechaIngreso.toISOString();
 
             if (adm[0].responsable == 1 ) {
                 console.log("edit if")
@@ -1459,7 +1462,7 @@ async function leaderSignup(req, res) {
                     primer_apellido: primer_apellido || result.primer_apellido,
                     segundo_nombre: segundo_nombre,
                     segundo_apellido: segundo_apellido,
-                    fecha_ingreso: (fechadeingreso.toString()).slice(0, 10) || result.fecha_ingreso,
+                    fecha_ingreso: (dateFechaIngreso.toString()).slice(0, 10) || result.fecha_ingreso,
                     nombre_completo: primer_nombre + " " + segundo_nombre + " " + primer_apellido + " " + segundo_apellido,
                     direccion: direccion || result.direccion,
                     email: email || result.email,
@@ -1500,8 +1503,8 @@ async function leaderSignup(req, res) {
                     celular: celular || result.celular,
                     telefono: telefono,
                     profesion_id: profesion_id,
-                    fecha_ingreso: (fechadeingreso.toString()).slice(0, 10) || result.fecha_ingreso,
-                    fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
+                    fecha_ingreso: (dateFechaIngreso.toString()).slice(0, 10) || result.fecha_ingreso,
+                    fecha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: result.area_id,
                     cabildo_id: result.cabildo_id,
