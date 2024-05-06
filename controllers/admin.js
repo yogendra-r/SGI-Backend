@@ -1440,12 +1440,12 @@ async function leaderSignup(req, res) {
 
             // fecha de ingreso and nacimento date fix..
 
-            const dateFechaNaci = new Date(fecha_nacimiento);
+            let dateFechaNaci = new Date(fecha_nacimiento);
             dateFechaNaci.setHours(dateFechaNaci.getHours() + 5);
             dateFechaNaci.setMinutes(dateFechaNaci.getMinutes() + 30);
             dateFechaNaci = dateFechaNaci.toISOString();
 
-            const dateFechaIngreso = new Date(fechadeingreso);
+            let dateFechaIngreso = new Date(fechadeingreso);
             dateFechaIngreso.setHours(dateFechaIngreso.getHours() + 5);
             dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes() + 30);
             dateFechaIngreso = dateFechaIngreso.toISOString();
