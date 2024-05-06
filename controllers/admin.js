@@ -1446,7 +1446,7 @@ async function leaderSignup(req, res) {
             dateFechaNaci = dateFechaNaci.toISOString();
 
             let dateFechaIngreso = new Date(fechadeingreso);
-            dateFechaIngreso.setHours(dateFechaIngreso.getHours() + 5);
+            dateFechaIngreso.setHours(dateFechaIngreso.getHours() + 29);
             dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes() + 30);
             dateFechaIngreso = dateFechaIngreso.toISOString();
 
