@@ -1424,7 +1424,7 @@ async function leaderSignup(req, res) {
             }
 
 
-            const { primer_nombre, primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,fecha_nacimiento,fechadeingreso,
+            const { primer_nombre, primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,fecha_nacimiento,fechadeingreso,Cedula_id,nacionalidad_id,
                 estado_id, area_id, cargo_responsable_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id, nivel_responsable, provincia, distrito_new_id, shakubuku } = req.body
             if (grupo_id) {
                 const rows = await sequelize.query(`SELECT id FROM usuarios_grupo WHERE nombre = "${grupo_id}"`, { type: sequelize.QueryTypes.SELECT });
@@ -1438,6 +1438,7 @@ async function leaderSignup(req, res) {
             }
             var date = new Date()
 
+
             // fecha de ingreso and nacimento date fix..
 
             let dateFechaNaci = new Date(fecha_nacimiento);
@@ -1450,13 +1451,11 @@ async function leaderSignup(req, res) {
             dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes() + 30);
             dateFechaIngreso = dateFechaIngreso.toISOString();
 
-            if (adm[0].responsable == 1 ) {
+            if (adm[0].responsable == 1) {
+                // const utcDate = fecha_nacimiento
+                // var estDateString = utcDate.toLocaleString('en-US', {timeZone: 'America/New_York'})
                 console.log("edit if")
-                
-
-
                 var data = {
-
                     primer_nombre: primer_nombre || result.primer_nombre,
                     edicion: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
                     primer_apellido: primer_apellido || result.primer_apellido,
@@ -1468,6 +1467,7 @@ async function leaderSignup(req, res) {
                     email: email || result.email,
                     celular: celular || result.celular,
                     telefono: telefono,
+                    usuario_id : Cedula_id || result.usuario_id,
                     profesion_id: profesion_id,
                     fecha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
@@ -1483,7 +1483,8 @@ async function leaderSignup(req, res) {
                     distirito_id: distrito_new_id || result.distrito_id,
                     provincia_id: provincia || result.provincia_id,
                     shakubuku: shakubuku || result.shakubuku,
-                    edited_by: adm[0].nombre_completo
+                    edited_by: adm[0].nombre_completo,
+                    nacionalidad_id : nacionalidad_id || result.nacionalidad_id
                 }
                 // console.log('fecha_ingreso: ', fecha_ingreso);
 
@@ -1491,7 +1492,6 @@ async function leaderSignup(req, res) {
             else {
                 console.log("edit else")
                 var data = {
-
                     primer_nombre: primer_nombre || result.primer_nombre,
                     edicion: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
                     primer_apellido: primer_apellido || result.primer_apellido,
@@ -1506,19 +1506,21 @@ async function leaderSignup(req, res) {
                     fecha_ingreso: (dateFechaIngreso.toString()).slice(0, 10) || result.fecha_ingreso,
                     fecha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
-                    area_id: result.area_id,
-                    cabildo_id: result.cabildo_id,
-                    distrito_sgip_id: result.distrito_sgip_id,
-                    grupo_id: result.grupo_id,
-                    division_id: result.division_id,
-                    nivel_budista_id: result.nivel_budista_id,
-                    responsable_gohonzon: result.responsable_gohonzon,
-                    nivel_responsable_id: result.nivel_responsable_id,
-                    cargo_responsable_id: result.cargo_responsable_id || null,
+                    area_id: area_id || result.area_id,
+                    cabildo_id: cabildo_id || result.cabildo_id,
+                    distrito_sgip_id: distrito_sgip_id || result.distrito_sgip_id,
+                    grupo_id: grupo || result.grupo_id,
+                    usuario_id : Cedula_id || result.usuario_id,
+                    division_id: division_id || result.division_id,
+                    nivel_budista_id: nivel_budista_id || result.nivel_budista_id,
+                    responsable_gohonzon: responsable_gohonzon || result.responsable_gohonzon,
+                    nivel_responsable_id: nivel_responsable || result.nivel_responsable_id,
+                    cargo_responsable_id: cargo_responsable_id || null,
                     distirito_id: distrito_new_id || result.distrito_id,
                     provincia_id: provincia || result.provincia_id,
                     shakubuku: shakubuku || result.shakubuku,
-                    edited_by: adm[0].nombre_completo
+                    edited_by: adm[0].nombre_completo,
+                    nacionalidad_id : nacionalidad_id || result.nacionalidad_id
                 }
             }
             await sequelize.query(`delete from group_members where user_id = ${req.body.user_id}`)
@@ -1528,6 +1530,7 @@ async function leaderSignup(req, res) {
                 // console.log(result)
             }
             const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,
+            shakubuku = :shakubuku,nivel_responsable_id =:nivel_responsable_id,nacionalidad_id = :nacionalidad_id,usuario_id = :usuario_id,provincia_id = :provincia_id,
         segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
         estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,fecha_nacimiento = :fecha_nacimiento,fecha_ingreso = :fecha_ingreso,
         division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by
@@ -1548,6 +1551,7 @@ async function leaderSignup(req, res) {
         return res.status(500).json({ message: 'Server Error' });
     }
 }
+
 
 //API to block/unblock a leader
 async function blockleader(req, res) {
