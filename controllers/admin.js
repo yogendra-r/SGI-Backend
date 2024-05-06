@@ -1437,8 +1437,21 @@ async function leaderSignup(req, res) {
                 }
             }
             var date = new Date()
-            if (adm[0].responsable == 1 && adm[0].nivel_responsable_id == 7 || req.token.id != result.id) {
+
+            // fecha de ingreso and nacimento date fix..
+
+            const dateFechaNaci = new Date(fecha_nacimiento);
+
+            dateFechaNaci.setHours(dateFechaNaci.getHours() + 5);
+            dateFechaNaci.setMinutes(dateFechaNaci.getMinutes() + 30);
+            dateFechaNaci = dateFechaNaci.toISOString();
+
+
+            if (adm[0].responsable == 1 ) {
                 console.log("edit if")
+                
+
+
                 var data = {
 
                     primer_nombre: primer_nombre || result.primer_nombre,
@@ -1452,8 +1465,8 @@ async function leaderSignup(req, res) {
                     email: email || result.email,
                     celular: celular || result.celular,
                     telefono: telefono,
-                    profesion_id: 1,//profesion_id,
-                    fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
+                    profesion_id: profesion_id,
+                    fecha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: area_id || result.area_id,
                     cabildo_id: cabildo_id || result.cabildo_id,
