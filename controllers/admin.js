@@ -1021,28 +1021,42 @@ async function addNewMember(req, res) {
         grupo = inserted[0];
     }
     var date = new Date()
-    console.log("grupo", grupo);
     var fecha = (fecha_nacimiento.toString()).slice(0, 10)
-    console.log('fecha: ', fecha);
+    let sgi_id = await sequelize.query(`SELECT max(sgi_id) as max  FROM usuarios_usuario`, { type: sequelize.QueryTypes.SELECT });
+    sgi_id = sgi_id[0].max
+    var currentId = parseInt(sgi_id.substring(4));
+    var newId = currentId + 10
+    var newSgi_id = "SGIP" + newId;
+    let dateFechaNaci = new Date(fecha_nacimiento);
+    dateFechaNaci.setHours(dateFechaNaci.getHours() + 5);
+    dateFechaNaci.setMinutes(dateFechaNaci.getMinutes() + 30);
+    dateFechaNaci = dateFechaNaci.toISOString();
+
+    let dateFechaIngreso = new Date(fechadeingreso);
+    dateFechaIngreso.setHours(dateFechaIngreso.getHours() + 29);
+    dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes() + 30);
+    dateFechaIngreso = dateFechaIngreso.toISOString();
+    
     var data = {
         primer_nombre: primer_nombre,
         primer_apellido: primer_apellido,
         // fecha_nacimiento : fecha_nacimiento,
         segundo_nombre: segundo_nombre,
+        sgi_id : newSgi_id,
         segundo_apellido: segundo_apellido,
         nombre_completo: primer_nombre + " " + segundo_nombre + " " + primer_apellido + " " + segundo_apellido,
         sexo_id: sexo_id,
         responsable: responsable || 0,
         nivel_responsable_id: nivel_responsable_id || null,
         cargo_responsable_id: cargo_responsable_id || null,
-        fecha_nacimiento: fecha,
+        fecha_nacimiento: (dateFechaNaci.toString()).slice(0, 10),
         usuario_id: Cedula_id,
         direccion: direccion,
         email: email,
         celular: celular,
         telefono: telefono,
         // fecha_ingreso : date.getFullYear()+"-"+(date.getMonth()+1) +"-"+ date.getDate(),
-        fecha_ingreso: fechadeingreso ? (fechadeingreso.toString()).slice(0, 10) : (date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()),
+        fecha_ingreso: (dateFechaIngreso.toString()).slice(0, 10),//fechadeingreso ? (fechadeingreso.toString()).slice(0, 10) : (date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()),
         profesion_id: profesion_id ? profesion_id : 0,
         estado_id: estado_id,
         area_id: area_id,
@@ -1066,11 +1080,11 @@ async function addNewMember(req, res) {
       INSERT INTO usuarios_usuario
         (primer_nombre,sexo_id,  responsable, nivel_responsable_id, cargo_responsable_id, usuario_id,nombre_completo,fecha_nacimiento,fecha_ingreso,
         primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,
-        estado_id, area_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, nivel_budista_id, responsable_gohonzon,nacionalidad_id,   provincia_id , distrito_id , shakubuku  )
+        estado_id, area_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, nivel_budista_id, responsable_gohonzon,nacionalidad_id,   provincia_id , distrito_id , shakubuku ,sgi_id  )
         VALUES
         (:primer_nombre,:sexo_id,  :responsable, :nivel_responsable_id, :cargo_responsable_id, :usuario_id,:nombre_completo,:fecha_nacimiento,:fecha_ingreso,
         :primer_apellido, :segundo_nombre, :segundo_apellido, :direccion, :email, :celular, :telefono, :profesion_id,
-        :estado_id, :area_id, :cabildo_id, :distrito_sgip_id, :grupo_id, :division_id, :nivel_budista_id, :responsable_gohonzon, :nacionalidad_id , :provincia , :distrito , :shakubuku )`;
+        :estado_id, :area_id, :cabildo_id, :distrito_sgip_id, :grupo_id, :division_id, :nivel_budista_id, :responsable_gohonzon, :nacionalidad_id , :provincia , :distrito , :shakubuku , :sgi_id )`;
     var result = await sequelize.query(query, {
         replacements: {
             ...data
@@ -1110,7 +1124,6 @@ async function addNewMember(req, res) {
         success_message: `Miembro agregado exitosamente`
     })
 }
-
 
 // API to get the list of all members ,members only and leader only
 async function getAllUsers(req, res) {
@@ -1425,7 +1438,7 @@ async function leaderSignup(req, res) {
 
 
             const { primer_nombre, primer_apellido, segundo_nombre, segundo_apellido, direccion, email, celular, telefono, profesion_id,fecha_nacimiento,fechadeingreso,Cedula_id,nacionalidad_id,
-                estado_id, area_id, cargo_responsable_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id, nivel_responsable, provincia, distrito_new_id, shakubuku } = req.body
+                estado_id, area_id, cargo_responsable_id,sexo_id, cabildo_id, distrito_sgip_id, grupo_id, division_id, responsable_gohonzon, nivel_budista_id, nivel_responsable, provincia, distrito_new_id, shakubuku } = req.body
             if (grupo_id) {
                 const rows = await sequelize.query(`SELECT id FROM usuarios_grupo WHERE nombre = "${grupo_id}"`, { type: sequelize.QueryTypes.SELECT });
                 var grupo
@@ -1468,7 +1481,7 @@ async function leaderSignup(req, res) {
                     celular: celular || result.celular,
                     telefono: telefono,
                     usuario_id : Cedula_id || result.usuario_id,
-                    profesion_id: profesion_id,
+                    profesion_id: profesion_id,              
                     fecha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: area_id || result.area_id,
@@ -1480,10 +1493,11 @@ async function leaderSignup(req, res) {
                     responsable_gohonzon: responsable_gohonzon || result.responsable_gohonzon,
                     nivel_responsable_id: nivel_responsable || result.nivel_responsable_id,
                     cargo_responsable_id: cargo_responsable_id || null,
-                    distrito_id: distrito_new_id || result.distrito_id,
+                    distrito: distrito_new_id || result.distrito_id,
                     provincia_id: provincia || result.provincia_id,
                     shakubuku: shakubuku || result.shakubuku,
                     edited_by: adm[0].nombre_completo,
+                    sexo_id : sexo_id,
                     nacionalidad_id : nacionalidad_id || result.nacionalidad_id
                 }
                 // console.log('fecha_ingreso: ', fecha_ingreso);
@@ -1510,6 +1524,7 @@ async function leaderSignup(req, res) {
                     cabildo_id: cabildo_id || result.cabildo_id,
                     distrito_sgip_id: distrito_sgip_id || result.distrito_sgip_id,
                     grupo_id: grupo || result.grupo_id,
+                    sexo_id :  sexo_id,
                     usuario_id : Cedula_id || result.usuario_id,
                     division_id: division_id || result.division_id,
                     nivel_budista_id: nivel_budista_id || result.nivel_budista_id,
@@ -1529,12 +1544,11 @@ async function leaderSignup(req, res) {
                 const result = await sequelize.query(`insert into group_members(group_id,user_id) values(${req.body.horizontal_groups[i]},${req.body.user_id})`)
                 // console.log(result)
             }
-            const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,
+            const resl = await sequelize.query(`update usuarios_usuario set primer_nombre= :primer_nombre,primer_apellido= :primer_apellido, segundo_nombre = :segundo_nombre,sexo_id = :sexo_id,
             shakubuku = :shakubuku,nivel_responsable_id =:nivel_responsable_id,nacionalidad_id = :nacionalidad_id,usuario_id = :usuario_id,provincia_id = :provincia_id,distrito_id = :distrito_id,
         segundo_apellido = :segundo_apellido,nombre_completo = :nombre_completo, direccion = :direccion, email = :email, celular = :celular,telefono = :telefono, profesion_id = :profesion_id,
         estado_id = :estado_id, area_id =:area_id, cabildo_id = :cabildo_id ,  distrito_sgip_id = :distrito_sgip_id, grupo_id = :grupo_id,fecha_nacimiento = :fecha_nacimiento,fecha_ingreso = :fecha_ingreso,
-        division_id
-         = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by
+        division_id = :division_id,nivel_budista_id = :nivel_budista_id, responsable_gohonzon= :responsable_gohonzon,cargo_responsable_id = :cargo_responsable_id, edicion = :edicion,edited_by  = :edited_by
         where id = ${req.body.user_id}`, {
                 replacements: {
                     ...data
@@ -1552,7 +1566,6 @@ async function leaderSignup(req, res) {
         return res.status(500).json({ message: 'Server Error' });
     }
 }
-
 
 //API to block/unblock a leader
 async function blockleader(req, res) {
