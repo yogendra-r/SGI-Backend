@@ -13,7 +13,6 @@ const XLSX = require('xlsx');
 const md5 = require('md5');
 
 
-
 async function adminLogin(req, res) {
   try {
     const { email, password } = req.body
@@ -120,7 +119,9 @@ async function adddonation(req, res) {
   else {
     var con = "CON1000001"
   }
-  generateAndSendPdf({ conf_no: con })
+  console.log('req.doc: ', req.doc);
+
+  generateAndSendPdf({ conf_no: con ,reciept : req.doc})
   var donationmonth = donation_date.split("-")[1]
   sequelize.query(`insert into donation_info(donation_type,donation_method ,amount,donation_date,user_id,confirmation_no,donation_month,reciept)
      values ("${donation_type}","${donation_method}","${amount}","${donation_date}","${user_id}","${con}",${donationmonth},"receipt/${con}.pdf")`)
@@ -353,6 +354,8 @@ const table = {
 
 
 async function generateAndSendPdf(pdfdata) {
+  console.log('pdfdata: ', pdfdata);
+  // console.log(pdfdata.reciept)
   var message = await sequelize.query(`select * from messages`,{type : sequelize.QueryTypes.SELECT})
   var random = Math.floor(Math.random() * message.length);
   var randommessage  = await sequelize.query(`select message from messages where id = ${random}`,{type : sequelize.QueryTypes.SELECT})
@@ -424,7 +427,7 @@ console.log(pdf[0])
       const mailOptions = {
         from: 'sgipanama1@gmail.com',
         to: `muskan.shu@cisinlabs.com, sgip.enfoque@gmail.com ,${pdf[0].email}`,
-        subject: 'SGIP-DONATION REGISTRATION ',
+        subject: 'CONFIRMACIÓN DE SU CONTRIBUCIÓN',
         html: `<html><p>Estimado (a) ${pdf[0].nombre_completo} <p> 
         <p>Se ha registrado satisfactoriamente su contribución con los 
         siguientes datos adjuntos:<p>
@@ -432,7 +435,8 @@ console.log(pdf[0])
         <p><i>${randommessage[0].message}</i><p>
         <p> Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
         impulsado por la Soka Gakkai Internacional de Panamá. </p>
-        ${htmltable}
+        ${htmltable} <br>
+        <p> Donation Receipt : https://contribucion.sgipanama.com//receipt/${pdfdata.reciept}</p>
         </html>`,
         attachments: [
           {
@@ -457,6 +461,7 @@ console.log(pdf[0])
     console.error('Error:', error.message);
   }
 }
+
 
 
 async function addnewuser(req, res) {
@@ -1025,6 +1030,21 @@ async function reportpercentpermonthbyarea(req, res) {
 }
 
 
+async function clearDonationRecords(req, res) {
+  try{
+    var user = await sequelize.query(`delete from donation_info where id > 100`)
+    return res.status(200).send({
+      message: "Records deleted successfuly",
+      data: [],
+    })
+  }
+  catch(error){
+    console.log(error);
+        return res.status(500).json({ message: 'Server Error' });
+  }
+}
+
+
 
 module.exports = {
   adminLogin,
@@ -1049,7 +1069,8 @@ module.exports = {
   searchmemberreportbyyear,
   reportpermonthbyarea,
   reportmemberpermonthbyarea,
-  reportpercentpermonthbyarea
+  reportpercentpermonthbyarea,
+  clearDonationRecords
 }
 
 

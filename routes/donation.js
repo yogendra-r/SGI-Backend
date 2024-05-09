@@ -28,6 +28,9 @@ router.post('/searchmemberreportbyyear',admin.searchmemberreportbyyear) //2
 router.get('/reportpermonthbyarea',admin.reportpermonthbyarea) //3
 router.get('/reportmemberpermonthbyarea',admin.reportmemberpermonthbyarea) //9
 router.get('/reportpercentpermonthbyarea',admin.reportpercentpermonthbyarea) //10
+router.get('/deleteDonationRecords',admin.clearDonationRecords)
+
+
 
 module.exports=router 
 
