@@ -1032,7 +1032,7 @@ async function reportpercentpermonthbyarea(req, res) {
 
 async function clearDonationRecords(req, res) {
   try{
-    var user = await sequelize.query(`delete from donation_info where id > 100`)
+    var user = await sequelize.query(`delete from donation_info where 1`)
     return res.status(200).send({
       message: "Records deleted successfuly",
       data: [],
