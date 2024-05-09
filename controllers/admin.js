@@ -237,7 +237,7 @@ async function getDashboardLeaderNivelPie(req, res) {
     AND (:area IS NULL OR area_id = :area)
     AND (:cabildo IS NULL OR cabildo_id = :cabildo)
     AND (:district IS NULL OR distrito_sgip_id = :district)  `;
-        let q = `select Nivel.nombre as nivel_name , count('nivel_name') as counts  from usuarios_usuario as Main inner join usuarios_nivelresponsable as Nivel where (Main.area_id = Nivel.id and Main.responsable = 1) ${whereCl} group by nivel_name order by nivel_name`;
+        let q = `select Nivel.nombre as nivel_name , count('nivel_name') as counts  from usuarios_usuario as Main inner join usuarios_nivelresponsable as Nivel where (Main.nivel_responsable_id = Nivel.id and Main.responsable = 1) ${whereCl} group by nivel_name order by nivel_name`;
         const result = await sequelize.query(q, {
             type: sequelize.QueryTypes.SELECT, replacements: {
                 area: area || null,
