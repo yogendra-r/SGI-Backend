@@ -436,7 +436,7 @@ console.log(pdf[0])
         <p> Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
         impulsado por la Soka Gakkai Internacional de Panamá. </p>
         ${htmltable} <br>
-        <p> Donation Receipt : https://contribucion.sgipanama.com/receipt/${pdfdata.reciept}</p>
+        <p> Donation Receipt : https://basededatos.sgipanama.com/receipt/${pdfdata.reciept}</p>
         </html>`,
         attachments: [
           {
