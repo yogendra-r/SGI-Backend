@@ -999,7 +999,7 @@ async function getAttendanceList(req, res) {
 async function addNewMember(req, res) {
     console.log(req.body, "add")
     const { primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, division_id, area_id, cabildo_id, distrito_sgip_id, sexo_id, grupo_id, responsable,
-        fecha_nacimiento, invitee_id, invitee_fecha_nacimento, fechadeingreso, provincia, distrito_new_id, shakubuku, responsable_gohonzon, nivel_responsable_id, nacionalidad_id, nivel_budista_id, telefono, celular, direccion, email, cargo_responsable_id, Cedula_id, profesion_id, estado_id
+        fecha_nacimiento, invitee_id, invitee_fecha_nacimento, fechadeingreso, provincia, distrito_new_id, shakubuku, responsable_gohonzon, nivel_responsable, nacionalidad_id, nivel_budista_id, telefono, celular, direccion, email, cargo_responsable_id, Cedula_id, profesion_id, estado_id
     } = req.body
     // fecha_nacimiento: '1970-01-01T00:00:00.000Z'
     const findemail = await sequelize.query(`select * from usuarios_usuario where email = "${email}" or usuario_id = '${Cedula_id}'`, { type: sequelize.QueryTypes.SELECT })
@@ -1047,7 +1047,7 @@ async function addNewMember(req, res) {
         nombre_completo: primer_nombre + " " + segundo_nombre + " " + primer_apellido + " " + segundo_apellido,
         sexo_id: sexo_id,
         responsable: responsable || 0,
-        nivel_responsable_id: nivel_responsable_id || null,
+        nivel_responsable_id: nivel_responsable || null,
         cargo_responsable_id: cargo_responsable_id || null,
         fecha_nacimiento: (dateFechaNaci.toString()).slice(0, 10),
         usuario_id: Cedula_id,
