@@ -1298,10 +1298,10 @@ async function getUserDetails(req, res) {
             
             result[0].fechadeingreso = new Date(result[0].fechadeingreso)//(.toString()).slice(0, 10)
             console.log('result.fechadeingreso:  beforee..... ', result[0].fechadeingreso);
-            let mins = result[0].fechadeingreso.getTimezoneOffset() % 60;
-            let hours = result[0].fechadeingreso.getTimezoneOffset()/60;
-            result[0].fechadeingreso.setHours(result[0].fechadeingreso.getHours() - hours);
-            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() +(mins));
+            // let mins = result[0].fechadeingreso.getTimezoneOffset() % 60;
+            // let hours = result[0].fechadeingreso.getTimezoneOffset()/60;
+            // result[0].fechadeingreso.setHours(result[0].fechadeingreso.getHours() - hours);
+            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() +(30));
             console.log(`*********************************offset result[0].fechadeingreso.getTimezoneOffset()`,result[0].fechadeingreso.getTimezoneOffset());
             console.log('result.fechadeingreso: ', result[0].fechadeingreso);
             console.log(result)
