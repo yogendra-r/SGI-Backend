@@ -1300,8 +1300,8 @@ async function getUserDetails(req, res) {
             console.log('result.fechadeingreso:  beforee..... ', result[0].fechadeingreso);
             // let mins = result[0].fechadeingreso.getTimezoneOffset() % 60;
             // let hours = result[0].fechadeingreso.getTimezoneOffset()/60;
-            // result[0].fechadeingreso.setHours(result[0].fechadeingreso.getHours() - hours);
-            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() +(30));
+            result[0].fechadeingreso.setHours(result[0].fechadeingreso.getHours() + 6);
+            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() );
             console.log(`*********************************offset result[0].fechadeingreso.getTimezoneOffset()`,result[0].fechadeingreso.getTimezoneOffset());
             console.log('result.fechadeingreso: ', result[0].fechadeingreso);
             console.log(result)
