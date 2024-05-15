@@ -1455,13 +1455,13 @@ async function leaderSignup(req, res) {
             // fecha de ingreso and nacimento date fix..
 
             let dateFechaNaci = new Date(fecha_nacimiento);
-            dateFechaNaci.setHours(dateFechaNaci.getHours() );
-            dateFechaNaci.setMinutes(dateFechaNaci.getMinutes());
+            // dateFechaNaci.setHours(dateFechaNaci.getHours() );
+            // dateFechaNaci.setMinutes(dateFechaNaci.getMinutes());
             dateFechaNaci = dateFechaNaci.toISOString();
 
             let dateFechaIngreso = new Date(fechadeingreso);
-            dateFechaIngreso.setHours(dateFechaIngreso.getHours());
-            dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes());
+            // dateFechaIngreso.setHours(dateFechaIngreso.getHours());
+            // dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes());
             dateFechaIngreso = dateFechaIngreso.toISOString();
 
             if (adm[0].responsable == 1) {
