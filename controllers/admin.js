@@ -1299,7 +1299,7 @@ async function getUserDetails(req, res) {
             result[0].fechadeingreso = new Date(result[0].fechadeingreso)//(.toString()).slice(0, 10)
             let mins = result[0].fechadeingreso.getTimezoneOffset();
             
-            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() +(mins+300));
+            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() -(mins+300));
 
             console.log('result.fechadeingreso: ', result[0].fechadeingreso);
             console.log(result)
