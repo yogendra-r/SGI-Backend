@@ -1462,7 +1462,7 @@ async function leaderSignup(req, res) {
             let dateFechaIngreso = new Date(fechadeingreso);
             // dateFechaIngreso.setHours(dateFechaIngreso.getHours());
             // dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes());
-            dateFechaIngreso = dateFechaIngreso.toISOString();
+            // dateFechaIngreso = dateFechaIngreso.toISOString();
 
             if (adm[0].responsable == 1) {
                 // const utcDate = fecha_nacimiento
