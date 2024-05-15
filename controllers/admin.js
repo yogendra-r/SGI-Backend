@@ -1301,7 +1301,7 @@ async function getUserDetails(req, res) {
             let hours = result[0].fechadeingreso.getTimezoneOffset()/60;
             result[0].fechadeingreso.setHours(result[0].fechadeingreso.getHours() - hours);
             result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() +(mins));
-
+            console.log(`*********************************offset result[0].fechadeingreso.getTimezoneOffset()`,result[0].fechadeingreso.getTimezoneOffset());
             console.log('result.fechadeingreso: ', result[0].fechadeingreso);
             console.log(result)
             var hrgrp = []
