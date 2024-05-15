@@ -1297,10 +1297,10 @@ async function getUserDetails(req, res) {
             var result = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT })
             
             result[0].fechadeingreso = new Date(result[0].fechadeingreso)//(.toString()).slice(0, 10)
-            let mins = result[0].fechadeingreso.getTimezoneOffset();
+            let mins = result[0].fechadeingreso.getTimezoneOffset() % 60;
             let hours = result[0].fechadeingreso.getTimezoneOffset()/60;
-            // result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() -(mins));
             result[0].fechadeingreso.setHours(result[0].fechadeingreso.getHours() - hours);
+            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() +(mins));
 
             console.log('result.fechadeingreso: ', result[0].fechadeingreso);
             console.log(result)
