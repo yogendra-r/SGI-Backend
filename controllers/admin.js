@@ -1297,12 +1297,10 @@ async function getUserDetails(req, res) {
             var result = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT })
             
             result[0].fechadeingreso = new Date(result[0].fechadeingreso)//(.toString()).slice(0, 10)
-            console.log('result.fechadeingreso:  beforee..... ', result[0].fechadeingreso);
-            // let mins = result[0].fechadeingreso.getTimezoneOffset() % 60;
-            // let hours = result[0].fechadeingreso.getTimezoneOffset()/60;
-            result[0].fechadeingreso.setHours(result[0].fechadeingreso.getHours());
-            result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes());
-            console.log(`*********************************offset result[0].fechadeingreso.getTimezoneOffset()`,result[0].fechadeingreso.getTimezoneOffset());
+            // let mins = result[0].fechadeingreso.getTimezoneOffset() ;
+
+            // result[0].fechadeingreso.setMinutes(result[0].fechadeingreso.getMinutes() - mins);
+
             console.log('result.fechadeingreso: ', result[0].fechadeingreso);
             console.log(result)
             var hrgrp = []
@@ -1358,20 +1356,24 @@ async function leaderSignup(req, res) {
         if (req.body.profile_type == "invitee") {
             var result = await sequelize.query(`select * from invitados where id = ${req.body.user_id}`, { type: sequelize.QueryTypes.SELECT })
             result = result[0]
-            // console.log(result)
-            const { primer_nombre, primer_apellido, direccion, email, celular, telefono, division_id, sexo_id } = req.body
+            const { primer_nombre, primer_apellido, direccion, email, celular, telefono, division_id, sexo_id,fecha_nacimiento } = req.body
+            let dateFechaNaci = new Date(fecha_nacimiento);
+            dateFechaNaci.setHours(dateFechaNaci.getHours() + 5);
+            dateFechaNaci.setMinutes(dateFechaNaci.getMinutes() + 30);
+            dateFechaNaci = dateFechaNaci.toISOString();
             var data = {
                 nombre: primer_nombre || result.nombre,
                 appelido: primer_apellido || result.appelido,
                 direccion: direccion || result.direccion,
                 email: email || result.email,
+                fetcha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fetcha_nacimiento,
                 movil: celular || result.movil,
                 telefono: telefono || result.telefono,
                 division: division_id || result.division,
                 genero: sexo_id || result.genero
             }
             const resl = await sequelize.query(`update invitados set nombre= :nombre,appelido = :appelido, direccion = :direccion, email = :email, 
-            movil = :movil,telefono = :telefono, division = :division,genero = :genero
+            movil = :movil,telefono = :telefono, division = :division,genero = :genero,fetcha_nacimiento = :fetcha_nacimiento,
             where id = ${req.body.user_id}`, {
                 replacements: {
                     ...data
@@ -1461,12 +1463,14 @@ async function leaderSignup(req, res) {
 
             // fecha de ingreso and nacimento date fix..
 
-            let dateFechaNaci = new Date(fecha_nacimiento);
+            // let dateFechaNaci = new Date(fecha_nacimiento);
+            // console.log('dateFechaNaci: ', dateFechaNaci);
             // dateFechaNaci.setHours(dateFechaNaci.getHours() );
             // dateFechaNaci.setMinutes(dateFechaNaci.getMinutes());
-            dateFechaNaci = dateFechaNaci.toISOString();
+            // dateFechaNaci = dateFechaNaci
 
             let dateFechaIngreso = new Date(fechadeingreso);
+            console.log('dateFechaIngreso: ', dateFechaIngreso);
             // dateFechaIngreso.setHours(dateFechaIngreso.getHours());
             // dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes());
             // dateFechaIngreso = dateFechaIngreso.toISOString();
@@ -1489,7 +1493,7 @@ async function leaderSignup(req, res) {
                     telefono: telefono,
                     usuario_id : Cedula_id || result.usuario_id,
                     profesion_id: profesion_id,              
-                    fecha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fecha_nacimiento,
+                    fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: area_id || result.area_id,
                     cabildo_id: cabildo_id || result.cabildo_id,
@@ -1525,7 +1529,7 @@ async function leaderSignup(req, res) {
                     telefono: telefono,
                     profesion_id: profesion_id,
                     fecha_ingreso: (dateFechaIngreso)  || result.fecha_ingreso,
-                    fecha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fecha_nacimiento,
+                    fecha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fecha_nacimiento,
                     estado_id: estado_id || result.estado_id,
                     area_id: area_id || result.area_id,
                     cabildo_id: cabildo_id || result.cabildo_id,
@@ -3558,5 +3562,3 @@ module.exports = {
     getAttendanceLeaderList,
     getDynamicDistrictList
 }
-
-
