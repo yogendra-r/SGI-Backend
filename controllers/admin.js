@@ -1295,12 +1295,14 @@ async function getUserDetails(req, res) {
         inner join usuarios_sexo as us on us.id = user.sexo_id 
         where user.id = ${req.body.id}`
             var result = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT })
+
+
             console.log('result.fechadeingreso: ', result[0].fechadeingreso);
             let datefecha = new Date(result[0].fechadeingreso)//new Date(result[0].fechadeingreso)
             console.log('datefecha: ', datefecha);
-            var offset = new Date().getTimezoneOffset();
+            var offset = new Date(datefecha).getTimezoneOffset();
             console.log('offset: ', offset);
-            let modifiedDate = new Date(datefecha.setMinutes(datefecha.getMinutes() - offset));
+            let modifiedDate = new Date(datefecha.setMinutes(datefecha.getMinutes() + offset));
             console.log('modifiedDate: ', modifiedDate);
 
             result[0].fechadeingreso = modifiedDate
