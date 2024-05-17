@@ -1370,14 +1370,14 @@ async function leaderSignup(req, res) {
                 appelido: primer_apellido || result.appelido,
                 direccion: direccion || result.direccion,
                 email: email || result.email,
-                fetcha_nacimiento : (dateFechaNaci.toString()).slice(0, 10) || result.fetcha_nacimiento,
+                fetcha_nacimiento : (fecha_nacimiento.toString()).slice(0, 10) || result.fetcha_nacimiento,
                 movil: celular || result.movil,
                 telefono: telefono || result.telefono,
                 division: division_id || result.division,
                 genero: sexo_id || result.genero
             }
             const resl = await sequelize.query(`update invitados set nombre= :nombre,appelido = :appelido, direccion = :direccion, email = :email, 
-            movil = :movil,telefono = :telefono, division = :division,genero = :genero,fetcha_nacimiento = :fetcha_nacimiento,
+            movil = :movil,telefono = :telefono, division = :division,genero = :genero,fetcha_nacimiento = :fetcha_nacimiento
             where id = ${req.body.user_id}`, {
                 replacements: {
                     ...data

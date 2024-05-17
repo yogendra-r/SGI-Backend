@@ -464,7 +464,7 @@ async function addinvitee(req, res) {
        
         request.post({
             headers: { authorization: req.headers.authorization },
-            url: 'http://146.190.171.78:8080/api/dev/admin/getAttendance',
+            url: 'https://basededatos.sgipanama.com:8080/api/dev/admin/getAttendance',
             json: {
              "activity_id" : req.body.activity_id
             },
