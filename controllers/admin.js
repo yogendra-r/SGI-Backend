@@ -349,7 +349,7 @@ async function getAttendanceMemberList(req, res) {
         AND (:cabildo IS NULL OR cabildo_id = :cabildo)
         AND (:district IS NULL OR distrito_sgip_id = :district) `
         const result = await sequelize.query(`select usuarios_usuario.id,usuario_id as Cedula_id, sgi_id , nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_division as division on division.id = usuarios_usuario.division_id where 
-    area_id = ${req.body.area_id} ${whereClause} order by nombre_completo`, {
+    area_id = ${req.body.area_id} ${whereClause} and estado_id = 1 order by nombre_completo`, {
             type: sequelize.QueryTypes.SELECT, replacements: {
                 cabildo: cabildo || null,
                 district: district || null,
@@ -372,7 +372,6 @@ async function getAttendanceMemberList(req, res) {
         })
     }
 }
-
 async function getAttendanceLeaderList(req, res) {
     console.log(req.body, "get att list")
     if (!req.body.fetcha_de_actividad) {
@@ -413,17 +412,34 @@ async function getAttendanceLeaderList(req, res) {
         else if ((act[0]?.nombre).includes("DEP")) {
             var division_id = 5
         }}
+                //division_id: division_id || null
+                // AND (:division_id IS NULL OR division_id = :division_id) 
+        var condition = `and (nivel_responsable_id = 1 OR nivel_responsable_id = 7)`
+        if(!cabildo){
+            console.log("first");
+        var condition = `and (nivel_responsable_id = 1 OR nivel_responsable_id = 7)`
+
+        }
+        if(cabildo && !district){
+            console.log("second");
+
+             condition = condition + `OR  (nivel_responsable_id = 2 AND area_id = ${req.body.area_id})`
+        }
+        else if(district){
+            console.log("third");
+
+          condition = condition + `OR  (nivel_responsable_id = 2 AND area_id = ${req.body.area_id}) OR (nivel_responsable_id = 3 AND area_id = ${req.body.area_id} AND cabildo_id = ${cabildo})`
+        }
+        console.log('condition: ', condition);
 
         var whereClause = `
-        AND (:division_id IS NULL OR division_id = :division_id)
-        AND (:cabildo IS NULL OR cabildo_id = :cabildo)
-        AND (:district IS NULL OR distrito_sgip_id = :district) `
+        OR (:cabildo IS NULL OR cabildo_id = :cabildo)
+        OR (:district IS NULL OR distrito_sgip_id = :district) `
         const result = await sequelize.query(`select usuarios_usuario.id,area_id,cabildo_id,distrito_sgip_id,usuario_id as Cedula_id,nivel.nombre as nivel_responsable, sgi_id , nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_nivelresponsable as nivel  on nivel.id = usuarios_usuario.nivel_responsable_id inner join usuarios_division as division on division.id = usuarios_usuario.division_id where 
-    area_id = ${req.body.area_id} and responsable = 1 ${whereClause} order by nombre_completo`, {
+     responsable = 1 ${condition} and  estado_id = 1  order by nombre_completo`, {
             type: sequelize.QueryTypes.SELECT, replacements: {
                 cabildo: cabildo || null,
                 district: district || null,
-                division_id: division_id || null
             }
         })
       
@@ -466,7 +482,6 @@ async function getAttendanceLeaderList(req, res) {
         })
     }
 }
-
 
 async function getAttendanceInviteeList(req, res) {
     console.log(req.body, "invitee list req")
@@ -2756,7 +2771,7 @@ async function filterreport(req, res) {
         const responsable_gohonzon = req.body.responsable_gohonzon;
         // const nivel_budista = req.body.selected_nivel_budista_id
         const nivel_budista = req.body.nivel_budista
-        const estado = req.body.estado_id
+        const estado = req.body.estado_id || 1
 
         const whereClause = `WHERE 1 AND (:area IS NULL OR area_id = :area)
         AND (:cabildo IS NULL OR cabildo_id = :cabildo)
