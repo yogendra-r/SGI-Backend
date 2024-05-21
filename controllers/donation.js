@@ -436,7 +436,7 @@ console.log(pdf[0])
         <p> Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
         impulsado por la Soka Gakkai Internacional de Panamá. </p>
         ${htmltable} <br>
-        <p> Donation Receipt : https://basededatos.sgipanama.com/receipt/${pdfdata.reciept}</p>
+        <p> Donation Receipt : https://contribucion.sgipanama.com//receipt/${pdfdata.reciept}</p>
         </html>`,
         attachments: [
           {
@@ -534,12 +534,12 @@ async function getdashboardcards(req, res) {
   return res.status(200).send({
     message: "cards",
     data: {
-      "TOTAL REGISTRATIONS CURRENT MONTH": totalreg[0].count,
-      "TOTAL MEMBERS REPORTING DONATIONS- CURRENT MONT": totalmember.length,
-      "TOTAL ACTIVE MEMBERS PER SGI DATABASE": totalactive[0].count,
-      "% OF MEMBERS WHO ARE ACTIVE DONORS":activepercent.toFixed(2)+`%`,
-      "Total donation current month": `$`+monthdonation[0].count?monthdonation[0].count : 0,
-      "Total donation YTD": `$`+yearlydonation[0].count
+      "Total registros mes corriente": totalreg[0].count,
+      "Total registros mes corriente miembros sin duplicar": totalmember.length,
+      "Total miembros actiivos (base de datos)": totalactive[0].count,
+      "% miembros activos que contribuyen":activepercent.toFixed(2)+`%`,
+      "Total contribución mes corriente": `$`+(monthdonation[0].count!=null)?monthdonation[0].count : 0,
+      "Total contribución acumulada en el año a la fecha": `$`+yearlydonation[0].count
     }
   })
 
@@ -561,7 +561,6 @@ async function donationpie(req, res) {
 }
 
 async function donorsbymonth(req, res) {
-  console.log('Helllooo')
   var date = new Date()
   var year = date.getFullYear()
   var user = []
