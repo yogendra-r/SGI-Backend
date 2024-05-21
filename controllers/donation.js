@@ -538,8 +538,8 @@ async function getdashboardcards(req, res) {
       "Total registros mes corriente miembros sin duplicar": totalmember.length,
       "Total miembros actiivos (base de datos)": totalactive[0].count,
       "% miembros activos que contribuyen":activepercent.toFixed(2)+`%`,
-      "Total contribución mes corriente": `$`+(monthdonation[0].count!=null)?monthdonation[0].count : 0,
-      "Total contribución acumulada en el año a la fecha": `$`+yearlydonation[0].count
+      "Total contribución mes corriente": `$`((monthdonation[0].count!=null)?monthdonation[0].count : 0),
+      "Total contribución acumulada en el año a la fecha": `$`+(yearlydonation[0].count).toFixed(2)
     }
   })
 
