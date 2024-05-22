@@ -911,7 +911,7 @@ async function searchreportbyyear(req, res) {
   // console.log('user: ', user);
   var newuser = await sequelize.query(`SELECT amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
   // console.log('newuser: ', newuser);
- users = user.concat(newuser)
+ user = user.concat(newuser)
   // console.log(user)
   for (var i in user) {
     resp = []
@@ -1077,11 +1077,12 @@ async function reportpercentpermonthbyarea(req, res) {
     for (var j in month) {
       var user = await sequelize.query(`select count(id)  as count from usuarios_usuario where area_id = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
       var newuser = await sequelize.query(`select count(id)  as count from donation_users as usuarios_usuario where area = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
-      user = user.concat(newuser)
+      // user = user.concat(newuser)
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
       var newdata = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join donation_users as usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
       data = data.concat(newdata)
-      resp.push((data[0]) ? ((data[0].count / user[0].count?user[0].count : 1) * 100).toFixed(2) : "0")
+      // resp.push((data[0]) ? ((data[0].count / user[0].count?user[0].count : 1) * 100).toFixed(2) : "0")
+      resp.push((newdata[0]) ? ((newdata[0].count / newuser[0].count?user[0].count : 1) * 100).toFixed(2) : "0")
       // resp.push((data[0]) ? (Math.round((data[0].count / user[0].count)) * 100) : 0)
       //
     }

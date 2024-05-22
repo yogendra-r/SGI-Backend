@@ -22,7 +22,7 @@ router.get('/reporttotalregistrationbymonth',admin.reporttotalregistrationbymont
 router.get('/reporttotalmembersbymonth',admin.reporttotalmembersbymonth) //7
 router.post('/persnalizedreport',admin.persnalizedreport) //8
 router.post('/reportdonationbymethod',admin.reportdonationbymethod) //11
-router.get('/reportdonationbytype',admin.reportdonationbytype) //12
+router.post('/reportdonationbytype',admin.reportdonationbytype) //12
 router.post('/searchreportbyyear',admin.searchreportbyyear) //1
 router.post('/searchmemberreportbyyear',admin.searchmemberreportbyyear) //2
 router.get('/reportpermonthbyarea',admin.reportpermonthbyarea) //3
