@@ -59,7 +59,6 @@ async function adminLogin(req, res) {
   }
 }
 
-
 async function adminsignup(req, res) {
   try {
     const { first_name, last_name, email, password } = req.body
@@ -135,9 +134,7 @@ async function adddonation(req, res) {
       message: "Internal server error",
       data: []
     })}
-  }
-
-
+}
 
 async function getuserbycedula(req, res) {
   var result = await sequelize.query(`select nombre_completo ,usuario_id as cedula , usuarios_usuario.id,email, area.nombre as area, cabildo.nombre as cabildo, distrito.nombre as distrito from usuarios_usuario
@@ -162,7 +159,6 @@ async function getuserbycedula(req, res) {
     })
   }
 }
-
 
 function drawTable(doc, table) {
   var { rows, yStart, xStart, rowHeight, padding, maxWidth, fontSize } = table;
@@ -218,7 +214,6 @@ function drawTable(doc, table) {
     xStart = table.xStart;
   }
 }
-
 
 function drawHtmlTable(table) {
   var { rows } = table;
@@ -556,6 +551,8 @@ async function donationpie(req, res) {
 
 }
 
+
+// done not needed
 async function donorsbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -591,6 +588,7 @@ async function donorsbymonth(req, res) {
 
 }
 
+// done not needed
 async function totaldonationbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -626,6 +624,7 @@ async function totaldonationbymonth(req, res) {
 
 }
 
+// done not needed
 async function totalregistrationbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -661,7 +660,7 @@ async function totalregistrationbymonth(req, res) {
 
 }
 
-
+//done
 async function reporttotaldonationytd(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -676,6 +675,8 @@ async function reporttotaldonationytd(req, res) {
     resp.push(area[i].nombre)
     resp.push(0)
     var user = await sequelize.query(`SELECT SUM(amount) as amount,usuarios_area.id as area, usuarios_area.nombre as nombre   FROM usuarios_area left join usuarios_usuario on usuarios_usuario.area_id = usuarios_area.id inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"  GROUP BY area order by nombre`, { type: sequelize.QueryTypes.SELECT })
+    var newuser = await sequelize.query(`SELECT SUM(amount) as amount,usuarios_area.id as area, usuarios_area.nombre as nombre   FROM usuarios_area left join donation_users as usuarios_usuario on usuarios_usuario.area = usuarios_area.id inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"  GROUP BY area order by nombre`, { type: sequelize.QueryTypes.SELECT })
+    user = user.concat(newuser)
     // console.log(user)
     for (var j in user) {
       if (area[i].id == user[j].area) {
@@ -693,6 +694,7 @@ async function reporttotaldonationytd(req, res) {
 
 }
 
+//done not needed
 async function reporttotaldonationbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -738,6 +740,7 @@ async function monthlyreportbyarea(req, res) {
 
 }
 
+//done not needed
 async function reporttotalregistrationbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -751,6 +754,7 @@ async function reporttotalregistrationbymonth(req, res) {
     resp.push(months[i].nombre)
     resp.push(0)
     var data = await sequelize.query(`select donation_month,count(*) as count from donation_info where donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
+    
     // console.log(data[0])
     for (var j in data) {
       if (months[i].id == data[j].donation_month) {
@@ -767,6 +771,8 @@ async function reporttotalregistrationbymonth(req, res) {
   })
 
 }
+
+//done not needed
 async function reporttotalmembersbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -780,6 +786,7 @@ async function reporttotalmembersbymonth(req, res) {
     resp.push(months[i].nombre)
     resp.push(0)
     var data = await sequelize.query(`select donation_month,count(distinct user_id) as count from donation_info where donation_date like "${year}%" group by user_id, donation_month`, { type: sequelize.QueryTypes.SELECT })
+   
     console.log(data[0])
     for (var j in data) {
       if (months[i].id == data[j].donation_month) {
@@ -796,6 +803,9 @@ async function reporttotalmembersbymonth(req, res) {
   })
 
 }
+
+
+//done not needed
 
 async function persnalizedreport(req, res) {
   var date = new Date()
@@ -823,7 +833,7 @@ async function persnalizedreport(req, res) {
       sum = sum + userdata[i].amount
       user.push(resp)
     }
-    user.push(["Total", " ", sum])
+    user.push(["Total", " ", `$`+sum])
     return res.status(200).send({
       message: "data fetched",
       data: user,
@@ -843,7 +853,7 @@ async function persnalizedreport(req, res) {
   }
 }
 
-
+//done not needed
 async function reportdonationbymethod(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -865,12 +875,15 @@ async function reportdonationbymethod(req, res) {
   })
 }
 
+
+//done not needed
 async function reportdonationbytype(req, res) {
   var year = req.body.year || date.getFullYear()
   var date = new Date()
   var user = [["TIPO", "SELECCIONADO", "TOTAL $$"]]
   var resp = []
   var userdata = await sequelize.query(`select nombre ,donation_type,count(*) as count, sum(amount) as total from donation_info right join donation_type on donation_type.id = donation_info.donation_type where donation_date like "${year}%" group by donation_type`, { type: sequelize.QueryTypes.SELECT })
+  
   console.log(userdata)
   for (var i in userdata) {
     resp = []
@@ -886,7 +899,7 @@ async function reportdonationbytype(req, res) {
   })
 }
 
-
+//done
 async function searchreportbyyear(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
@@ -895,6 +908,10 @@ async function searchreportbyyear(req, res) {
   var resp = []
 
   var user = await sequelize.query(`SELECT amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  // console.log('user: ', user);
+  var newuser = await sequelize.query(`SELECT amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  // console.log('newuser: ', newuser);
+ users = user.concat(newuser)
   // console.log(user)
   for (var i in user) {
     resp = []
@@ -914,6 +931,7 @@ async function searchreportbyyear(req, res) {
 
 }
 
+//done
 async function searchmemberreportbyyear(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
@@ -923,8 +941,14 @@ async function searchmemberreportbyyear(req, res) {
   var user = await sequelize.query(`SELECT distinct area.nombre as area, cab.nombre as cabildo, dis.nombre as distrito ,donation_date,nombre_completo,usuario_id FROM usuarios_usuario 
   inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id inner join usuarios_area as area on area.id = usuarios_usuario.area_id
   inner join usuarios_cabildo as cab on cab.id = usuarios_usuario.cabildo_id inner join usuarios_distritosgip as dis on dis.id = usuarios_usuario.distrito_sgip_id 
-   where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
-  // console.log(user)
+  where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  console.log('user: ', user);
+  var newuser = await sequelize.query(`SELECT distinct area.nombre as area, cab.nombre as cabildo, dis.nombre as distrito ,donation_date,nombre_completo,usuario_id FROM donation_users as usuarios_usuario  
+  inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id inner join usuarios_area as area on area.id = usuarios_usuario.area
+  inner join usuarios_cabildo as cab on cab.id = usuarios_usuario.cabildo inner join usuarios_distritosgip as dis on dis.id = usuarios_usuario.distrito 
+  where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  console.log('newuser: ', newuser);
+  user = user.concat(newuser)
   for (var i in user) {
     resp = []
     resp.push(user[i].donation_date)
@@ -944,7 +968,7 @@ async function searchmemberreportbyyear(req, res) {
 
 
 }
-
+//done
 async function reportpermonthbyarea(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
@@ -958,7 +982,10 @@ async function reportpermonthbyarea(req, res) {
     resp.push(area[i].nombre)
     for (var j in month) {
       var data = await sequelize.query(`select sum(amount) as amount from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-      resp.push((data[0]) ? (data[0].amount) : 0)
+      var newdata = await sequelize.query(`select sum(amount) as amount from donation_info inner join donation_users as usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and usuarios_usuario.area = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
+      
+      console.log('data: ', data);
+      resp.push((data[0]) ? (data[0].amount + newdata[0]?newdata[0].amount : 0) : 0)
     }
     users.push(resp)
   }
@@ -970,6 +997,8 @@ async function reportpermonthbyarea(req, res) {
 
 }
 
+
+//done
 async function reportmemberpermonthbyarea(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
@@ -990,7 +1019,10 @@ async function reportmemberpermonthbyarea(req, res) {
     // }
     for (var j in month) {
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-      resp.push((data[0]) ? (data[0].count) : 0)
+      var newdata = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join donation_users as usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and usuarios_usuario.area = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
+      resp.push((data[0]) ? (data[0].amount + newdata[0]?newdata[0].amount : 0) : 0)
+      
+      // resp.push((data[0]) ? (data[0].count) : 0)
       
     }
     // const data 
@@ -1030,7 +1062,7 @@ arr.push(totalsRow);
 
 }
 
-
+//done
 async function reportpercentpermonthbyarea(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
@@ -1044,8 +1076,12 @@ async function reportpercentpermonthbyarea(req, res) {
 
     for (var j in month) {
       var user = await sequelize.query(`select count(id)  as count from usuarios_usuario where area_id = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
+      var newuser = await sequelize.query(`select count(id)  as count from donation_users as usuarios_usuario where area = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
+      user = user.concat(newuser)
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-      resp.push((data[0]) ? ((data[0].count / user[0].count) * 100).toFixed(2) : "00")
+      var newdata = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join donation_users as usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
+      data = data.concat(newdata)
+      resp.push((data[0]) ? ((data[0].count / user[0].count?user[0].count : 1) * 100).toFixed(2) : "0")
       // resp.push((data[0]) ? (Math.round((data[0].count / user[0].count)) * 100) : 0)
       //
     }
