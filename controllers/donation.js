@@ -190,14 +190,12 @@ function drawTable(doc, table) {
     throw new Error('Table width exceeds maximum width');
   }
 
-  // doc.fillColor('blue');
-  // doc.text("Donation Reciept")
   for (let i = 0; i < rows.length; i++) {
 
     const currentRow = rows[i];
     const currentY = yStart + i * rowHeight;
 
-    // Draw the table cells #11142D
+    //  table cells #11142D
     for (let j = 0; j < columnCount; j++) {
       // Check if it's the first column
       if (j === 0) {
@@ -216,7 +214,7 @@ function drawTable(doc, table) {
       xStart += columnWidths[j];
     }
 
-    // Reset xStart for the next row
+    //  next row
     xStart = table.xStart;
   }
 }
@@ -233,7 +231,7 @@ function drawHtmlTable(table) {
   const columnCount = 2; 
   const columnWidths = Array(columnCount).fill(0); 
 
-  // Calculate the maximum width of each column
+  // maximum width of each column
   for (let i = 0; i < rows.length; i++) {
     const currentRow = rows[i];
     for (let j = 0; j < columnCount; j++) {
@@ -250,7 +248,6 @@ function drawHtmlTable(table) {
     throw new Error('Table width exceeds maximum width');
   }
 
-  // Construct the HTML table with applied CSS styles
   let htmlTable = `
     <table style="border-collapse: collapse; width: ${tableWidth + 2 * margin}px; margin: ${margin}px;">
       <thead>
@@ -436,7 +433,7 @@ console.log(pdf[0])
         <p> Las contribuciones  serán administradas y empleadas para promover el kosen-rufu
         impulsado por la Soka Gakkai Internacional de Panamá. </p>
         ${htmltable} <br>
-        <p> Donation Receipt : https://contribucion.sgipanama.com//receipt/${pdfdata.reciept}</p>
+        <p> Donation Receipt : https://basededatos.sgipanama.com:8080/receipt/${pdfdata.reciept}</p>
         </html>`,
         attachments: [
           {
@@ -445,8 +442,7 @@ console.log(pdf[0])
           },
         ]
 
-      };
-
+      }
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -530,7 +526,7 @@ async function getdashboardcards(req, res) {
   var monthdonation = await sequelize.query(`select sum(amount) as count from donation_info where donation_date like "${fulldate}"`, { type: sequelize.QueryTypes.SELECT })
   console.log('monthdonation: ', monthdonation);
   var yearlydonation = await sequelize.query(`select sum(amount) as count from donation_info where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
-  const amount = (monthdonation[0].count!=null)?monthdonation[0].count : 0
+const amount = (monthdonation[0].count!=null)?monthdonation[0].count : 0
   return res.status(200).send({
     message: "cards",
     data: {
@@ -542,6 +538,7 @@ async function getdashboardcards(req, res) {
       "Total contribución acumulada en el año a la fecha": `$`+(yearlydonation[0].count).toFixed(2)
     }
   })
+
 }
 
 
@@ -670,7 +667,7 @@ async function reporttotaldonationytd(req, res) {
   var year = date.getFullYear()
   var users = [["Area", "$$Total"]]
   var resp = []
-  var area = await sequelize.query(`select * from usuarios_area`, { type: sequelize.QueryTypes.SELECT })
+  var area = await sequelize.query(`select * from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
 
   for (var i in area) {
     var resp = []
@@ -678,7 +675,7 @@ async function reporttotaldonationytd(req, res) {
     // console.log(months[i].nombre) 
     resp.push(area[i].nombre)
     resp.push(0)
-    var user = await sequelize.query(`SELECT SUM(amount) as amount,usuarios_area.id as area  FROM usuarios_area left join usuarios_usuario on usuarios_usuario.area_id = usuarios_area.id inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"  GROUP BY area`, { type: sequelize.QueryTypes.SELECT })
+    var user = await sequelize.query(`SELECT SUM(amount) as amount,usuarios_area.id as area, usuarios_area.nombre as nombre   FROM usuarios_area left join usuarios_usuario on usuarios_usuario.area_id = usuarios_area.id inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"  GROUP BY area order by nombre`, { type: sequelize.QueryTypes.SELECT })
     // console.log(user)
     for (var j in user) {
       if (area[i].id == user[j].area) {
@@ -774,7 +771,7 @@ async function reporttotalregistrationbymonth(req, res) {
 async function reporttotalmembersbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
-  var user = [["MES", "REGISTROS"]]
+  var user = [["MES", "MIEMBROS"]]
   var resp = []
   var months = await sequelize.query(`select * from months`, { type: sequelize.QueryTypes.SELECT })
   console.log(months, "months")
@@ -812,7 +809,7 @@ async function persnalizedreport(req, res) {
       data: []
     })
   }
-  var year = date.getFullYear()
+  var year = req.body.request_year || date.getFullYear()
   var user = [["FECHA", "CONFIRMACIÓN", "TOTAl"]]
   var resp = []
 
@@ -851,7 +848,7 @@ async function persnalizedreport(req, res) {
 async function reportdonationbymethod(req, res) {
   var date = new Date()
   var year = date.getFullYear()
-  var user = [["DONATION METHOD", "COUNT", "TOTAL $$"]]
+  var user = [["MÉTODO", "SELECCIONADO", "TOTAL $$"]]
   var resp = []
   var userdata = await sequelize.query(`select nombre ,donation_method,count(*) as count, sum(amount) as total from donation_info right join donation_method on donation_method.id = donation_info.donation_method where donation_date like "${year}%" group by donation_method`, { type: sequelize.QueryTypes.SELECT })
   console.log(userdata)
@@ -870,9 +867,9 @@ async function reportdonationbymethod(req, res) {
 }
 
 async function reportdonationbytype(req, res) {
+  var year = req.body.year || date.getFullYear()
   var date = new Date()
-  var year = date.getFullYear()
-  var user = [["DONATION TYPE", "COUNT", "TOTAL $$"]]
+  var user = [["TIPO", "SELECCIONADO", "TOTAL $$"]]
   var resp = []
   var userdata = await sequelize.query(`select nombre ,donation_type,count(*) as count, sum(amount) as total from donation_info right join donation_type on donation_type.id = donation_info.donation_type where donation_date like "${year}%" group by donation_type`, { type: sequelize.QueryTypes.SELECT })
   console.log(userdata)
@@ -894,7 +891,8 @@ async function reportdonationbytype(req, res) {
 async function searchreportbyyear(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
-  var users = [["Date", "Nombre Completo", "Cedula", "Amount $$"]]
+  
+  var users = [["Fecha", "Nombre Completo", "Cédula", "Monto $$"]]
   var resp = []
 
   var user = await sequelize.query(`SELECT amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
@@ -920,7 +918,7 @@ async function searchreportbyyear(req, res) {
 async function searchmemberreportbyyear(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
-  var users = [["Date", "Nombre Completo", "Cedula", "AREA", "CABILDO", "DISTRITO"]]
+  var users = [["Fecha", "Nombre Completo", "Cédula", "AREA", "CABILDO", "DISTRITO"]]
   var resp = []
 
   var user = await sequelize.query(`SELECT distinct area.nombre as area, cab.nombre as cabildo, dis.nombre as distrito ,donation_date,nombre_completo,usuario_id FROM usuarios_usuario 
@@ -951,7 +949,7 @@ async function searchmemberreportbyyear(req, res) {
 async function reportpermonthbyarea(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
-  var users = [["AREA", "Enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubure", "noviembre", "diciembre"]]
+  var users = [["AREA", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]]
   var resp = []
   const area = await sequelize.query(`select * from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
   const month = await sequelize.query(`select * from months order by id`, { type: sequelize.QueryTypes.SELECT })
@@ -976,20 +974,55 @@ async function reportpermonthbyarea(req, res) {
 async function reportmemberpermonthbyarea(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
-  var users = [["AREA", "Enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubure", "noviembre", "diciembre"]]
+  var users = [["AREA", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre","Total"]]
   var resp = []
   const area = await sequelize.query(`select * from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
   const month = await sequelize.query(`select * from months order by id`, { type: sequelize.QueryTypes.SELECT })
 
   for (var i in area) {
+    console.log('i: ', i);
+    console.log('area.length: ', area.length);
     resp = []
-    resp.push(area[i].nombre)
+    
+    // if(i==(area.length-1)){
+    //   resp.push("Total")
+    // }else{
+      resp.push(area[i].nombre)
+    // }
     for (var j in month) {
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
       resp.push((data[0]) ? (data[0].count) : 0)
+      
     }
+    // const data 
+    var newresp = resp
+    newresp =newresp.slice(2,newresp.length)
+    console.log('newresp: ', newresp);
+
+    resp.push(newresp.reduce((a, b) => a + b, 0))
+
+    console.log('newresp: ', newresp);
+   
     users.push(resp)
   }
+var arr = users 
+const totalsRow = Array(arr[0].length).fill(0);
+totalsRow[0] = 'Total';
+
+for (let i = 1; i < arr.length; i++) {
+  const rowSum = arr[i].slice(1, -1).reduce((acc, val) => acc + val, 0);
+  arr[i][arr[i].length - 1] = rowSum;
+
+  for (let j = 1; j < arr[i].length - 1; j++) {
+    totalsRow[j] += arr[i][j];
+  }
+}
+
+totalsRow[totalsRow.length - 1] = totalsRow.slice(1, -1).reduce((acc, val) => acc + val, 0);
+arr.push(totalsRow);
+ 
+  users = arr
+  // console.log('users: ', sums);
   return res.status(200).send({
     message: "data fetched",
     data: users,
@@ -1002,7 +1035,7 @@ async function reportmemberpermonthbyarea(req, res) {
 async function reportpercentpermonthbyarea(req, res) {
   var date = new Date()
   var year = req.body.year || date.getFullYear()
-  var users = [["AREA", "Enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubure", "noviembre", "diciembre"]]
+  var users = [["AREA", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]]
   var resp = []
   const area = await sequelize.query(`select * from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
   const month = await sequelize.query(`select * from months order by id`, { type: sequelize.QueryTypes.SELECT })
