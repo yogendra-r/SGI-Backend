@@ -767,7 +767,6 @@ async function reporttotalregistrationbymonth(req, res) {
   })
 
 }
-
 async function reporttotalmembersbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
@@ -780,8 +779,8 @@ async function reporttotalmembersbymonth(req, res) {
     console.log(months[i].nombre)
     resp.push(months[i].nombre)
     resp.push(0)
-    var data = await sequelize.query(`select donation_month,count('select distinct user_id from donation_info') as count from donation_info where donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-    // console.log(data[0])
+    var data = await sequelize.query(`select donation_month,count(distinct user_id) as count from donation_info where donation_date like "${year}%" group by user_id, donation_month`, { type: sequelize.QueryTypes.SELECT })
+    console.log(data[0])
     for (var j in data) {
       if (months[i].id == data[j].donation_month) {
         resp[1] = data[j].count
