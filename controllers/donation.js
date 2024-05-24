@@ -1020,11 +1020,14 @@ async function reportmemberpermonthbyarea(req, res) {
     for (var j in month) {
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
       var newdata = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join donation_users as usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and usuarios_usuario.area = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-      resp.push((data[0]) ? (data[0].amount + newdata[0]?newdata[0].amount : 0) : 0)
-      
-      // resp.push((data[0]) ? (data[0].count) : 0)
-      
+      // resp.push((data[0]) ? (data[0].amount + (newdata[0]?newdata[0].amount : 0)) : 0)
+     if(data[0]){ data[0].count = data[0]?(data[0].count + (newdata[0]?newdata[0].count:0)):0
+      resp.push((data[0]) ? (data[0].count) : 0)}
+      else{
+        resp.push(0)
+      }
     }
+    
     // const data 
     var newresp = resp
     newresp =newresp.slice(2,newresp.length)
