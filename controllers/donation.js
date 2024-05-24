@@ -840,7 +840,9 @@ async function persnalizedreport(req, res) {
       title: "Reporte personalizado",
       headings: {
         nombre: userdata[0].nombre_completo,
-        cedula: userdata[0].usuario_id
+        cedula: userdata[0].usuario_id,
+        year : req.body.request_year
+
       }
     })
   }
