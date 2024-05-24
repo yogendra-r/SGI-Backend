@@ -1155,14 +1155,14 @@ async function addNewMember(req, res) {
     var newId = currentId + 10
     var newSgi_id = "SGIP" + newId;
     let dateFechaNaci = new Date(fecha_nacimiento);
-    dateFechaNaci.setHours(dateFechaNaci.getHours() + 5);
-    dateFechaNaci.setMinutes(dateFechaNaci.getMinutes() + 30);
-    dateFechaNaci = dateFechaNaci.toISOString();
+    // dateFechaNaci.setHours(dateFechaNaci.getHours() + 5);
+    // dateFechaNaci.setMinutes(dateFechaNaci.getMinutes() + 30);
+    // dateFechaNaci = dateFechaNaci.toISOString();
 
     let dateFechaIngreso = new Date(fechadeingreso);
-    dateFechaIngreso.setHours(dateFechaIngreso.getHours() + 29);
-    dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes() + 30);
-    dateFechaIngreso = dateFechaIngreso.toISOString();
+    // dateFechaIngreso.setHours(dateFechaIngreso.getHours() + 29);
+    // dateFechaIngreso.setMinutes(dateFechaIngreso.getMinutes() + 30);
+    // dateFechaIngreso = dateFechaIngreso.toISOString();
     
     var data = {
         primer_nombre: primer_nombre,
