@@ -664,7 +664,7 @@ async function totalregistrationbymonth(req, res) {
 async function reporttotaldonationytd(req, res) {
   var date = new Date()
   var year = date.getFullYear()
-  var users = [["Area", "$$Total"]]
+  var users = [["Area", "Total $$"]]
   var resp = []
   var area = await sequelize.query(`select * from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
 
@@ -698,7 +698,7 @@ async function reporttotaldonationytd(req, res) {
 async function reporttotaldonationbymonth(req, res) {
   var date = new Date()
   var year = date.getFullYear()
-  var users = [["Month", "$$Total"]]
+  var users = [["Month", "Total $$"]]
   var resp = []
   var months = await sequelize.query(`select * from months`, { type: sequelize.QueryTypes.SELECT })
   // console.log(months,"months")
@@ -865,7 +865,7 @@ async function reportdonationbymethod(req, res) {
     resp = []
     resp.push(userdata[i].nombre)
     resp.push(userdata[i].count)
-    resp.push(userdata[i].total)
+    resp.push(userdata[i].total.toFixed(2))
     user.push(resp)
   }
   return res.status(200).send({
@@ -889,7 +889,7 @@ async function reportdonationbytype(req, res) {
     resp = []
     resp.push(userdata[i].nombre)
     resp.push(userdata[i].count)
-    resp.push(userdata[i].total)
+    resp.push(userdata[i].total.toFixed(2))
     user.push(resp)
   }
   return res.status(200).send({
