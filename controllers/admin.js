@@ -372,6 +372,7 @@ async function getAttendanceMemberList(req, res) {
         })
     }
 }
+
 async function getAttendanceLeaderList(req, res) {
     console.log(req.body, "get att list")
     if (!req.body.fetcha_de_actividad) {
@@ -483,6 +484,7 @@ async function getAttendanceLeaderList(req, res) {
     }
 }
 
+
 async function getAttendanceInviteeList(req, res) {
     console.log(req.body, "invitee list req")
     if (!req.body.fetcha_de_actividad) {
@@ -558,7 +560,7 @@ function convertUtcToIst(utcDate) {
     return istDate;
 }
 
-async function getAttendance(req, res) {
+async function getAttendanceold(req, res) {
     (async () => {
         try {
             // console.log(req.body,"att list")
@@ -600,8 +602,9 @@ async function getAttendance(req, res) {
             });
 
             for (var i in result) {
-                member = 0,
-                    invitee = 0,
+                member = 0;
+            leader = 0;
+                    invitee = 0;
                     invitado_por = 0
                 const resp = await sequelize.query(`select role_id,count(role_id) as count from attendance where activity_id = ${result[i].activity_id} group by role_id`, { type: sequelize.QueryTypes.SELECT })
                 console.log(result[i].activity_id, resp, "resp")
@@ -614,6 +617,10 @@ async function getAttendance(req, res) {
                     else if (resp[j].role_id == 2) {
                         console.log(result[i].activity_id, resp[j].count, "else")
                         invitee = resp[j].count
+                    }
+                    else if (resp[j].role_id == 3) {
+                        console.log(result[i].activity_id, resp[j].count, "else")
+                        leader = resp[j].count
                     }
                     var s = await sequelize.query(`select invitados_por_primera_vez from usuarios_actividad where id =  ${result[i].activity_id}  `, { type: sequelize.QueryTypes.SELECT })
                 }
@@ -637,6 +644,7 @@ async function getAttendance(req, res) {
                 result[i].member = member
                 result[i].invitado_por = s[0].invitados_por_primera_vez
                 result[i].invitee = invitee - result[i].invitado_por
+                result[i].leader = leader
             }
             // console.log(result)
             return res.status(200).send({
@@ -650,6 +658,105 @@ async function getAttendance(req, res) {
     })();
 
 }
+
+async function getAttendance(req, res) {
+    try {
+        console.log(req.body);
+
+        let date = null;
+        if (req.body.fetcha_de_actividad) {
+            date = convertUtcToIst(req.body.fetcha_de_actividad).substring(0, 10);
+        }
+
+        const where = await helper.findRoleDetails(req, res);
+        const area = req.body.area_id || where.area_id;
+        const cabildo = req.body.cabildo_id || where.cabildo_id;
+        const district = req.body.distrito_id || where.distrito_id;
+        const activity_id = req.body.activity_id;
+        const meeting_id = req.body.new_activity_id;
+
+        const whereClause = `
+            WHERE 1=1
+            AND (:activity_id IS NULL OR attendance.activity_id = :activity_id)
+            AND (:meeting_id IS NULL OR usuarios_actividad.activity_id = :meeting_id)
+            AND (:date IS NULL OR fetcha_de_actividad = :date)
+            AND (:area IS NULL OR area_id = :area)
+            AND (:cabildo IS NULL OR cabildo_id = :cabildo)
+            AND (:district IS NULL OR distrito_id = :district)`;
+
+        const query = `
+            SELECT 
+                attendance.activity_id,
+                area.nombre AS area,
+                fetcha_de_actividad,
+                usuarios_actividad.nombre AS activity,
+                COUNT(attendance.activity_id) AS total 
+            FROM attendance 
+            INNER JOIN usuarios_actividad ON usuarios_actividad.id = attendance.activity_id 
+            INNER JOIN usuarios_area AS area ON area.id = usuarios_actividad.area_id 
+            ${whereClause} 
+            GROUP BY attendance.activity_id`;
+
+        const result = await sequelize.query(query, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: {
+                date: date || null,
+                area: area || null,
+                cabildo: cabildo || null,
+                district: district || null,
+                activity_id: activity_id || null,
+                meeting_id: meeting_id || null
+            }
+        });
+
+        for (let i in result) {
+            let member = 0;
+            let leader = 0;
+            let invitee = 0;
+            let invitado_por = 0;
+
+            const resp = await sequelize.query(`
+                SELECT role_id, COUNT(role_id) AS count 
+                FROM attendance 
+                WHERE activity_id = ${result[i].activity_id} 
+                GROUP BY role_id`, { type: sequelize.QueryTypes.SELECT });
+
+            console.log(result[i].activity_id, resp, "resp");
+
+            for (let j in resp) {
+                if (resp[j].role_id == 1) {
+                    member = resp[j].count;
+                } else if (resp[j].role_id == 2) {
+                    invitee = resp[j].count;
+                } else if (resp[j].role_id == 3) {
+                    leader = resp[j].count;
+                }
+            }
+
+            const s = await sequelize.query(`
+                SELECT invitados_por_primera_vez 
+                FROM usuarios_actividad 
+                WHERE id = ${result[i].activity_id}`, { type: sequelize.QueryTypes.SELECT });
+
+            result[i].member = member;
+            result[i].invitado_por = s[0].invitados_por_primera_vez;
+            result[i].invitee = invitee - result[i].invitado_por;
+            result[i].leader = leader;
+        }
+
+        return res.status(200).send({
+            message: "Data fetched successfully",
+            data: result
+        });
+    } catch (error) {
+        console.error('Error:', error.message);
+        return res.status(500).send({
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+}
+
 
 async function getAttendanceByDivision(req, res) {
     try {
@@ -767,7 +874,6 @@ async function getAttendanceByDivision(req, res) {
         console.log(error)
         console.error('Error:', error.message);
     }
-
 
 }
 
@@ -986,13 +1092,19 @@ async function getAttendanceList(req, res) {
         const result = await sequelize.query(`select invitados.id,invitados.nombre, invitados.appelido, invitados.telefono, division.nombre as division from invitados inner join usuarios_division as division on division.id = invitados.division inner join attendance as att on att.user_id = invitados.id
      where att.activity_id = ${req.body.activity_id} and att.role_id = 2 order by invitados.nombre`, { type: sequelize.QueryTypes.SELECT })
         console.log(result, "result")
-        result1 = result1.concat(result)
         for (var i in result) {
             result[i].user_type = "Invitado"
             result[i].Cedula_id = "-"
             result[i].sgi_id = "-"
             result[i].nombre_completo = result[i].nombre + " " + result[i].appelido
         }
+        var result2 = await sequelize.query(`select usuarios_usuario.id,usuario_id as Cedula_id, sgi_id,nombre_completo, telefono, division.nombre as division from usuarios_usuario inner join usuarios_division as division on division.id = usuarios_usuario.division_id inner join attendance as att on att.user_id = usuarios_usuario.id
+        where att.activity_id = ${req.body.activity_id} and att.role_id = 3 order by nombre_completo`, { type: sequelize.QueryTypes.SELECT })
+        for (var i in result2) {
+            result2[i].user_type = "Responsable"
+            
+        }
+        result1 = result2.concat(result1).concat(result)
 
         //  console.log(result1,"result1")
         return res.status(200).send({
@@ -2771,7 +2883,7 @@ async function filterreport(req, res) {
         const responsable_gohonzon = req.body.responsable_gohonzon;
         // const nivel_budista = req.body.selected_nivel_budista_id
         const nivel_budista = req.body.nivel_budista
-        const estado = req.body.estado_id || 1
+        const estado = req.body.estado_id || 1 ;
 
         const whereClause = `WHERE 1 AND (:area IS NULL OR area_id = :area)
         AND (:cabildo IS NULL OR cabildo_id = :cabildo)
