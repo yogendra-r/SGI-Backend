@@ -87,8 +87,8 @@ async function dropdown(req, res) {
   try {
     var dtype = await sequelize.query(`select * from donation_type`, { type: sequelize.QueryTypes.SELECT })
     var dmethod = await sequelize.query(`select * from donation_method`, { type: sequelize.QueryTypes.SELECT })
-    var area = await sequelize.query(`select * from usuarios_area`, { type: sequelize.QueryTypes.SELECT })
-    var cabildo = await sequelize.query(`select * from usuarios_cabildo`, { type: sequelize.QueryTypes.SELECT })
+    var area = await sequelize.query(`select * from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
+    var cabildo = await sequelize.query(`select * from usuarios_cabildo order by nombre`, { type: sequelize.QueryTypes.SELECT })
     var distrito = await sequelize.query(`select * from usuarios_distritosgip`, { type: sequelize.QueryTypes.SELECT })
     var grupo = await sequelize.query(`select * from usuarios_grupo`, { type: sequelize.QueryTypes.SELECT })
     return res.status(200).send({
@@ -343,8 +343,6 @@ const table = {
 
 
 
-
-
 async function generateAndSendPdf(pdfdata) {
   console.log('pdfdata: ', pdfdata);
   // console.log(pdfdata.reciept)
@@ -388,7 +386,7 @@ console.log(pdf[0])
       ['Tipo', `${pdf[0].donation_type}`],
       ['Año',`${pdf[0].donation_date.split("-")[0]}`],
       ['Mes', `${pdf[0].donation_month}`],
-      ['Monto', `$${pdf[0].amount.toFixed(2)}`]
+      ['Monto', `$${pdf[0].amount}`]
     ],
 
     yStart: 100,
@@ -819,7 +817,7 @@ async function persnalizedreport(req, res) {
     })
   }
   var year = req.body.request_year || date.getFullYear()
-  var user = [["FECHA", "CONFIRMACIÓN", "TOTAl"]]
+  var user = [["FECHA", "CONFIRMACIÓN", "MONTO $$"]]
   var resp = []
 
   var userdata = await sequelize.query(`select nombre_completo,usuario_id,donation_date,amount,confirmation_no from usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where usuarios_usuario.usuario_id = ${user_id} and donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
@@ -842,7 +840,6 @@ async function persnalizedreport(req, res) {
         nombre: userdata[0].nombre_completo,
         cedula: userdata[0].usuario_id,
         year : req.body.request_year
-
       }
     })
   }
