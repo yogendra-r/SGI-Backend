@@ -860,9 +860,9 @@ async function persnalizedreport(req, res) {
   var user = [["FECHA", "CONFIRMACIÓN", "MONTO $$"]]
   var resp = []
 
-  var userdata = await sequelize.query(`select nombre_completo,usuario_id,donation_date,amount,confirmation_no from usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where usuarios_usuario.usuario_id = ${user_id} and donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  var userdata = await sequelize.query(`select nombre_completo,usuario_id,donation_date,amount,confirmation_no from usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where usuarios_usuario.usuario_id = "${user_id}" and donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
   if(!userdata.length){
-  var userdata = await sequelize.query(`select nombre_completo,usuario_id,donation_date,amount,confirmation_no from donation_users as usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where usuarios_usuario.usuario_id = ${user_id} and donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  var userdata = await sequelize.query(`select nombre_completo,usuario_id,donation_date,amount,confirmation_no from donation_users as usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where usuarios_usuario.usuario_id = "${user_id}" and donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
   }
   console.log('userdata: ', userdata);
   if (userdata.length) {
@@ -901,7 +901,6 @@ async function persnalizedreport(req, res) {
     })
   }
 }
-
 //done not needed
 async function reportdonationbymethod(req, res) {
   var date = new Date()
