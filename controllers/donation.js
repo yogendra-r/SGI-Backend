@@ -360,7 +360,7 @@ async function generateAndSendPdf(pdfdata) {
   where confirmation_no = "${pdfdata.conf_no}"`,{type : sequelize.QueryTypes.SELECT})
   if(!pdf.length){
     var pdf = await sequelize.query(`select usuario_id,usuarios_area.nombre as area, usuarios_cabildo.nombre as cabildo,usuarios_distritosgip.nombre as distrito,
-   nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month  from donation_info   inner join donation_users on donation_users.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = donation_users.area
+   nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month,donation_info.amount  from donation_info   inner join donation_users on donation_users.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = donation_users.area
   inner join usuarios_cabildo on usuarios_cabildo.id = donation_users
   
   .cabildo inner join usuarios_distritosgip on usuarios_distritosgip.id = donation_users.distrito
