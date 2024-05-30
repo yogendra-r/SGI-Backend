@@ -11,6 +11,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const XLSX = require('xlsx');
 const md5 = require('md5');
+const invitados = require('../models/invitees');
 
 
 async function adminLogin(req, res) {
@@ -416,7 +417,7 @@ console.log(pdf[0])
       // Define email options
       const mailOptions = {
         from: 'sgipanama1@gmail.com',
-        to: `sgip.enfoque@gmail.com ,${pdf[0].email}`,
+        to: `muskan.shu@cisinlabs.com, sgip.enfoque@gmail.com ,${pdf[0].email}`,
         subject: 'CONFIRMACIÓN DE SU CONTRIBUCIÓN',
         html: `<html><p>Estimado (a) ${pdf[0].nombre_completo} <p> 
         <p>Se ha registrado satisfactoriamente su contribución con los 
@@ -470,7 +471,7 @@ async function addnewuser(req, res) {
   var mailOptions = {
     from: 'SGI-Panama  <sgipanama1@gmail.com>',
     // to:  `muskan.shu@cisinlabs.com ,maires.carlos@gmail.com,motwani.j@gmail.com , basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    to:  `sgip.enfoque@gmail.com`,
+    to:  `muskan.shu@cisinlabs.com , sgip.enfoque@gmail.com`,
     subject: `User Donation Details`,
     html: `
     <br>New donation is regireted with the below details:.<br>
@@ -678,7 +679,7 @@ async function reporttotaldonationytd(req, res) {
     // console.log(user)
     for (var j in user) {
       if (area[i].id == user[j].area) {
-        resp[1] = (user[j].amount)
+        resp[1] = ((user[j].amount).toFixed(2))
       }
     }
     users.push(resp)
@@ -710,7 +711,7 @@ async function reporttotaldonationbymonth(req, res) {
     for (var j in user) {
       if (months[i].id == user[j].donation_month) {
         console.log(months[i].id, user[j].donation_month, user[j].amount)
-        resp[1] = user[j].amount
+        resp[1] = (user[j].amount).toFixed(2)
 
       }
     }
@@ -845,6 +846,7 @@ async function reporttotalmembersbymonth(req, res) {
 
 
 //done not needed
+
 async function persnalizedreport(req, res) {
   var date = new Date()
   user_id = req.body.cedula
@@ -871,8 +873,8 @@ async function persnalizedreport(req, res) {
       resp = []
       resp.push(userdata[i].donation_date)
       resp.push(userdata[i].confirmation_no)
-      resp.push(userdata[i].amount)
-      sum = sum + userdata[i].amount
+      resp.push((userdata[i].amount).toFixed(2))
+      sum =( sum + userdata[i].amount).toFixed(2)
       user.push(resp)
     }
     user.push(["Total", " ", `$`+sum])
@@ -901,6 +903,7 @@ async function persnalizedreport(req, res) {
     })
   }
 }
+
 //done not needed
 async function reportdonationbymethod(req, res) {
   var date = new Date()
@@ -966,7 +969,7 @@ async function searchreportbyyear(req, res) {
     resp.push(user[i].donation_date)
     resp.push(user[i].nombre_completo)
     resp.push(user[i].usuario_id)
-    resp.push(user[i].amount)
+    resp.push((user[i].amount).toFixed(2))
     users.push(resp)
   }
 
@@ -1033,7 +1036,11 @@ async function reportpermonthbyarea(req, res) {
       var newdata = await sequelize.query(`select sum(amount) as amount from donation_info inner join donation_users as usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and usuarios_usuario.area = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
       
       console.log('data: ', data);
-      resp.push((data[0]) ? (data[0].amount + newdata[0]?newdata[0].amount : 0) : 0)
+      const newmemberamount = data.length?(data[0].amount):0
+      const newinviteeamount = newdata.length?(newdata[0].amount):0
+      resp.push(newmemberamount+newinviteeamount)
+
+      // resp.push((data[0]) ? (data[0].amount + newdata[0]?newdata[0].amount : 0) : 0)
     }
     users.push(resp)
   }
@@ -1127,14 +1134,19 @@ async function reportpercentpermonthbyarea(req, res) {
 
     for (var j in month) {
       var user = await sequelize.query(`select count(id)  as count from usuarios_usuario where area_id = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
-      var newuser = await sequelize.query(`select count(id)  as count from donation_users as usuarios_usuario where area = ${area[i].id}`, { type: sequelize.QueryTypes.SELECT })
-      // user = user.concat(newuser)
+      // console.log('user: ', user[0].count);
+     
       var data = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area_id = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
       var newdata = await sequelize.query(`select count(distinct user_id) as count from donation_info inner join donation_users as usuarios_usuario on usuarios_usuario.usuario_id = donation_info.user_id where donation_month = ${month[j].id} and area = ${area[i].id} and donation_date like "${year}%" group by donation_month`, { type: sequelize.QueryTypes.SELECT })
-      data = data.concat(newdata)
+     
+      membercount =data.length?data[0].count:0
+      inviteecount = newdata.length?newdata[0].count:0
+      totalcount= membercount + inviteecount
+      // console.log('data[0].count: ', data[0].count);
+    
       // resp.push((data[0]) ? ((data[0].count / user[0].count?user[0].count : 1) * 100).toFixed(2) : "0")
-      resp.push((newdata[0]) ? ((newdata[0].count / newuser[0].count?user[0].count : 1) * 100).toFixed(2) : "0")
-      // resp.push((data[0]) ? (Math.round((data[0].count / user[0].count)) * 100) : 0)
+      // resp.push((newdata[0]) ? ((newdata[0].count / newuser[0].count?user[0].count : 1) * 100).toFixed(2) : "0")
+      resp.push((data[0]) ? ((totalcount / user[0].count) * 100).toFixed(2) : 0)
       //
     }
     users.push(resp)
