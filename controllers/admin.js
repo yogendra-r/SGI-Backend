@@ -3415,7 +3415,7 @@ async function getAttendanceByLevel(req, res) {
         var where = await helper.findRoleDetails(req,res)
         const area = req.body.area_id||where.area_id;
         const cabildo = req.body.cabildo_id||where.cabildo_id;
-        const district = req.body.distrito_id || null
+        const district = req.body.district_id || null //district_id:
         const meeting_id = req.body.new_activity_id || null
        
         const whereClause = `WHERE 1=1
@@ -3519,7 +3519,6 @@ values[4].data.push(dep)
 
 
 }
-
 async function getMemberAttendanceByLevel(req, res) {
     try {
         var where = await helper.findRoleDetails(req,res)
