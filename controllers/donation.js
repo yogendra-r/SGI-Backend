@@ -846,7 +846,6 @@ async function reporttotalmembersbymonth(req, res) {
 
 
 //done not needed
-
 async function persnalizedreport(req, res) {
   var date = new Date()
   user_id = req.body.cedula
@@ -874,10 +873,10 @@ async function persnalizedreport(req, res) {
       resp.push(userdata[i].donation_date)
       resp.push(userdata[i].confirmation_no)
       resp.push((userdata[i].amount).toFixed(2))
-      sum =( sum + userdata[i].amount).toFixed(2)
+      sum =( sum + userdata[i].amount)
       user.push(resp)
     }
-    user.push(["Total", " ", `$`+sum])
+    user.push(["Total", " ", `$`+sum.toFixed(2)])
     return res.status(200).send({
       message: "data fetched",
       data: user,
@@ -903,7 +902,6 @@ async function persnalizedreport(req, res) {
     })
   }
 }
-
 //done not needed
 async function reportdonationbymethod(req, res) {
   var date = new Date()
