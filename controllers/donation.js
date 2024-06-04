@@ -1173,17 +1173,24 @@ async function clearDonationRecords(req, res) {
   }
 }
 
-
 async function getdonationList(req, res) {
   var date = new Date()
+  const {search} = req.body
   var year = req.body.year || date.getFullYear()
   var users = [["donation_id","Fecha", "Nombre Completo", "Cédula", "Monto $$"]]
   var resp = []
-
-  var user = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id`, { type: sequelize.QueryTypes.SELECT })
+if(!search || search=="" || search == null){
+  var user = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id order by id desc`, { type: sequelize.QueryTypes.SELECT })
   // console.log('user: ', user);
-  var newuser = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id`, { type: sequelize.QueryTypes.SELECT })
+  var newuser = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id order by id desc`, { type: sequelize.QueryTypes.SELECT })
   // console.log('newuser: ', newuser);
+}
+else{
+  var user = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where nombre_completo like "%${search}%" order by id desc`, { type: sequelize.QueryTypes.SELECT })
+  // console.log('user: ', user);
+  var newuser = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id where nombre_completo like "%${search}%" order by id desc`, { type: sequelize.QueryTypes.SELECT })
+  // console.log('newuser: ', newuser);
+}
  user = user.concat(newuser)
   // console.log(user)
   for (var i in user) {
@@ -1204,7 +1211,6 @@ async function getdonationList(req, res) {
 
 
 }
-
 
 
 
