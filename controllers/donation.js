@@ -1160,9 +1160,10 @@ async function reportpercentpermonthbyarea(req, res) {
 
 async function clearDonationRecords(req, res) {
   try{
-    var user = await sequelize.query(`delete from donation_info where 1`)
+    const {donation_id} = req.body
+    var user = await sequelize.query(`delete from donation_info where id = ${donation_id}`)
     return res.status(200).send({
-      message: "Records deleted successfuly",
+      message: "Record deleted successfuly",
       data: [],
     })
   }
@@ -1171,6 +1172,39 @@ async function clearDonationRecords(req, res) {
         return res.status(500).json({ message: 'Server Error' });
   }
 }
+
+
+async function getdonationList(req, res) {
+  var date = new Date()
+  var year = req.body.year || date.getFullYear()
+  var users = [["donation_id","Fecha", "Nombre Completo", "Cédula", "Monto $$"]]
+  var resp = []
+
+  var user = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id`, { type: sequelize.QueryTypes.SELECT })
+  // console.log('user: ', user);
+  var newuser = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id`, { type: sequelize.QueryTypes.SELECT })
+  // console.log('newuser: ', newuser);
+ user = user.concat(newuser)
+  // console.log(user)
+  for (var i in user) {
+    resp = []
+    resp.push(user[i].id)
+    resp.push(user[i].donation_date)
+    resp.push(user[i].nombre_completo)
+    resp.push(user[i].usuario_id)
+    resp.push((user[i].amount).toFixed(2))
+    users.push(resp)
+  }
+
+  return res.status(200).send({
+    message: "data fetched",
+    data: users,
+    title: "GENERAL CONTRIBUCIONES"
+  })
+
+
+}
+
 
 
 
@@ -1198,7 +1232,8 @@ module.exports = {
   reportpermonthbyarea,
   reportmemberpermonthbyarea,
   reportpercentpermonthbyarea,
-  clearDonationRecords
+  clearDonationRecords,
+  getdonationList
 }
 
 

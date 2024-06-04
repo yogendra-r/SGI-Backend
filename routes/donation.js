@@ -8,6 +8,7 @@ const validator = require('../middlewares/validator')
 router.post('/adminlogin',admin.adminLogin)
 router.post('/adminsignup',middleware.verifyToken,admin.adminsignup)
 router.get('/dropdownlist',admin.dropdown)
+router.post('/deleteDonationRecords',admin.clearDonationRecords)
 router.post('/adddonation',middleware.uploadrec.single('doc'),admin.adddonation)
 router.post('/getuserbycedula',admin.getuserbycedula)
 router.post('/addnewuser',admin.addnewuser)
@@ -28,12 +29,10 @@ router.post('/searchmemberreportbyyear',admin.searchmemberreportbyyear) //2
 router.get('/reportpermonthbyarea',admin.reportpermonthbyarea) //3
 router.get('/reportmemberpermonthbyarea',admin.reportmemberpermonthbyarea) //9
 router.get('/reportpercentpermonthbyarea',admin.reportpercentpermonthbyarea) //10
-router.get('/deleteDonationRecords',admin.clearDonationRecords)
-
+router.post('/getDonationList',admin.getdonationList)
 
 
 module.exports=router 
-
 
 
 
