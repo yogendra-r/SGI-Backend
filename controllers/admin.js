@@ -763,7 +763,7 @@ async function getAttendanceByDivision(req, res) {
         var where = await helper.findRoleDetails(req, res)
         const area = req.body.area_id || where.area_id;
         const cabildo = req.body.cabildo_id || where.cabildo_id;
-        const district = req.body.distrito_id || where.distrito_id;
+        const district = req.body.district_id || where.distrito_id;
         const meeting_id = req.body.new_activity_id || null
 
         const whereClause = `WHERE 1=1
@@ -883,7 +883,7 @@ async function getAttendanceByMonth(req, res) {
         var where = await helper.findRoleDetails(req, res)
         const area = req.body.area_id || where.area_id;
         const cabildo = req.body.cabildo_id || where.cabildo_id;
-        const district = req.body.distrito_id || where.distrito_id;
+        const district = req.body.district_id || where.distrito_id;
         const meeting_id = req.body.new_activity_id || null
 
         const whereClause = `WHERE 1=1
