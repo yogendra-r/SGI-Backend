@@ -457,10 +457,10 @@ console.log(pdf[0])
 async function addnewuser(req, res) {
   console.log(req.body)
   const {cedula_id, nombre_completo,area, cabildo, distrito, grupo, email} = req.body
-  var userExists = await sequelize.query(`select * from usuarios_usuario where usuario_id = ${cedula_id}`, { type: sequelize.QueryTypes.SELECT })
+  var userExists = await sequelize.query(`select * from usuarios_usuario where usuario_id = "${cedula_id}"`, { type: sequelize.QueryTypes.SELECT })
   console.log('userExists: ', userExists);
   if(!userExists[0]){
-    userExists = await sequelize.query(`select * from donation_users where usuario_id = ${cedula_id}`, { type: sequelize.QueryTypes.SELECT })
+    userExists = await sequelize.query(`select * from donation_users where usuario_id = "${cedula_id}"`, { type: sequelize.QueryTypes.SELECT })
   }
   if(userExists[0]){
     return res.status(400).send({
@@ -480,7 +480,7 @@ async function addnewuser(req, res) {
     tls: { rejectUnauthorized: false }
   });
   var mailOptions = {
-    from: 'SGI-Panama  <sgipanama1@gmail.com>',
+    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
     // to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
     to:  ` sgip.enfoque@gmail.com`,//muskan.shu ,
     subject: `User Donation Details`,
