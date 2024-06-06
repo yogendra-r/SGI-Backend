@@ -480,9 +480,9 @@ async function addnewuser(req, res) {
     tls: { rejectUnauthorized: false }
   });
   var mailOptions = {
-    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
+    from: 'SGI-Panama  <sgipanama1@gmail.com>',
     // to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    to:  ` mailto:sgip.enfoque@gmail.com`,//muskan.shu ,
+    to:  ` sgip.enfoque@gmail.com`,//muskan.shu ,
     subject: `User Donation Details`,
     html: `
     <br>New donation is regireted with the below details:.<br>
