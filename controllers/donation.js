@@ -417,7 +417,7 @@ console.log(pdf[0])
       // Define email options
       const mailOptions = {
         from: 'sgipanama1@gmail.com',
-        to: `muskan.shu@cisinlabs.com, sgip.enfoque@gmail.com ,${pdf[0].email}`,
+        to: ` sgip.enfoque@gmail.com ,${pdf[0].email}`,//muskan.shu@cisinlabs.com,
         subject: 'CONFIRMACIÓN DE SU CONTRIBUCIÓN',
         html: `<html><p>Estimado (a) ${pdf[0].nombre_completo} <p> 
         <p>Se ha registrado satisfactoriamente su contribución con los 
@@ -457,6 +457,13 @@ console.log(pdf[0])
 async function addnewuser(req, res) {
   console.log(req.body)
   const {cedula_id, nombre_completo,area, cabildo, distrito, grupo, email} = req.body
+  const userExists = await sequelize.query(`select * from usuarios_usuario where usuario_id = ${cedula_id}`, { type: sequelize.QueryTypes.SELECT })
+  if(userExists[0].length){
+    return res.status(400).send({
+      message: "User already exists",
+      data:[]
+    })
+  }
   var ar = await sequelize.query(`select nombre from usuarios_area where id = ${area}`, { type: sequelize.QueryTypes.SELECT })
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -469,9 +476,9 @@ async function addnewuser(req, res) {
     tls: { rejectUnauthorized: false }
   });
   var mailOptions = {
-    from: 'SGI-Panama  <sgipanama1@gmail.com>',
-    // to:  `muskan.shu@cisinlabs.com ,maires.carlos@gmail.com,motwani.j@gmail.com , basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    to:  `muskan.shu@cisinlabs.com , sgip.enfoque@gmail.com`,
+    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
+    // to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    to:  ` sgip.enfoque@gmail.com`,//muskan.shu ,
     subject: `User Donation Details`,
     html: `
     <br>New donation is regireted with the below details:.<br>
