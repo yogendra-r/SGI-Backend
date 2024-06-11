@@ -1255,6 +1255,8 @@ async function addNewMember(req, res) {
 // API to get the list of all members ,members only and leader only
 async function getAllUsers(req, res) {
     try {
+        var {search} = req.body
+        // search = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         console.log(req.body, "userlist")
         const user_type = req.body.user_type
         if (!user_type) {
@@ -1280,7 +1282,7 @@ async function getAllUsers(req, res) {
         AND (:district IS NULL OR i.distrito_sgip_id = :district) `
             var inv = await sequelize.query(`select i.id, i.nombre,i.appelido,i.movil,i.appelido,i.fetcha_nacimiento,s.nombre as genero,i.direccion,us.nombre as division from invitados as i 
             inner join usuarios_division as us on us.id = i.division 
-            inner join usuarios_sexo as s on s.id = i.genero ${whereClause} order by i.nombre`, {
+            inner join usuarios_sexo as s on s.id = i.genero ${whereClause}  order by i.nombre`, {
                 type: sequelize.QueryTypes.SELECT, replacements: {
                     area: area || null,
                     cabildo: cabildo || null,
@@ -1338,7 +1340,7 @@ async function getAllUsers(req, res) {
             var q = `select a.id ,a.usuario_id as Cedula_id ,a.sgi_id,a.email,a.responsable, a.nombre_completo, area.nombre as area,cargo_responsable_id, c.nombre as cabildo, d.nombre as distrito,g.nombre as grupo ,s.nombre as status from usuarios_usuario as a 
         inner join usuarios_area as area on area.id= a.area_id inner join usuarios_cabildo as c on c.id= a.cabildo_id 
         inner join usuarios_distritosgip as d on d.id= a.distrito_sgip_id left join usuarios_grupo as g on g.id = a.grupo_id
-        inner join usuarios_estado as s on s.id = a.estado_id ${whereClause} and ${str} order by a.nombre_completo`;
+        inner join usuarios_estado as s on s.id = a.estado_id ${whereClause} and ${str} and nombre_completo like "%${search}%" order by a.nombre_completo`;
         }
         const result = await sequelize.query(q, {
             type: sequelize.QueryTypes.SELECT, replacements: {
