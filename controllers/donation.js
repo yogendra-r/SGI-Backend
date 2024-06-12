@@ -148,6 +148,7 @@ async function getuserbycedula(req, res) {
     return res.status(200).send({
       message: "data fetched",
       is_registered: true,
+      cedula : req.body.cedula,
       data: result
     })
   }
@@ -156,6 +157,7 @@ async function getuserbycedula(req, res) {
     return res.status(200).send({
       message: "user not found",
       is_registered: false,
+      cedula : req.body.cedula,
       data: []
     })
   }
@@ -360,10 +362,8 @@ async function generateAndSendPdf(pdfdata) {
   where confirmation_no = "${pdfdata.conf_no}"`,{type : sequelize.QueryTypes.SELECT})
   if(!pdf.length){
     var pdf = await sequelize.query(`select usuario_id,usuarios_area.nombre as area, usuarios_cabildo.nombre as cabildo,usuarios_distritosgip.nombre as distrito,
-   nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month,donation_info.amount  from donation_info   inner join donation_users on donation_users.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = donation_users.area
-  inner join usuarios_cabildo on usuarios_cabildo.id = donation_users
-  
-  .cabildo inner join usuarios_distritosgip on usuarios_distritosgip.id = donation_users.distrito
+   nombre_completo,confirmation_no,IFNULL(usuarios_grupo.nombre," ")as grupo, donation_type.nombre as donation_type, donation_date,donation_method.nombre as donation_method,months.nombre as donation_month ,donation_info.amount from donation_info   inner join donation_users on donation_users.usuario_id = donation_info.user_id inner join usuarios_area on usuarios_area.id = donation_users.area
+  inner join usuarios_cabildo on usuarios_cabildo.id = donation_users.cabildo inner join usuarios_distritosgip on usuarios_distritosgip.id = donation_users.distrito
    inner join months on donation_info.donation_month = months.id
   inner join donation_method on donation_method.id = donation_info.donation_method  inner join donation_type on donation_type.id = donation_info.donation_type 
   left join usuarios_grupo on usuarios_grupo.id = donation_users.grupo
@@ -417,7 +417,8 @@ console.log(pdf[0])
       // Define email options
       const mailOptions = {
         from: 'sgipanama1@gmail.com',
-        to: ` sgip.enfoque@gmail.com ,${pdf[0].email}`,//muskan.shu@cisinlabs.com,
+        // to: `muskan.shu@cisinlabs.com, sgip.enfoque@gmail.com ,${pdf[0].email}`,
+        to: ` sgip.enfoque@gmail.com ,${pdf[0].email}`,
         subject: 'CONFIRMACIÓN DE SU CONTRIBUCIÓN',
         html: `<html><p>Estimado (a) ${pdf[0].nombre_completo} <p> 
         <p>Se ha registrado satisfactoriamente su contribución con los 
@@ -480,9 +481,9 @@ async function addnewuser(req, res) {
     tls: { rejectUnauthorized: false }
   });
   var mailOptions = {
-    from: 'SGI-Panama  <mailto:sgipanama1@gmail.com>',
-    // to:  `mailto:muskan.shu@cisinlabs.com ,mailto:maires.carlos@gmail.com,motwani.j , mailto:basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
-    to:  ` sgip.enfoque@gmail.com`,//muskan.shu ,
+    from: 'SGI-Panama  <sgipanama1@gmail.com>',
+    // to:  `muskan.shu@cisinlabs.com ,maires.carlos@gmail.com,motwani.j@gmail.com , basededatosgip@gmail.com , ${req.email }`,//`${req.token.email} , ${req.email}`,
+    to:  ` sgip.enfoque@gmail.com`,//muskan.shu@cisinlabs.com ,
     subject: `User Donation Details`,
     html: `
     <br>New donation is regireted with the below details:.<br>
@@ -856,6 +857,7 @@ async function reporttotalmembersbymonth(req, res) {
 
 
 //done not needed
+
 async function persnalizedreport(req, res) {
   var date = new Date()
   user_id = req.body.cedula
@@ -892,9 +894,9 @@ async function persnalizedreport(req, res) {
       data: user,
       title: "Reporte personalizado",
       headings: {
-        Nombre: userdata[0].nombre_completo,
-        Cedula: userdata[0].usuario_id,
-        Año : req.body.request_year
+        nombre: userdata[0].nombre_completo,
+        cedula: userdata[0].usuario_id,
+        year : req.body.request_year
       }
     })
   }
@@ -905,13 +907,14 @@ async function persnalizedreport(req, res) {
       data: [["FECHA", "CONFIRMACIÓN", "MONTO $$"],["Total", " ", `$0`]],
       title: "Reporte personalizado",
       headings: {
-        Nombre: userdata[0]?userdata[0].nombre_completo : "",
-        Cedula: user_id,
-        Año : req.body.request_year
+        nombre: userdata[0]?userdata[0].nombre_completo : "",
+        cedula: user_id,
+        year : req.body.request_year
       }
     })
   }
 }
+
 //done not needed
 async function reportdonationbymethod(req, res) {
   var date = new Date()
@@ -1183,6 +1186,7 @@ async function clearDonationRecords(req, res) {
   }
 }
 
+
 async function getdonationList(req, res) {
   var date = new Date()
   const {search} = req.body
@@ -1193,6 +1197,7 @@ if(!search || search=="" || search == null){
   var user = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id order by id desc`, { type: sequelize.QueryTypes.SELECT })
   // console.log('user: ', user);
   var newuser = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id order by id desc`, { type: sequelize.QueryTypes.SELECT })
+  console.log('newuser: ', newuser);
   // console.log('newuser: ', newuser);
 }
 else{
@@ -1204,6 +1209,7 @@ else{
  user = user.concat(newuser)
   // console.log(user)
   for (var i in user) {
+    // console.log('user: ', user);
     resp = []
     resp.push(user[i].id)
     resp.push(user[i].donation_date)
@@ -1222,10 +1228,56 @@ else{
 
 }
 
+async function getAdminList(req,res){
+  try{
+  var users = [["Admin Id","First Name", "Last Name", "Email", "Last Login"]]
+    var user = await sequelize.query(`select * from auth_admin`, { type: sequelize.QueryTypes.SELECT })
+    var resp = []
+   
+    for (var i in user) {
+      // console.log('user: ', user);
+      resp = []
+      resp.push(user[i].id)
+      resp.push(user[i].firstName)
+      resp.push(user[i].lastName)
+      resp.push(user[i].email)
+      resp.push(user[i].last_login)
+      users.push(resp)
+    }
+    console.log('user: ', user);
+    return res.status(200).send({
+      message: "Data fetched",
+      data: users,
+    })
+  }
+  catch(error){
+    console.log(error);
+        return res.status(500).json({ message: 'Server Error' });
+  }
+}
 
+async function deleteAdmin(req,res){
+  try{
+    const {admin_id} = req.body
+    var user = await sequelize.query(`delete from auth_admin where id = ${admin_id}`)
+    console.log('user: ', user);
+    
+    return res.status(200).send({ 
+      message: "Admin deleted",
+      data: [],
+    })
+  }
+  catch(error){
+    console.log(error);
+        return res.status(500).json({ message: 'Server Error' });
+  }
+}
 
 
 module.exports = {
+  getAdminList,
+  deleteAdmin,
+  getdonationList,
   adminLogin,
   adminsignup,
   dropdown,
@@ -1246,11 +1298,10 @@ module.exports = {
   reportdonationbytype,
   searchreportbyyear,
   searchmemberreportbyyear,
-  reportpermonthbyarea,
+  reportpermonthbyarea, 
   reportmemberpermonthbyarea,
   reportpercentpermonthbyarea,
-  clearDonationRecords,
-  getdonationList
+  clearDonationRecords
 }
 
 

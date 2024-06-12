@@ -31,6 +31,11 @@ router.get('/reportmemberpermonthbyarea',admin.reportmemberpermonthbyarea) //9
 router.get('/reportpercentpermonthbyarea',admin.reportpercentpermonthbyarea) //10
 router.post('/getDonationList',admin.getdonationList)
 
+router.get('/getAdminList',admin.getAdminList)
+router.post('/deletAdmin',admin.deleteAdmin)
+
+
+
 
 module.exports=router 
 
