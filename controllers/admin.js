@@ -3453,7 +3453,10 @@ var label = []
 const values =[{"label" : "Damas" , data : []},{"label" : "Cabelleros" , data : []},{"label" : "DJM" , data : []},{"label" : "DJF" , data : []},{"label" : "DEP" , data : []}]
 // const values = [{ "label": "Miembros", data: [] }, { "label": "Invitados", data: [] }, { "label": "Invitado por primera vez", data: [] }]
 if(area){
-    const dis = await sequelize.query(`select distinct area_id,cabildo_id,distrito_sgip_id from usuarios_usuario where area_id = ${area}`,{type : sequelize.QueryTypes.SELECT})
+    const dis = await sequelize.query(`select distinct area.nombre,area_id,cabildo.nombre,cabildo_id,distrito.nombre,distrito_sgip_id from usuarios_usuario inner join
+     usuarios_area as area on area.id = usuarios_usuario.area_id inner join usuarios_cabildo as cabildo on cabildo.id = usuarios_usuario.cabildo_id
+    inner join usuarios_distritosgip as distrito on distrito.id = usuarios_usuario.distrito_sgip_id
+    where area_id = ${area} order by area.nombre , cabildo.nombre, distrito.nombre`,{type : sequelize.QueryTypes.SELECT})
     console.log('dis: ', dis);
     for(var arr in dis){
         const arname = await sequelize.query(`select nombre  from usuarios_area where id = ${area}`,{type : sequelize.QueryTypes.SELECT})
