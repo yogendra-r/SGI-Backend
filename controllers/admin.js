@@ -3589,71 +3589,125 @@ values[4].data.push(dep)
 }
 async function getMemberAttendanceByLevel(req, res) {
     try {
-        var where = await helper.findRoleDetails(req,res)
-        const area = req.body.area_id||where.area_id;
-        const cabildo = req.body.cabildo_id||where.cabildo_id;
-        const district = req.body.distrito_id || null
+        var where = await helper.findRoleDetails(req, res)
+        const area = req.body.area_id || where.area_id;
+        const cabildo = req.body.cabildo_id || where.cabildo_id;
+        const district = req.body.district_id || null //district_id:
         const meeting_id = req.body.new_activity_id || null
-       
+        const month_id = req.body.month_id
+
         const whereClause = `WHERE 1=1
     AND (:area IS NULL OR area_id = :area)
     AND (:cabildo IS NULL OR cabildo_id = :cabildo)
     AND (:district IS NULL OR distrito_id = :district) 
     AND (:meeting_id IS NULL OR activity_id = :meeting_id)`;
 
+        const query1 = `select * from usuarios_actividad ${whereClause}`
 
-const query1 = `select * from usuarios_actividad ${whereClause}`
+        var data = await sequelize.query(query1, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: {
+                area: area || null,
+                cabildo: cabildo || null,
+                district: district || null,
+                meeting_id: meeting_id || null
+            }
+        })
+        const month = [[], [], [], [], [], [], [], [], [], [], [], []]
+        const months = await sequelize.query(`select id,nombre from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
+        var label = []
+     
+        for (var i in data) {
+            for (var j in months) {
+                if (months[j].id == data[i].area_id) {
+                    month[j].push(data[i].id)
+                }
+            }
+        }
 
-const data = await sequelize.query(query1,{
-    type: sequelize.QueryTypes.SELECT,
-    replacements :{
-        area: area || null,
-        cabildo: cabildo || null,
-        district: district || null,
-        meeting_id : meeting_id || null
-    }
-})
-const ar = await sequelize.query(`select id,nombre from usuarios_area order by nombre`,{type : sequelize.QueryTypes.SELECT})
-const areaa = [[], [], [], [], [], [], [], [], [], [], [], []]
-for (var i in data) {
+        const newdata = []
+        if (month_id) {
+            for (var i in data) {
+                let activity_date = data[i].fetcha_de_actividad.slice(5, 7)
+                if (Number(activity_date) == month_id) {
+                    newdata.push(data[i])
+                }
+            }
+            data = newdata
+        }
 
-    for (var j in ar) {
-        if (ar[j].id == data[i].area_id) {
-            areaa[j].push(data[i].id)
+        const values = [{ "label": "Member", data: [] }, { "label": "Invitee", data: [] }, { "label": "New Invitee", data: [] }]
+        if (area) {
+            const dis = await sequelize.query(`select distinct area.nombre as area_name ,area_id,cabildo.nombre as cabildo_name ,cabildo_id,distrito.nombre as distrito_name ,distrito_sgip_id from usuarios_usuario inner join
+     usuarios_area as area on area.id = usuarios_usuario.area_id inner join usuarios_cabildo as cabildo on cabildo.id = usuarios_usuario.cabildo_id
+    inner join usuarios_distritosgip as distrito on distrito.id = usuarios_usuario.distrito_sgip_id
+    where area_id = ${area} order by area.nombre , cabildo.nombre, distrito.nombre`, { type: sequelize.QueryTypes.SELECT })
+            console.log('dis: ', dis);
+            for (var arr in dis) {
+                // const arname = await sequelize.query(`select nombre  from usuarios_area where id = ${area}`,{type : sequelize.QueryTypes.SELECT})
+                // const cabname = await sequelize.query(`select nombre  from usuarios_cabildo where id = ${dis[arr].cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
+                // const disname = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${dis[arr].distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
+                let areashortname = (dis[arr].area_name.split(' '))//(arname[0].nombre.split(' '))
+                areashortname = `${areashortname[0].slice(0, 1)}${areashortname[1]}`
+                let cabshortname = (dis[arr].cabildo_name.split(' '))//(cabname[0].nombre.split(' '))
+                cabshortname = `${cabshortname[0].slice(0, 1)}${cabshortname[1]}`
+                let disshortname = (dis[arr].distrito_name.split(' ')) //(disname[0].nombre.split(' '))
+                disshortname = `${disshortname[0].slice(0, 1)}${disshortname[1]}`
+                label.push(`${areashortname}.${cabshortname}.${disshortname}`)
+
+
+               
+
+                for (var i in data) {
+
+                    const divisionresultuser = await sequelize.query(`select division_id as division from usuarios_usuario where area_id = ${area} and cabildo_id =  ${dis[arr].cabildo_id} and distrito_sgip_id = ${dis[arr].distrito_sgip_id} and id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 1))`, { type: sequelize.QueryTypes.SELECT })
+                    // const divisionresultinvitee = await sequelize.query(`select division  from invitados where id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 2))`,{type : sequelize.QueryTypes.SELECT})
+                    const divisionresult = divisionresultuser//.concat(divisionresultinvitee)
+
+                   
+                }
+                
+
+            }
+        }
+        else {
+            for (var i in months) {
+            
+                label.push(months[i].nombre)
+            
+        }
+            // const ar = await sequelize.query(`select id,nombre from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
+            // for (var arr in ar) {
+            //     label.push(ar[arr].nombre)
+
+            //     var member = 0
+            //     var invitee = 0
+            //     var invitado_por = 0
+            var objbymontn = []
+                for (var i in month) {
+                    var monthwisedata = { [`${i}`]: { member: 0, invitee: 0, invitado_por: 0 } }
+                    if (month[i].length) {
+                        const member = await sequelize.query(`select count(*) as count from attendance where activity_id in (${month[i]}) and role_id = 1`, { type: sequelize.QueryTypes.SELECT })
+                        monthwisedata[i].member = member[0].count
+                        console.log('member: ', member, i);
+                        const invitee = await sequelize.query(`select count(*) as count from attendance where activity_id in (${month[i]}) and role_id = 2 and is_invitado_por = 0`, { type: sequelize.QueryTypes.SELECT })
+                        monthwisedata[i].invitee = invitee[0].count
+                        console.log('invitee: ', invitee, i);
+                        const invitado_por = await sequelize.query(`select count(*) as count from attendance where activity_id in (${month[i]}) and role_id = 2 and is_invitado_por = 1`, { type: sequelize.QueryTypes.SELECT })
+                        monthwisedata[i].invitado_por = invitado_por[0].count
+                        console.log('invitad_por: ', invitado_por, i);
+                    }
+                    objbymontn.push(monthwisedata)
+        
+                }
+         
+        for (var i in objbymontn) {
+            values[0].data.push(objbymontn[i][i].member)
+            values[1].data.push(objbymontn[i][i].invitee)
+            values[2].data.push(objbymontn[i][i].invitado_por)
+
         }
     }
-}
-var label = []
-const values =[{"label" : "Member" , data : []},{"label" : "Invitee" , data : []},{"label" : "Invitado por" , data : []}]
-
-
-for(var arr in ar){
-label.push(ar[arr].nombre)
-values[0].data.push(0)
-values[1].data.push(0)
-values[2].data.push(0)
-// for(var i in areaa){
-    // console.log('data: ', data);
-    var monthwisedata = { [`${ar[arr].nombre}`]: { member: 0, invitee: 0, invitado_por: 0 } }
-    // console.log('areaa[i]: ', areaa[i]);
-
-    if(areaa[i]?.length){
-const member = await sequelize.query(`select count(*) as count from attendance where activity_id in (${areaa[arr]}) and role_id = 1`,{type : sequelize.QueryTypes.SELECT})
-console.log('member: ', member);
-monthwisedata[ar[arr].nombre].member = member[0].count
-values[0].data.push(member[0].count)
-const invitee = await sequelize.query(`select count(*) as count  from attendance where activity_id in (${areaa[arr]}) and  role_id = 2 and is_invitado_por = 0`,{type : sequelize.QueryTypes.SELECT})
-console.log('invitee: ', invitee);
-monthwisedata[ar[arr].nombre].invitee = invitee[0].count
-values[1].data.push(invitee[0].count)
-const newinvitee  = await sequelize.query(`select count(*) as count  from attendance where activity_id in (${areaa[arr]}) and  role_id = 2 and is_invitado_por = 1`,{type : sequelize.QueryTypes.SELECT})
-console.log('newinvitee: ', newinvitee);
-monthwisedata[ar[arr].nombre].invitado_por = newinvitee[0].count
-values[2].data.push(invitee[0].newinvitee)
-    }
-// }
-
-}   
 
         console.log(label, values, "att result")
         return res.status(200).send({
@@ -3666,8 +3720,6 @@ values[2].data.push(invitee[0].newinvitee)
         console.log(error)
         console.error('Error:', error.message);
     }
-
-
 }
 
 
