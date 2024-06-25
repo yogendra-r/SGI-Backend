@@ -142,6 +142,12 @@ async function getuserbycedula(req, res) {
     inner join usuarios_area as area on area.id = usuarios_usuario.area_id inner join usuarios_cabildo as cabildo on cabildo.id = usuarios_usuario.cabildo_id 
     inner join usuarios_distritosgip as distrito on distrito.id = usuarios_usuario.distrito_sgip_id left join usuarios_grupo as grupo on grupo.id = usuarios_usuario.grupo_id
     where usuario_id = "${req.body.cedula}"`, { type: sequelize.QueryTypes.SELECT })
+   if(!result.length){
+    var result = await sequelize.query(`select nombre_completo ,usuario_id as cedula , usuarios_usuario.id,email, area.nombre as area, cabildo.nombre as cabildo, distrito.nombre as distrito from donation_users as usuarios_usuario
+      inner join usuarios_area as area on area.id = usuarios_usuario.area inner join usuarios_cabildo as cabildo on cabildo.id = usuarios_usuario.cabildo
+      inner join usuarios_distritosgip as distrito on distrito.id = usuarios_usuario.distrito 
+      where usuario_id = "${req.body.cedula}" limit 1`, { type: sequelize.QueryTypes.SELECT })
+   }
   if (result.length) {
     result[0].id = result[0].cedula
     console.log(result, "cedula data")
