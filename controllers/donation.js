@@ -900,9 +900,9 @@ async function persnalizedreport(req, res) {
       data: user,
       title: "Reporte personalizado",
       headings: {
-        nombre: userdata[0].nombre_completo,
-        cedula: userdata[0].usuario_id,
-        year : req.body.request_year
+        Nombre: userdata[0].nombre_completo,
+        Cedula: userdata[0].usuario_id,
+        Año : req.body.request_year
       }
     })
   }
@@ -913,14 +913,13 @@ async function persnalizedreport(req, res) {
       data: [["FECHA", "CONFIRMACIÓN", "MONTO $$"],["Total", " ", `$0`]],
       title: "Reporte personalizado",
       headings: {
-        nombre: userdata[0]?userdata[0].nombre_completo : "",
-        cedula: user_id,
-        year : req.body.request_year
+        Nombre: userdata[0]?userdata[0].nombre_completo : "",
+        Cedula: user_id,
+        Año : req.body.request_year
       }
     })
   }
 }
-
 //done not needed
 async function reportdonationbymethod(req, res) {
   var date = new Date()
