@@ -974,9 +974,9 @@ async function searchreportbyyear(req, res) {
   var users = [["Fecha", "Nombre Completo", "Cédula", "Monto $$"]]
   var resp = []
 
-  var user = await sequelize.query(`SELECT amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  var user = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM usuarios_usuario inner join donation_info on donation_info.user_id = usuarios_usuario.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
   // console.log('user: ', user);
-  var newuser = await sequelize.query(`SELECT amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
+  var newuser = await sequelize.query(`SELECT donation_info.id,amount,donation_date,nombre_completo,usuario_id FROM donation_users inner join donation_info on donation_info.user_id = donation_users.usuario_id where donation_date like "${year}%"`, { type: sequelize.QueryTypes.SELECT })
   // console.log('newuser: ', newuser);
  user = user.concat(newuser)
   // console.log(user)
@@ -989,9 +989,19 @@ async function searchreportbyyear(req, res) {
     users.push(resp)
   }
 
+  const seenIds = new Set();
+    const uniqueData = [];
+
+    for (const item of users) {
+        const id = item[0];
+        if (!seenIds.has(id)) {
+            seenIds.add(id);
+            uniqueData.push(item);
+        }
+    }
   return res.status(200).send({
     message: "data fetched",
-    data: users,
+    data: uniqueData,
     title: "GENERAL CONTRIBUCIONES"
   })
 
