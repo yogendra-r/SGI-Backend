@@ -33,6 +33,7 @@ router.post('/getDonationList',admin.getdonationList)
 
 router.get('/getAdminList',admin.getAdminList)
 router.post('/deletAdmin',admin.deleteAdmin)
+router.get('/nameCorrection',admin.nameCorrection)
 
 
 

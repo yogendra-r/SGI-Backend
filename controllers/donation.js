@@ -1278,6 +1278,28 @@ async function deleteAdmin(req,res){
   }
 }
 
+async function nameCorrection(req, res) {
+  try {
+    const userid = await sequelize.query("select max(id) as id  from usuarios_usuario", { type: sequelize.QueryTypes.SELECT })
+    console.log(userid[0].id)
+    for (var i = 0; i <= userid[0].id; i++) {
+      const userinfo = await sequelize.query(`select *  from usuarios_usuario where id = ${i}`, { type: sequelize.QueryTypes.SELECT })
+      const nombre_completo = userinfo[0]?.primer_nombre + " " + userinfo[0]?.segundo_nombre + " " + userinfo[0]?.primer_apellido + " " + userinfo[0]?.segundo_apellido
+      console.log('nombre_completo: ', nombre_completo);
+
+      const updatename = await sequelize.query(`update usuarios_usuario set nombre_completo = "${nombre_completo}" where id = ${i}`)
+
+    }
+    return res.status(200).json({ message: 'names updated' });
+
+  }
+
+  catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Server Error' });
+  }
+}
+
 
 module.exports = {
   getAdminList,
@@ -1306,7 +1328,8 @@ module.exports = {
   reportpermonthbyarea, 
   reportmemberpermonthbyarea,
   reportpercentpermonthbyarea,
-  clearDonationRecords
+  clearDonationRecords,
+  nameCorrection
 }
 
 
