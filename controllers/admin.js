@@ -3647,7 +3647,7 @@ async function getMemberAttendanceByLevel(req, res) {
                
                        for (let i in data) {
                            const attendanceResults = await sequelize.query(`
-                               SELECT role_id 
+                               SELECT role_id ,is_invitado_por
                                FROM attendance 
                                WHERE activity_id = :activityId AND user_id IN (
                                    SELECT id 
@@ -3670,7 +3670,7 @@ async function getMemberAttendanceByLevel(req, res) {
                                    memberCount++;
                                } else if (attendanceResults[j].role_id === 2 && attendanceResults[j].is_invitado_por == 0) { // Invitee
                                    inviteeCount++;
-                               } else if (attendanceResults[j].role_id === 3 && attendanceResults[j].is_invitado_por == 1) { // Invitado por
+                               } else if (attendanceResults[j].role_id === 2 && attendanceResults[j].is_invitado_por == 1) { // Invitado por
                                    invitadoPorCount++;
                                }
                            }
