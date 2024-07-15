@@ -3646,14 +3646,11 @@ async function getMemberAttendanceByLevel(req, res) {
                        let invitadoPorCount = 0;
                
                        for (let i in data) {
-                           const attendanceResults = await sequelize.query(`
-                               SELECT role_id ,is_invitado_por
-                               FROM attendance 
-                               WHERE activity_id = :activityId AND user_id IN (
-                                   SELECT id 
-                                   FROM usuarios_usuario 
-                                   WHERE area_id = :area AND cabildo_id = :cabildoId AND distrito_sgip_id = :distritoId
-                               )`, 
+                        const attendanceResults = await sequelize.query(`
+                        SELECT role_id ,is_invitado_por
+                        FROM attendance inner join usuarios_actividad as act on act.id = attendance.activity_id where
+                         act.area_id = :area and act.cabildo_id = :cabildoId and act.distrito_id = :distritoId and attendance.activity_id = :activityId
+                        `,  
                                { 
                                    type: sequelize.QueryTypes.SELECT, 
                                    replacements: { 
