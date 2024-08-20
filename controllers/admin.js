@@ -3274,7 +3274,7 @@ async function clearSubscription(req, res) {
 
 async function generalreport(req, res) {
     var resp = [["Área", "Cabildos", "Distritos", "Grupos"]]
-    var areas = await sequelize.query(`SELECT * FROM usuarios_area`, { type: sequelize.QueryTypes.SELECT })
+    var areas = await sequelize.query(`SELECT * FROM usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
     var totalCabildos = 0
     var totalDistritos = 0
     var totalGrupos = 0
