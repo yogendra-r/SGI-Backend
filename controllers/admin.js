@@ -3536,110 +3536,160 @@ async function getAttendanceByLevel(req, res) {
 
         var label = []
         const values = [{ "label": "Damas", data: [] }, { "label": "Cabelleros", data: [] }, { "label": "DJM", data: [] }, { "label": "DJF", data: [] }, { "label": "DEP", data: [] }]
-        // const values = [{ "label": "Miembros", data: [] }, { "label": "Invitados", data: [] }, { "label": "Invitado por primera vez", data: [] }]
         if (area) {
             const dis = await sequelize.query(`select distinct area.nombre as area_name ,area_id,cabildo.nombre as cabildo_name ,cabildo_id,distrito.nombre as distrito_name ,distrito_sgip_id from usuarios_usuario inner join
      usuarios_area as area on area.id = usuarios_usuario.area_id inner join usuarios_cabildo as cabildo on cabildo.id = usuarios_usuario.cabildo_id
     inner join usuarios_distritosgip as distrito on distrito.id = usuarios_usuario.distrito_sgip_id
     where area_id = ${area} order by area.nombre , cabildo.nombre, distrito.nombre`, { type: sequelize.QueryTypes.SELECT })
             console.log('dis: ', dis);
-            for (var arr in dis) {
-                // const arname = await sequelize.query(`select nombre  from usuarios_area where id = ${area}`,{type : sequelize.QueryTypes.SELECT})
-                // const cabname = await sequelize.query(`select nombre  from usuarios_cabildo where id = ${dis[arr].cabildo_id}`,{type : sequelize.QueryTypes.SELECT})
-                // const disname = await sequelize.query(`select nombre from usuarios_distritosgip where id = ${dis[arr].distrito_sgip_id}`,{type : sequelize.QueryTypes.SELECT})
-                let areashortname = (dis[arr].area_name.split(' '))//(arname[0].nombre.split(' '))
-                areashortname = `${areashortname[0].slice(0, 1)}${areashortname[1]}`
-                let cabshortname = (dis[arr].cabildo_name.split(' '))//(cabname[0].nombre.split(' '))
-                cabshortname = `${cabshortname[0].slice(0, 1)}${cabshortname[1]}`
-                let disshortname = (dis[arr].distrito_name.split(' ')) //(disname[0].nombre.split(' '))
-                disshortname = `${disshortname[0].slice(0, 1)}${disshortname[1]}`
-                label.push(`${areashortname}.${cabshortname}.${disshortname}`)
+
+            const areaIds = dis.map(d => d.area_id);
+            const cabildoIds = dis.map(d => d.cabildo_id);
+            const distritoIds = dis.map(d => d.distrito_sgip_id);
+            const activityIds = data.map(d => d.id);
+
+            // Fetch all necessary names in a single batch query
+            const areaNames = await sequelize.query(`
+    SELECT id, nombre 
+    FROM usuarios_area 
+    WHERE id IN (${areaIds.join(',')})
+`, { type: sequelize.QueryTypes.SELECT });
+
+            const cabildoNames = await sequelize.query(`
+    SELECT id, nombre 
+    FROM usuarios_cabildo 
+    WHERE id IN (${cabildoIds.join(',')})
+`, { type: sequelize.QueryTypes.SELECT });
+
+            const distritoNames = await sequelize.query(`
+    SELECT id, nombre 
+    FROM usuarios_distritosgip 
+    WHERE id IN (${distritoIds.join(',')})
+`, { type: sequelize.QueryTypes.SELECT });
+
+            // Map names for quick access
+            const areaNameMap = Object.fromEntries(areaNames.map(a => [a.id, a.nombre]));
+            const cabildoNameMap = Object.fromEntries(cabildoNames.map(c => [c.id, c.nombre]));
+            const distritoNameMap = Object.fromEntries(distritoNames.map(d => [d.id, d.nombre]));
+
+            // Prepare results container
+            const results = {
+                damas: [],
+                cabelleros: [],
+                djm: [],
+                djf: [],
+                dep: []
+            };
+
+            // Process each district
+            for (const dist of dis) {
+                // Shorten names
+                const areaNameParts = areaNameMap[dist.area_id].split(' ');
+                const areaShortName = `${areaNameParts[0][0]}${areaNameParts[1]}`;
+
+                const cabildoNameParts = cabildoNameMap[dist.cabildo_id].split(' ');
+                const cabildoShortName = `${cabildoNameParts[0][0]}${cabildoNameParts[1]}`;
+
+                const distritoNameParts = distritoNameMap[dist.distrito_sgip_id].split(' ');
+                const distritoShortName = `${distritoNameParts[0][0]}${distritoNameParts[1]}`;
+
+                label.push(`${areaShortName}.${cabildoShortName}.${distritoShortName}`);
 
 
-                var damas = 0
-                var cabelleros = 0
-                var dep = 0
-                var djm = 0
-                var djf = 0
+                const counters = { damas: 0, cabelleros: 0, djm: 0, djf: 0, dep: 0 };
+                const divisionResults = await Promise.all(data.map(async (d) => {
+                    return sequelize.query(`
+            SELECT division_id AS division 
+            FROM usuarios_usuario 
+            WHERE area_id = ${dist.area_id} 
+              AND cabildo_id = ${dist.cabildo_id} 
+              AND distrito_sgip_id = ${dist.distrito_sgip_id} 
+              AND id IN (
+                  SELECT user_id 
+                  FROM attendance 
+                  WHERE activity_id = ${d.id} 
+                    AND role_id = 1
+            )
+        `, { type: sequelize.QueryTypes.SELECT });
+                }));
 
-                for (var i in data) {
+                // Flatten and process results
+                const flatResults = divisionResults.flat();
+                flatResults.forEach(result => {
+                    if (result.division === 1) counters.damas++;
+                    else if (result.division === 2) counters.cabelleros++;
+                    else if (result.division === 3) counters.djm++;
+                    else if (result.division === 4) counters.djf++;
+                    else if (result.division === 5) counters.dep++;
+                });
 
-                    const divisionresultuser = await sequelize.query(`select division_id as division from usuarios_usuario where area_id = ${area} and cabildo_id =  ${dis[arr].cabildo_id} and distrito_sgip_id = ${dis[arr].distrito_sgip_id} and id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 1))`, { type: sequelize.QueryTypes.SELECT })
-                    // const divisionresultinvitee = await sequelize.query(`select division  from invitados where id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 2))`,{type : sequelize.QueryTypes.SELECT})
-                    const divisionresult = divisionresultuser//.concat(divisionresultinvitee)
-
-                    for (var j in divisionresult) {
-                        if (divisionresult[j].division == 1) {         //1 -> Damas
-                            damas++
-                        }
-                        else if (divisionresult[j].division == 2) {    //2 -> caballereos
-                            cabelleros++
-                        }
-                        else if (divisionresult[j].division == 3) {    //3 -> DJM
-                            djm++
-                        }
-                        else if (divisionresult[j].division == 4) {    //4 -> DJF
-                            djf++
-                        }
-                        else if (divisionresult[j].division == 5) {    //5-> DEP
-                            dep++
-                        }
-
-                    }
-                }
-                values[0].data.push(damas)
-                values[1].data.push(cabelleros)
-                values[2].data.push(djm)
-                values[3].data.push(djf)
-                values[4].data.push(dep)
-
-
+                // Push results to final arrays
+                results.damas.push(counters.damas);
+                results.cabelleros.push(counters.cabelleros);
+                results.djm.push(counters.djm);
+                results.djf.push(counters.djf);
+                results.dep.push(counters.dep);
             }
+
+
+            values[0].data = results.damas;
+            values[1].data = results.cabelleros;
+            values[2].data = results.djm;
+            values[3].data = results.djf;
+            values[4].data = results.dep;
         }
         else {
-            const ar = await sequelize.query(`select id,nombre from usuarios_area order by nombre`, { type: sequelize.QueryTypes.SELECT })
+            const ar = await sequelize.query(`select id,nombre from usuarios_area  where nombre != 'N/A' order by nombre`, { type: sequelize.QueryTypes.SELECT })
             for (var arr in ar) {
-                label.push(ar[arr].nombre)
+                    label.push(ar[arr].nombre)}
+            const activityIds = data.map(d => d.id);
+            const areaIds = ar.map(a => a.id);
 
-                var damas = 0
-                var cabelleros = 0
-                var dep = 0
-                var djm = 0
-                var djf = 0
 
-                for (var i in data) {
+            const query = `
+    SELECT area_id, division_id
+    FROM usuarios_usuario
+    WHERE area_id IN (${areaIds.join(',')})
+      AND id IN (
+          SELECT user_id 
+          FROM attendance 
+          WHERE activity_id IN (${activityIds.join(',')})
+            AND role_id = 1
+    )
+`;
 
-                    const divisionresultuser = await sequelize.query(`select division_id as division from usuarios_usuario where area_id = ${ar[arr].id} and id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 1))`, { type: sequelize.QueryTypes.SELECT })
-                    // const divisionresultinvitee = await sequelize.query(`select division  from invitados where id in ((select user_id from attendance where activity_id = ${data[i].id} and role_id = 2))`,{type : sequelize.QueryTypes.SELECT})
-                    const divisionresult = divisionresultuser//.concat(divisionresultinvitee)
+            // Execute the query
+            const results = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
 
-                    for (var j in divisionresult) {
-                        if (divisionresult[j].division == 1) {         //1 -> Damas
-                            damas++
-                        }
-                        else if (divisionresult[j].division == 2) {    //2 -> caballereos
-                            cabelleros++
-                        }
-                        else if (divisionresult[j].division == 3) {    //3 -> DJM
-                            djm++
-                        }
-                        else if (divisionresult[j].division == 4) {    //4 -> DJF
-                            djf++
-                        }
-                        else if (divisionresult[j].division == 5) {    //5-> DEP
-                            dep++
-                        }
+            // Initialize counters
+            const counters = {
+                damas: Array(ar.length).fill(0),
+                cabelleros: Array(ar.length).fill(0),
+                djm: Array(ar.length).fill(0),
+                djf: Array(ar.length).fill(0),
+                dep: Array(ar.length).fill(0),
+            };
 
-                    }
+
+            const divisionIndex = { 1: 'damas', 2: 'cabelleros', 3: 'djm', 4: 'djf', 5: 'dep' };
+
+            results.forEach(result => {
+                const areaIndex = ar.findIndex(a => a.id === result.area_id);
+                const counter = divisionIndex[result.division_id];
+                if (areaIndex >= 0 && counter) {
+                    counters[counter][areaIndex]++;
                 }
-                values[0].data.push(damas)
-                values[1].data.push(cabelleros)
-                values[2].data.push(djm)
-                values[3].data.push(djf)
-                values[4].data.push(dep)
+            });
+
+            ar.forEach((area, index) => {
+                values[0].data.push(counters.damas[index]);
+                values[1].data.push(counters.cabelleros[index]);
+                values[2].data.push(counters.djm[index]);
+                values[3].data.push(counters.djf[index]);
+                values[4].data.push(counters.dep[index]);
+            });
 
 
-            }
         }
 
         console.log(label, values, "att result")
