@@ -3547,7 +3547,7 @@ async function getAttendanceByLevel(req, res) {
             const cabildoIds = dis.map(d => d.cabildo_id);
             const distritoIds = dis.map(d => d.distrito_sgip_id);
             const activityIds = data.map(d => d.id);
-
+            
             // Fetch all necessary names in a single batch query
             const areaNames = await sequelize.query(`
     SELECT id, nombre 
@@ -3644,9 +3644,10 @@ async function getAttendanceByLevel(req, res) {
                     label.push(ar[arr].nombre)}
             const activityIds = data.map(d => d.id);
             const areaIds = ar.map(a => a.id);
-
-
-            const query = `
+                if(!activityIds.length){
+                    var results = []  
+                } else {
+                      const query = `
     SELECT area_id, division_id
     FROM usuarios_usuario
     WHERE area_id IN (${areaIds.join(',')})
@@ -3659,7 +3660,10 @@ async function getAttendanceByLevel(req, res) {
 `;
 
             // Execute the query
-            const results = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
+             results = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
+                }
+
+          
 
             // Initialize counters
             const counters = {
