@@ -820,7 +820,7 @@ async function getAttendanceByDivision(req, res) {
   
     
       const divisionResults = await sequelize.query(`
-        SELECT user_id, division_id as division
+        SELECT id as user_id, division_id as division
         FROM usuarios_usuario
         WHERE id IN (
           SELECT user_id FROM attendance WHERE activity_id IN (:activityIds) AND role_id IN (1, 2)
