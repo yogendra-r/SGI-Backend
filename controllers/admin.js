@@ -784,103 +784,139 @@ async function getAttendance(req, res) {
 
 async function getAttendanceByDivision(req, res) {
     try {
-      const where = await helper.findRoleDetails(req, res);
-      const area = req.body.area_id || where.area_id;
-      const cabildo = req.body.cabildo_id || where.cabildo_id;
-      const district = req.body.district_id || where.distrito_id;
-      const meeting_id = req.body.new_activity_id || null;
-  
-      const query1 = `
-        SELECT * FROM usuarios_actividad
-        WHERE (:area IS NULL OR area_id = :area)
+        var where = await helper.findRoleDetails(req, res)
+        const area = req.body.area_id || where.area_id;
+        const cabildo = req.body.cabildo_id || where.cabildo_id;
+        const district = req.body.district_id || where.distrito_id;
+        const meeting_id = req.body.new_activity_id || null
+
+        const whereClause = `WHERE 1=1
+        AND (:area IS NULL OR area_id = :area)
         AND (:cabildo IS NULL OR cabildo_id = :cabildo)
-        AND (:district IS NULL OR distrito_id = :district)
-        AND (:meeting_id IS NULL OR activity_id = :meeting_id)
-      `;
-      const data = await sequelize.query(query1, {
-        type: sequelize.QueryTypes.SELECT,
-        replacements: {
-          area: area || null,
-          cabildo: cabildo || null,
-          district: district || null,
-          meeting_id: meeting_id || null
+        AND (:district IS NULL OR distrito_id = :district) 
+        AND (:meeting_id IS NULL OR activity_id = :meeting_id)`;
+
+
+        const query1 = `select * from usuarios_actividad ${whereClause}`
+
+        const data = await sequelize.query(query1, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: {
+                area: area || null,
+                cabildo: cabildo || null,
+                district: district || null,
+                meeting_id: meeting_id || null
+            }
+        })
+
+        // console.log('data: ', data);
+        const month = [[], [], [], [], [], [], [], [], [], [], [], []]
+        const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+        for (var i in data) {
+
+            for (var j in months) {
+                if (months[j] == data[i].fetcha_de_actividad.substring(5, 7)) {
+                    month[j].push(data[i].id)
+                }
+            }
         }
-      });
-  
-    
-      const monthMap = data.reduce((acc, item) => {
-        const month = item.fetcha_de_actividad.substring(5, 7);
-        if (!acc[month]) acc[month] = [];
-        acc[month].push(item.id);
-        return acc;
-      }, {});
-  
-     
-      const activityIds = Object.values(monthMap).flat();
-  
-    
-      const divisionResults = await sequelize.query(`
-        SELECT id as user_id, division_id as division
+
+        var objbymontn = []
+        console.log(month, "month by division");
+        for (var i in month) {
+            var monthwisedata = { [`${i}`]: { Damas: 0, Cabelleros: 0, DJM: 0, DJF: 0, DEP: 0 } }
+         
+let damas = 0;
+let cabelleros = 0;
+let djm = 0;
+let djf = 0;
+let dep = 0;
+
+for (const activityId of month[i]) {
+    // Combine queries into one to improve performance
+    const sql = `
+        SELECT division_id as division
         FROM usuarios_usuario
         WHERE id IN (
-          SELECT user_id FROM attendance WHERE activity_id IN (:activityIds) AND role_id IN (1, 2)
+            SELECT user_id
+            FROM attendance
+            WHERE activity_id = :activityId AND role_id IN (1, 2)
         )
-      `, {
-        type: sequelize.QueryTypes.SELECT,
-        replacements: { activityIds }
-      });
-  
-      const divisionCounts = divisionResults.reduce((acc, { division }) => {
-        if (!acc[division]) acc[division] = 0;
-        acc[division]++;
-        return acc;
-      }, {});
-  
-     
-      const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
-      const monthData = months.map(month => {
-        const activityIdsForMonth = monthMap[month] || [];
-        const counts = { Damas: 0, Cabelleros: 0, DJM: 0, DJF: 0, DEP: 0 };
-  
-        activityIdsForMonth.forEach(activityId => {
-          const userDivision = divisionResults.find(result => result.user_id === activityId);
-          if (userDivision) {
-            switch (userDivision.division) {
-              case 1: counts.Damas++; break;
-              case 2: counts.Cabelleros++; break;
-              case 3: counts.DJM++; break;
-              case 4: counts.DJF++; break;
-              case 5: counts.DEP++; break;
-            }
-          }
-        });
-  
-        return counts;
-      });
-  
-    
-      const labels = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-      const values = [
-        { label: "Damas", data: monthData.map(d => d.Damas) },
-        { label: "Cabelleros", data: monthData.map(d => d.Cabelleros) },
-        { label: "DJM", data: monthData.map(d => d.DJM) },
-        { label: "DJF", data: monthData.map(d => d.DJF) },
-        { label: "DEP", data: monthData.map(d => d.DEP) }
-      ];
-  
-      return res.status(200).send({
-        message: "Data fetched successfully",
-        label: labels,
-        values,
-      });
-    } catch (error) {
-      console.error('Error:', error.message);
-      res.status(500).send({
-        message: "Internal server error",
-        status: false
-      });
+    `;
+
+    const results = await sequelize.query(sql, {
+        replacements: { activityId },
+        type: sequelize.QueryTypes.SELECT
+    });
+
+    // Process results
+    for (const result of results) {
+        switch (result.division) {
+            case 1: // Damas
+                damas++;
+                break;
+            case 2: // Caballeros
+            cabelleros++;
+                break;
+            case 3: // DJM
+                djm++;
+                break;
+            case 4: // DJF
+                djf++;
+                break;
+            case 5: // DEP
+                dep++;
+                break;
+        }
     }
-  }
+}
+
+// Output counts or use them as needed
+console.log('Damas:', damas);
+console.log('Caballeros:', cabelleros);
+console.log('DJM:', djm);
+console.log('DJF:', djf);
+console.log('DEP:', dep);
+
+            
+            monthwisedata[i].Damas = damas
+            monthwisedata[i].Cabelleros = cabelleros
+            monthwisedata[i].DJM = djm
+            monthwisedata[i].DJF = djf
+            monthwisedata[i].DEP = dep
+
+            objbymontn.push(monthwisedata)
+
+            // }
+        } console.log('objbymontn: ', objbymontn);
+
+
+        var label = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", 'Octubure', "Noviembre", "Diciembre"]
+        const values = [{ "label": "Damas", data: [] }, { "label": "Cabelleros", data: [] }, { "label": "DJM", data: [] }, { "label": "DJF", data: [] }, { "label": "DEP", data: [] }]
+        for (var i in objbymontn) {
+            values[0].data.push(objbymontn[i][i].Damas)
+            values[1].data.push(objbymontn[i][i].Cabelleros)
+            values[2].data.push(objbymontn[i][i].DJM)
+            values[3].data.push(objbymontn[i][i].DJF)
+            values[4].data.push(objbymontn[i][i].DEP)
+
+        }
+
+
+
+        console.log(label, values, "att result")
+        return res.status(200).send({
+            message: "data fetched",
+            label,
+            values,
+        }
+        )
+    } catch (error) {
+        console.log(error)
+        console.error('Error:', error.message);
+    }
+
+}
 
 async function getAttendanceByMonth(req, res) {
     try {
