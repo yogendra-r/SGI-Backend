@@ -1245,7 +1245,7 @@ async function addNewMember(req, res) {
     for (var i in req.body.horizontal_groups) {
         sequelize.query(`insert into group_members(group_id,user_id) values(${req.body.horizontal_groups[i]},${result[0]})`)
     }
-    if (req.body.responsable && req.body.nivel_responsable) {
+    if (req.body.responsable && req.body.nivel_responsable != 6) {
         const password = random.getRandomPassword(10)
         console.log(password)
         req.email = email
@@ -3404,7 +3404,7 @@ async function assignCredsForArea(req, res) {
 
             const { user_id, email, primer_nombre, primer_apellido, responsable, nivel_responsable_id, cabildo_id, distrito_sgip_id, sexo_id } = areadata[i]
             console.log('nivel_responsable: ', nivel_responsable_id);
-            if (nivel_responsable_id) {
+            if (nivel_responsable_id != 6) {
                 const password = random.getRandomPassword(10)
                 console.log(password)
                 req.email = email
